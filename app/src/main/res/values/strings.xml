@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">LoriApp</string>
+
+    <!-- Strings related to login -->
+    <string name="error.invalid_email">This email address is invalid</string>
+    <string name="error.invalid_password">This password is too short</string>
+    <string name="error.incorrect_password">This password is incorrect</string>
+    <string name="error.field_required">This field is required</string>
+
+    <string name="login.login_hint">Login</string>
+    <string name="login.pass_hint">Password</string>
+    <string name="login.login">Login</string>
+    <string name="title_activity_week_tasks">WeekTasksActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+</resources>
