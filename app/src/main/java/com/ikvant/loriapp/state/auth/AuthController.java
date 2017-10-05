@@ -1,5 +1,6 @@
-package com.ikvant.loriapp.state;
+package com.ikvant.loriapp.state.auth;
 
+import com.ikvant.loriapp.database.token.Token;
 import com.ikvant.loriapp.utils.Callback;
 
 /**

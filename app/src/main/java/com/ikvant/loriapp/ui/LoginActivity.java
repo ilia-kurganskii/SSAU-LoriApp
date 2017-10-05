@@ -1,22 +1,20 @@
 package com.ikvant.loriapp.ui;
 
-import android.annotation.TargetApi;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ikvant.loriapp.R;
-import com.ikvant.loriapp.state.AuthController;
+import com.ikvant.loriapp.database.token.Token;
+import com.ikvant.loriapp.state.auth.AuthController;
+import com.ikvant.loriapp.ui.tasklist.TaskEntryListActivity;
 import com.ikvant.loriapp.utils.Callback;
 
 import javax.inject.Inject;
@@ -64,6 +62,25 @@ public class LoginActivity extends DaggerAppCompatActivity {
     }
 
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        authController.isLogin(new Callback<Boolean>() {
+            @Override
+            public void onSuccess(Boolean data) {
+                if (data) {
+                    TaskEntryListActivity.startMe(LoginActivity.this);
+                    finish();
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable throwable) {
+
+            }
+        });
+    }
+
     /**
      * Attempts to sign in or register the account specified by the login form.
      * If there are form errors (invalid email, missing fields, etc.), the
@@ -104,7 +121,8 @@ public class LoginActivity extends DaggerAppCompatActivity {
             authController.executeLogin(email, password, new Callback<Boolean>() {
                 @Override
                 public void onSuccess(Boolean data) {
-                    Toast.makeText(LoginActivity.this, "Login Success", Toast.LENGTH_LONG).show();
+                    TaskEntryListActivity.startMe(LoginActivity.this);
+                    finish();
                 }
 
                 @Override

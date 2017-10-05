@@ -5,6 +5,7 @@ package com.ikvant.loriapp.dagger;
  */
 
 import com.ikvant.loriapp.ui.LoginActivity;
+import com.ikvant.loriapp.ui.tasklist.TaskEntryListActivity;
 
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
@@ -17,4 +18,7 @@ import dagger.android.ContributesAndroidInjector;
 abstract class AndroidBindingModule {
     @ContributesAndroidInjector
     abstract LoginActivity loginActivity();
+
+    @ContributesAndroidInjector
+    abstract TaskEntryListActivity listActivity();
 }
