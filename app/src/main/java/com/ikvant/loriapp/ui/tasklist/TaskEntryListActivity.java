@@ -8,9 +8,8 @@ import android.support.v7.widget.RecyclerView;
 
 import com.ikvant.loriapp.R;
 import com.ikvant.loriapp.database.timeentry.TimeEntry;
-import com.ikvant.loriapp.state.auth.AuthController;
-import com.ikvant.loriapp.state.auth.LoriAuthConrtoller;
 import com.ikvant.loriapp.state.timeentry.TimeEntryController;
+import com.ikvant.loriapp.ui.BaseActivity;
 import com.ikvant.loriapp.utils.SimpleCallback;
 
 import java.util.List;
@@ -23,7 +22,7 @@ import dagger.android.support.DaggerAppCompatActivity;
  * Created by ikvant.
  */
 
-public class TaskEntryListActivity extends DaggerAppCompatActivity {
+public class TaskEntryListActivity extends BaseActivity {
     private RecyclerView recyclerView;
     private ListAdapter listAdapter;
 
@@ -51,7 +50,7 @@ public class TaskEntryListActivity extends DaggerAppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        entryController.loadEntries(new SimpleCallback<List<TimeEntry>>(){
+        entryController.loadEntries(new SimpleCallback<List<TimeEntry>>() {
             @Override
             public void onSuccess(List<TimeEntry> data) {
                 listAdapter.setItems(data);

@@ -15,6 +15,8 @@ public class TimeEntry {
 
     private String description;
 
+    private Integer timeInMinutes;
+
     public String getId() {
         return id;
     }
@@ -29,5 +31,13 @@ public class TimeEntry {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Integer getTimeInMinutes() {
+        return timeInMinutes;
+    }
+
+    public void setTimeInMinutes(Integer timeInMinutes) {
+        this.timeInMinutes = timeInMinutes;
     }
 }

@@ -9,7 +9,7 @@ import com.ikvant.loriapp.database.token.TokenDao;
 import com.ikvant.loriapp.network.ApiService;
 import com.ikvant.loriapp.network.LoriApiService;
 import com.ikvant.loriapp.state.auth.AuthController;
-import com.ikvant.loriapp.state.auth.LoriAuthConrtoller;
+import com.ikvant.loriapp.state.auth.LoriAuthController;
 import com.ikvant.loriapp.state.timeentry.LoriTimeEntryController;
 import com.ikvant.loriapp.state.timeentry.TimeEntryController;
 import com.ikvant.loriapp.utils.AppExecutors;
@@ -51,7 +51,7 @@ class AppModule {
     @Provides
     ApiService provideApiService() {
         return new Retrofit.Builder()
-                .baseUrl("http://192.168.0.107:8080")
+                .baseUrl("http://192.168.0.101:8080")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
                 .create(ApiService.class);
@@ -68,7 +68,7 @@ class AppModule {
     @Singleton
     @Provides
     AuthController provideAuthManager(LoriApiService service, TokenDao dao, AppExecutors appExecutors) {
-        return new LoriAuthConrtoller(service, dao, appExecutors);
+        return new LoriAuthController(service, dao, appExecutors);
     }
 
     @Singleton

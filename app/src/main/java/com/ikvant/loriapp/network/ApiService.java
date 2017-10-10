@@ -28,5 +28,8 @@ public interface ApiService {
     @GET("/app/rest/v2/entities/ts$TimeEntry?view=timeEntry-full")
     Call<List<TimeEntry>> getTimeEntries(@Header("Authorization") String token);
 
+    @GET("/app/rest/v2/entities/ts$Task?view=timeEntry-full")
+    Call<List<TimeEntry>> getTasks(@Header("Authorization") String token);
+
 
 }

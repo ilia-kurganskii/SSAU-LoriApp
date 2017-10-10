@@ -4,13 +4,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.ikvant.loriapp.R;
 import com.ikvant.loriapp.database.timeentry.TimeEntry;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -46,7 +44,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.TaskHolder> {
     public void onBindViewHolder(TaskHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        holder.setName(mDataset.get(position).getDescription());
+        holder.bind(mDataset.get(position));
     }
 
     // Return the size of your dataset (invoked by the layout manager)
@@ -58,7 +56,9 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.TaskHolder> {
     class TaskHolder extends RecyclerView.ViewHolder {
         // Your holder should contain a member variable
         // for any view that will be set as you render a row
-        private TextView nameTextView;
+        private TextView desciription;
+        private TextView taskName;
+        private TextView time;
 
         // We also create a constructor that accepts the entire item row
         // and does the view lookups to find each subview
@@ -66,11 +66,15 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.TaskHolder> {
             // Stores the itemView in a public final member variable that can be used
             // to access the context from any ViewHolder instance.
             super(itemView);
-            nameTextView = itemView.findViewById(R.id.task_name);
+            desciription = itemView.findViewById(R.id.i_description);
+            taskName = itemView.findViewById(R.id.i_task);
+            time = itemView.findViewById(R.id.i_time);
         }
 
-        public void setName(String name) {
-            nameTextView.setText(name);
+        public void bind(TimeEntry entry) {
+            desciription.setText(entry.getDescription());
+            taskName.setText("Task ");
+            time.setText("5h 00m");
         }
 
     }

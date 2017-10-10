@@ -24,7 +24,7 @@ import dagger.android.support.DaggerAppCompatActivity;
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends DaggerAppCompatActivity {
+public class LoginActivity extends BaseActivity {
 
     // UI references.
     private EditText mEmailView;

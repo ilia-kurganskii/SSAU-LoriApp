@@ -4,19 +4,14 @@ import android.util.Log;
 
 import com.ikvant.loriapp.database.timeentry.TimeEntry;
 import com.ikvant.loriapp.database.timeentry.TimeEntryDao;
-import com.ikvant.loriapp.database.token.Token;
-import com.ikvant.loriapp.network.ApiService;
 import com.ikvant.loriapp.network.LoriApiService;
+import com.ikvant.loriapp.network.NetworkApiException;
 import com.ikvant.loriapp.state.auth.AuthController;
 import com.ikvant.loriapp.utils.AppExecutors;
 import com.ikvant.loriapp.utils.Callback;
-import com.ikvant.loriapp.utils.SimpleCallback;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Response;
 
 /**
  * Created by ikvant.
@@ -49,31 +44,31 @@ public class LoriTimeEntryController implements TimeEntryController {
             @Override
             public void run() {
                 result.addAll(timeEntryDao.load());
-                apiService.getTimeEntries().enqueue(new retrofit2.Callback<List<TimeEntry>>() {
+                executors.networkIO().execute(new Runnable() {
                     @Override
-                    public void onResponse(Call<List<TimeEntry>> call, Response<List<TimeEntry>> response) {
-                        List<TimeEntry> entryList = response.body();
-                        if (entryList != null) {
-                            result.addAll(entryList);
+                    public void run() {
+                        List<TimeEntry> entryList = null;
+                        try {
+                            entryList = apiService.getTimeEntries();
+                            if (entryList != null) {
+                                result.addAll(entryList);
+                            }
+                            executors.mainThread().execute(new Runnable() {
+                                @Override
+                                public void run() {
+                                    callback.onSuccess(result);
+                                }
+                            });
+                        } catch (NetworkApiException e) {
+                            Log.d(TAG, "onFailure() called with: call = [" + e + "]");
+                            executors.mainThread().execute(new Runnable() {
+                                @Override
+                                public void run() {
+                                    callback.onSuccess(result);
+                                }
+                            });
                         }
-                        executors.mainThread().execute(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onSuccess(result);
-                            }
-                        });
 
-                    }
-
-                    @Override
-                    public void onFailure(Call<List<TimeEntry>> call, Throwable t) {
-                        Log.d(TAG, "onFailure() called with: call = [" + call + "], t = [" + t + "]");
-                        executors.mainThread().execute(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onSuccess(result);
-                            }
-                        });
                     }
                 });
 
