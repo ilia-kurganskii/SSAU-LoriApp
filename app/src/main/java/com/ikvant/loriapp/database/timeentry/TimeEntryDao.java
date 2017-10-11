@@ -7,6 +7,7 @@ import android.arch.persistence.room.Query;
 
 import com.ikvant.loriapp.database.token.Token;
 
+import java.sql.Time;
 import java.util.List;
 
 /**
@@ -16,12 +17,15 @@ import java.util.List;
 
 @Dao
 public interface TimeEntryDao {
-    @Query("SELECT * FROM TimeEntry LIMIT 1")
-    List<TimeEntry> load();
+    @Query("SELECT * FROM TimeEntry")
+    List<TimeEntry> loadAll();
 
     @Query("DELETE FROM TimeEntry")
-    void delete();
+    void deleteAll();
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void save(TimeEntry entry);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void saveAll(TimeEntry...timeEntries);
 }

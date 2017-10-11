@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -35,6 +37,7 @@ public class LoriApiService {
         return executeRequest(service.login(name, password, "password"));
     }
 
+    @Nonnull
     public List<TimeEntry> getTimeEntries() throws NetworkApiException {
         return executeRequest(service.getTimeEntries(getFormattedToken()));
     }

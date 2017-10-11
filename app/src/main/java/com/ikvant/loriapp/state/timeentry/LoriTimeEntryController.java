@@ -1,5 +1,6 @@
 package com.ikvant.loriapp.state.timeentry;
 
+import android.util.ArraySet;
 import android.util.Log;
 
 import com.ikvant.loriapp.database.timeentry.TimeEntry;
@@ -11,7 +12,9 @@ import com.ikvant.loriapp.utils.AppExecutors;
 import com.ikvant.loriapp.utils.Callback;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by ikvant.
@@ -39,40 +42,22 @@ public class LoriTimeEntryController implements TimeEntryController {
 
     @Override
     public void loadEntries(final Callback<List<TimeEntry>> callback) {
-        final List<TimeEntry> result = new ArrayList<>();
-        executors.diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                result.addAll(timeEntryDao.load());
-                executors.networkIO().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        List<TimeEntry> entryList = null;
-                        try {
-                            entryList = apiService.getTimeEntries();
-                            if (entryList != null) {
-                                result.addAll(entryList);
-                            }
-                            executors.mainThread().execute(new Runnable() {
-                                @Override
-                                public void run() {
-                                    callback.onSuccess(result);
-                                }
-                            });
-                        } catch (NetworkApiException e) {
-                            Log.d(TAG, "onFailure() called with: call = [" + e + "]");
-                            executors.mainThread().execute(new Runnable() {
-                                @Override
-                                public void run() {
-                                    callback.onSuccess(result);
-                                }
-                            });
-                        }
+        final Set<TimeEntry> set = new HashSet<>();
+        executors.diskIO().execute(() -> {
+            set.addAll(timeEntryDao.loadAll());
+            executors.networkIO().execute(() -> {
+                try {
+                    List<TimeEntry> newEntryList = apiService.getTimeEntries();
+                    set.addAll(newEntryList);
+                    executors.diskIO().execute(() -> timeEntryDao.saveAll(newEntryList.toArray(new TimeEntry[newEntryList.size()])));
+                    executors.mainThread().execute(() -> callback.onSuccess(new ArrayList<>(set)));
+                } catch (NetworkApiException e) {
+                    Log.d(TAG, "onFailure() called with: call = [" + e + "]");
+                    executors.mainThread().execute(() -> callback.onSuccess(new ArrayList<>(set)));
+                }
 
-                    }
-                });
+            });
 
-            }
         });
     }
 }
