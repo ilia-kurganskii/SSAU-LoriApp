@@ -2,11 +2,13 @@ package com.ikvant.loriapp.network;
 
 import android.util.Log;
 
+import com.ikvant.loriapp.database.task.Task;
 import com.ikvant.loriapp.database.timeentry.TimeEntry;
 import com.ikvant.loriapp.database.token.Token;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.sql.Time;
 import java.util.List;
 
 import javax.annotation.Nonnull;
@@ -40,6 +42,15 @@ public class LoriApiService {
     @Nonnull
     public List<TimeEntry> getTimeEntries() throws NetworkApiException {
         return executeRequest(service.getTimeEntries(getFormattedToken()));
+    }
+
+    @Nonnull
+    public List<Task> getTasks() throws NetworkApiException {
+        return executeRequest(service.getTasks(getFormattedToken()));
+    }
+
+    public void updateTimeEntry(TimeEntry timeEntry) throws NetworkApiException {
+        executeRequest(service.updateTimeEntry(timeEntry.getId(), timeEntry, getFormattedToken()));
     }
 
     private String getFormattedToken() {

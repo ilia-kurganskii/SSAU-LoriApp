@@ -4,6 +4,7 @@ import android.arch.persistence.room.Room;
 
 import com.ikvant.loriapp.LoriApp;
 import com.ikvant.loriapp.database.LoriDatabase;
+import com.ikvant.loriapp.database.task.TaskDao;
 import com.ikvant.loriapp.database.timeentry.TimeEntryDao;
 import com.ikvant.loriapp.database.token.TokenDao;
 import com.ikvant.loriapp.network.ApiService;
@@ -49,9 +50,15 @@ class AppModule {
 
     @Singleton
     @Provides
+    TaskDao provideTaskDao(LoriDatabase db) {
+        return db.taskDao();
+    }
+
+    @Singleton
+    @Provides
     ApiService provideApiService() {
         return new Retrofit.Builder()
-                .baseUrl("http://192.168.0.101:8080")
+                .baseUrl("http://192.168.0.100:8080")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
                 .create(ApiService.class);
@@ -73,8 +80,8 @@ class AppModule {
 
     @Singleton
     @Provides
-    TimeEntryController provideTimeEntryController(LoriApiService service, TimeEntryDao dao, AppExecutors appExecutors, AuthController controller) {
-        return new LoriTimeEntryController(dao, service, appExecutors, controller);
+    TimeEntryController provideTimeEntryController(LoriApiService service, TimeEntryDao dao, AppExecutors appExecutors, TaskDao taskDao) {
+        return new LoriTimeEntryController(dao, service, appExecutors, taskDao);
     }
 
 }

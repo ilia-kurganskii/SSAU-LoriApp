@@ -5,11 +5,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
 import com.ikvant.loriapp.R;
 import com.ikvant.loriapp.database.timeentry.TimeEntry;
 import com.ikvant.loriapp.state.timeentry.TimeEntryController;
 import com.ikvant.loriapp.ui.BaseActivity;
+import com.ikvant.loriapp.ui.editenrty.EditTimeEntryActivity;
 import com.ikvant.loriapp.utils.SimpleCallback;
 
 import java.util.List;
@@ -22,7 +24,7 @@ import dagger.android.support.DaggerAppCompatActivity;
  * Created by ikvant.
  */
 
-public class TaskEntryListActivity extends BaseActivity {
+public class TaskEntryListActivity extends BaseActivity implements ListAdapter.OnItemClickListener {
     private RecyclerView recyclerView;
     private ListAdapter listAdapter;
 
@@ -44,6 +46,7 @@ public class TaskEntryListActivity extends BaseActivity {
 
         // specify an adapter (see also next example)
         listAdapter = new ListAdapter();
+        listAdapter.setClickItemListener(this);
         recyclerView.setAdapter(listAdapter);
     }
 
@@ -61,6 +64,12 @@ public class TaskEntryListActivity extends BaseActivity {
     public static void startMe(Activity activity) {
         Intent intent = new Intent(activity, TaskEntryListActivity.class);
         activity.startActivity(intent);
+    }
+
+    @Override
+    public void onClick(View view, int position) {
+        TimeEntry entry = listAdapter.getItems().get(position);
+        EditTimeEntryActivity.startMe(this, entry.getId());
     }
 }
 

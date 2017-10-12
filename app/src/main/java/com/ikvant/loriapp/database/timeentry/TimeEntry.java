@@ -7,6 +7,7 @@ import android.arch.persistence.room.PrimaryKey;
 import android.arch.persistence.room.TypeConverter;
 
 import com.ikvant.loriapp.database.task.Task;
+import com.ikvant.loriapp.database.user.User;
 
 /**
  * Created by ikvant.
@@ -26,8 +27,19 @@ public class TimeEntry {
 
     private Task task;
 
+    private User user;
+
     public String getId() {
         return id;
+    }
+
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public void setId(String id) {
