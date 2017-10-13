@@ -9,6 +9,8 @@ import android.arch.persistence.room.TypeConverter;
 import com.ikvant.loriapp.database.task.Task;
 import com.ikvant.loriapp.database.user.User;
 
+import java.util.Date;
+
 /**
  * Created by ikvant.
  */
@@ -23,11 +25,13 @@ public class TimeEntry {
 
     private Integer timeInMinutes;
 
-    public String taskName;
+    private String taskName;
 
     private Task task;
 
     private User user;
+
+    private Date date;
 
     public String getId() {
         return id;
@@ -91,5 +95,13 @@ public class TimeEntry {
     @Override
     public int hashCode() {
         return id != null ? id.hashCode() : 0;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 }

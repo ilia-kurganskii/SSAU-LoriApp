@@ -2,6 +2,8 @@ package com.ikvant.loriapp.dagger;
 
 import android.arch.persistence.room.Room;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.ikvant.loriapp.LoriApp;
 import com.ikvant.loriapp.database.LoriDatabase;
 import com.ikvant.loriapp.database.task.TaskDao;
@@ -57,19 +59,19 @@ class AppModule {
     @Singleton
     @Provides
     ApiService provideApiService() {
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
         return new Retrofit.Builder()
                 .baseUrl("http://192.168.0.100:8080")
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .build()
                 .create(ApiService.class);
     }
 
     @Singleton
     @Provides
-    LoriApiService provideLoriApiService(ApiService baseApi){
+    LoriApiService provideLoriApiService(ApiService baseApi) {
         return new LoriApiService(baseApi);
     }
-
 
 
     @Singleton

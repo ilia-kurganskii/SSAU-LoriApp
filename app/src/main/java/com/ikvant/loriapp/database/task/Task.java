@@ -2,7 +2,6 @@ package com.ikvant.loriapp.database.task;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
-import android.arch.persistence.room.ForeignKey;
 
 /**
  * Created by ikvant.
