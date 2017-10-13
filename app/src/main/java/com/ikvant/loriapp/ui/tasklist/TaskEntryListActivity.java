@@ -9,7 +9,7 @@ import android.view.View;
 
 import com.ikvant.loriapp.R;
 import com.ikvant.loriapp.database.timeentry.TimeEntry;
-import com.ikvant.loriapp.state.timeentry.TimeEntryController;
+import com.ikvant.loriapp.state.entry.EntryController;
 import com.ikvant.loriapp.ui.BaseActivity;
 import com.ikvant.loriapp.ui.editenrty.EditTimeEntryActivity;
 import com.ikvant.loriapp.utils.SimpleCallback;
@@ -17,8 +17,6 @@ import com.ikvant.loriapp.utils.SimpleCallback;
 import java.util.List;
 
 import javax.inject.Inject;
-
-import dagger.android.support.DaggerAppCompatActivity;
 
 /**
  * Created by ikvant.
@@ -29,7 +27,7 @@ public class TaskEntryListActivity extends BaseActivity implements ListAdapter.O
     private ListAdapter listAdapter;
 
     @Inject
-    protected TimeEntryController entryController;
+    protected EntryController entryController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

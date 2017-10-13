@@ -1,4 +1,4 @@
-package com.ikvant.loriapp.state.timeentry;
+package com.ikvant.loriapp.state.entry;
 
 import android.util.Log;
 
@@ -11,7 +11,6 @@ import com.ikvant.loriapp.network.LoriApiService;
 import com.ikvant.loriapp.network.NetworkApiException;
 import com.ikvant.loriapp.utils.AppExecutors;
 import com.ikvant.loriapp.utils.Callback;
-import com.ikvant.loriapp.utils.SimpleCallback;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -22,8 +21,8 @@ import java.util.Set;
  * Created by ikvant.
  */
 
-public class LoriTimeEntryController implements TimeEntryController {
-    private static final String TAG = "LoriTimeEntryController";
+public class LoriEntryController implements EntryController {
+    private static final String TAG = "LoriEntryController";
 
     private TimeEntryDao timeEntryDao;
     private LoriApiService apiService;
@@ -31,7 +30,7 @@ public class LoriTimeEntryController implements TimeEntryController {
     private TaskDao taskDao;
     private User user;
 
-    public LoriTimeEntryController(TimeEntryDao timeEntryDao, LoriApiService apiService, AppExecutors executors, TaskDao taskDao) {
+    public LoriEntryController(TimeEntryDao timeEntryDao, LoriApiService apiService, AppExecutors executors, TaskDao taskDao) {
         this.timeEntryDao = timeEntryDao;
         this.apiService = apiService;
         this.executors = executors;

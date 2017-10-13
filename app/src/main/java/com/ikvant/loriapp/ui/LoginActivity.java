@@ -9,17 +9,13 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ikvant.loriapp.R;
-import com.ikvant.loriapp.database.token.Token;
 import com.ikvant.loriapp.state.auth.AuthController;
 import com.ikvant.loriapp.ui.tasklist.TaskEntryListActivity;
 import com.ikvant.loriapp.utils.Callback;
 
 import javax.inject.Inject;
-
-import dagger.android.support.DaggerAppCompatActivity;
 
 /**
  * A login screen that offers login via email/password.
@@ -36,7 +32,7 @@ public class LoginActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.a_login);
         // Set up the login form.
         mEmailView = findViewById(R.id.login);
 

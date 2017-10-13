@@ -15,7 +15,7 @@ import android.widget.TimePicker;
 import com.ikvant.loriapp.R;
 import com.ikvant.loriapp.database.task.Task;
 import com.ikvant.loriapp.database.timeentry.TimeEntry;
-import com.ikvant.loriapp.state.timeentry.TimeEntryController;
+import com.ikvant.loriapp.state.entry.EntryController;
 import com.ikvant.loriapp.ui.BaseActivity;
 import com.ikvant.loriapp.utils.SimpleCallback;
 
@@ -31,7 +31,7 @@ public class EditTimeEntryActivity extends BaseActivity implements TimePickerDia
     public static final String EXTRA_ID = "EXTRA_ID";
 
     @Inject
-    protected TimeEntryController entryController;
+    protected EntryController entryController;
 
     private AppCompatSpinner taskSpinner;
     private EditText description;
