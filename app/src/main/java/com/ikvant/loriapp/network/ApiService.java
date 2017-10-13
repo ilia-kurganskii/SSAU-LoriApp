@@ -3,6 +3,7 @@ package com.ikvant.loriapp.network;
 import com.ikvant.loriapp.database.task.Task;
 import com.ikvant.loriapp.database.timeentry.TimeEntry;
 import com.ikvant.loriapp.database.token.Token;
+import com.ikvant.loriapp.database.user.User;
 
 import java.sql.Time;
 import java.util.List;
@@ -37,9 +38,15 @@ public interface ApiService {
     @DELETE("/app/rest/v2/entities/ts$TimeEntry/{id}")
     Call<Void> deleteTimeEntry(@Path("id") String id, @Header("Authorization") String token);
 
+    @POST("/app/rest/v2/entities/ts$TimeEntry")
+    Call<TimeEntry> createTimeEntry(@Body TimeEntry timeEntry, @Header("Authorization") String token);
+
     @GET("/app/rest/v2/entities/ts$TimeEntry?view=timeEntry-full")
     Call<List<TimeEntry>> getTimeEntries(@Header("Authorization") String token);
 
     @GET("/app/rest/v2/entities/ts$Task?view=task-full")
     Call<List<Task>> getTasks(@Header("Authorization") String token);
+
+    @GET("/app/rest/v2/userInfo")
+    Call<User> getUser(@Header("Authorization") String token);
 }

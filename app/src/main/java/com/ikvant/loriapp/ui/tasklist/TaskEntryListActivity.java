@@ -29,13 +29,13 @@ public class TaskEntryListActivity extends BaseActivity implements ListAdapter.O
     private ListAdapter listAdapter;
 
     @Inject
-    TimeEntryController entryController;
+    protected TimeEntryController entryController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.a_task_list);
-        recyclerView = findViewById(R.id.my_recycler_view);
+        recyclerView = findViewById(R.id.time_entry_list);
 
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
@@ -48,6 +48,10 @@ public class TaskEntryListActivity extends BaseActivity implements ListAdapter.O
         listAdapter = new ListAdapter();
         listAdapter.setClickItemListener(this);
         recyclerView.setAdapter(listAdapter);
+
+        findViewById(R.id.add).setOnClickListener((view) -> {
+            EditTimeEntryActivity.startMe(this, null);
+        });
     }
 
     @Override

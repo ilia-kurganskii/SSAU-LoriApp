@@ -5,6 +5,7 @@ import android.util.Log;
 import com.ikvant.loriapp.database.task.Task;
 import com.ikvant.loriapp.database.timeentry.TimeEntry;
 import com.ikvant.loriapp.database.token.Token;
+import com.ikvant.loriapp.database.user.User;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -49,12 +50,20 @@ public class LoriApiService {
         return executeRequest(service.getTasks(getFormattedToken()));
     }
 
+    public void createTimeEntry(TimeEntry entry) throws NetworkApiException {
+        executeRequest(service.createTimeEntry(entry, getFormattedToken()));
+    }
+
     public void updateTimeEntry(TimeEntry timeEntry) throws NetworkApiException {
         executeRequest(service.updateTimeEntry(timeEntry.getId(), timeEntry, getFormattedToken()));
     }
 
     public void deleteTimeEntry(String id) throws NetworkApiException {
         executeRequest(service.deleteTimeEntry(id, getFormattedToken()));
+    }
+
+    public User getUser() throws NetworkApiException {
+        return executeRequest(service.getUser(getFormattedToken()));
     }
 
     private String getFormattedToken() {

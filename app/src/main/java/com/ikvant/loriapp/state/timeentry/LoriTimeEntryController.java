@@ -6,6 +6,7 @@ import com.ikvant.loriapp.database.task.Task;
 import com.ikvant.loriapp.database.task.TaskDao;
 import com.ikvant.loriapp.database.timeentry.TimeEntry;
 import com.ikvant.loriapp.database.timeentry.TimeEntryDao;
+import com.ikvant.loriapp.database.user.User;
 import com.ikvant.loriapp.network.LoriApiService;
 import com.ikvant.loriapp.network.NetworkApiException;
 import com.ikvant.loriapp.utils.AppExecutors;
@@ -28,6 +29,7 @@ public class LoriTimeEntryController implements TimeEntryController {
     private LoriApiService apiService;
     private AppExecutors executors;
     private TaskDao taskDao;
+    private User user;
 
     public LoriTimeEntryController(TimeEntryDao timeEntryDao, LoriApiService apiService, AppExecutors executors, TaskDao taskDao) {
         this.timeEntryDao = timeEntryDao;
@@ -58,7 +60,12 @@ public class LoriTimeEntryController implements TimeEntryController {
         executors.diskIO().execute(()->{
             try {
                 timeEntryDao.save(timeEntry);
-                apiService.updateTimeEntry(timeEntry);
+                if (TimeEntry.isNew(timeEntry)) {
+                    timeEntry.setUser(getUser());
+                    apiService.createTimeEntry(timeEntry);
+                } else {
+                    apiService.updateTimeEntry(timeEntry);
+                }
                 executors.mainThread().execute(()->callback.onSuccess(timeEntry));
             } catch (Exception e){
                 executors.mainThread().execute(()->callback.onFailure(e));
@@ -120,6 +127,13 @@ public class LoriTimeEntryController implements TimeEntryController {
                 }
             });
         });
+    }
+
+    private User getUser() throws NetworkApiException {
+        if (user == null){
+            user = apiService.getUser();
+        }
+        return user;
     }
 
     public void sync(Runnable callback){

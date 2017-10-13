@@ -79,17 +79,20 @@ public class EditTimeEntryActivity extends BaseActivity implements TimePickerDia
         });
 
         String id = getIntent().getStringExtra(EXTRA_ID);
-
-        entryController.load(id, new SimpleCallback<TimeEntry>() {
-            @Override
-            public void onSuccess(TimeEntry data) {
-                currentTimeEntry = data;
-                //taskSpinner.setSelection(taskAdapter.getPosition(data.getTask()));
-                description.setText(data.getDescription());
-                setDateEditText(data.getDate());
-                setTimeInMinutes(data.getTimeInMinutes());
-            }
-        });
+        if (id != null) {
+            entryController.load(id, new SimpleCallback<TimeEntry>() {
+                @Override
+                public void onSuccess(TimeEntry data) {
+                    currentTimeEntry = data;
+                    //taskSpinner.setSelection(taskAdapter.getPosition(data.getTask()));
+                    description.setText(data.getDescription());
+                    setDateEditText(data.getDate());
+                    setTimeInMinutes(data.getTimeInMinutes());
+                }
+            });
+        } else {
+            currentTimeEntry = TimeEntry.createNew();
+        }
 
         entryController.loadTasks(new SimpleCallback<List<Task>>() {
             @Override

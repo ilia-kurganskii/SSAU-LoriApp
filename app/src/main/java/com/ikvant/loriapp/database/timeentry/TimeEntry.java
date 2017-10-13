@@ -6,6 +6,7 @@ import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.PrimaryKey;
 import android.arch.persistence.room.TypeConverter;
 
+import com.google.gson.annotations.Expose;
 import com.ikvant.loriapp.database.task.Task;
 import com.ikvant.loriapp.database.user.User;
 
@@ -18,12 +19,16 @@ import java.util.Date;
 @Entity
 public class TimeEntry {
 
-    @PrimaryKey
+    public static final String NEW_ID = "NEW-ts$TimeEntry";
     private String id;
+
+    @PrimaryKey(autoGenerate = true)
+    @Expose
+    private int localId;
 
     private String description;
 
-    private Integer timeInMinutes;
+    private Integer timeInMinutes = 0;
 
     private String taskName;
 
@@ -37,6 +42,13 @@ public class TimeEntry {
         return id;
     }
 
+    public int getLocalId() {
+        return localId;
+    }
+
+    public void setLocalId(int localId) {
+        this.localId = localId;
+    }
 
     public User getUser() {
         return user;
@@ -103,5 +115,17 @@ public class TimeEntry {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public static TimeEntry createNew(){
+        TimeEntry timeEntry =new TimeEntry();
+        timeEntry.setDate(new Date());
+        timeEntry.setTimeInMinutes(0);
+        timeEntry.setId(NEW_ID);
+        return timeEntry;
+    }
+
+    public static boolean isNew(TimeEntry timeEntry){
+        return timeEntry != null && NEW_ID.equals(timeEntry.getId());
     }
 }
