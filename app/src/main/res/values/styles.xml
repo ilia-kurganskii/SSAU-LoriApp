@@ -16,9 +16,18 @@
         <item name="android:layout_marginRight">24dp</item>
     </style>
 
+    <style name="Lori.ClickableEditView" parent="Widget.AppCompat.EditText">
+        <item name="android:inputType">none</item>
+        <item name="android:cursorVisible">false</item>
+        <item name="android:focusable">false</item>
+        <item name="android:focusableInTouchMode">false</item>
+    </style>
+
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
+
+
 
 </resources>

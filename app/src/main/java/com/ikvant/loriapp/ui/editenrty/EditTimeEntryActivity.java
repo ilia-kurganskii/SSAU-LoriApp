@@ -112,6 +112,17 @@ public class EditTimeEntryActivity extends BaseActivity implements TimePickerDia
                 });
             }
         });
+
+        findViewById(R.id.edit_delete).setOnClickListener((view)->{
+            entryController.delete(id, new SimpleCallback<Void>(){
+                @Override
+                public void onSuccess(Void data) {
+                    super.onSuccess(data);
+                    finish();
+                }
+            });
+
+        });
     }
 
     public void showTimePickerDialogDialog() {

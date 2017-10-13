@@ -21,8 +21,8 @@ public interface TimeEntryDao {
     @Query("SELECT * FROM TimeEntry")
     List<TimeEntry> loadAll();
 
-    @Query("DELETE FROM TimeEntry")
-    void deleteAll();
+    @Query("DELETE FROM TimeEntry WHERE id=:id")
+    void delete(String id);
 
     @Query("SELECT * FROM TimeEntry WHERE id=:id LIMIT 1")
     TimeEntry load(String id);

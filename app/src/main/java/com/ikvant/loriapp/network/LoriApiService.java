@@ -53,6 +53,10 @@ public class LoriApiService {
         executeRequest(service.updateTimeEntry(timeEntry.getId(), timeEntry, getFormattedToken()));
     }
 
+    public void deleteTimeEntry(String id) throws NetworkApiException {
+        executeRequest(service.deleteTimeEntry(id, getFormattedToken()));
+    }
+
     private String getFormattedToken() {
         return "Bearer " + token;
     }

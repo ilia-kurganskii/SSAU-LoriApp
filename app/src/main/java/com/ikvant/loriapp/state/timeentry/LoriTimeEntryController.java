@@ -10,8 +10,8 @@ import com.ikvant.loriapp.network.LoriApiService;
 import com.ikvant.loriapp.network.NetworkApiException;
 import com.ikvant.loriapp.utils.AppExecutors;
 import com.ikvant.loriapp.utils.Callback;
+import com.ikvant.loriapp.utils.SimpleCallback;
 
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -105,6 +105,21 @@ public class LoriTimeEntryController implements TimeEntryController {
                 });
             });
 
+    }
+
+    @Override
+    public void delete(String id, Callback<Void> callback) {
+        executors.diskIO().execute(()->{
+            timeEntryDao.delete(id);
+            executors.networkIO().execute(()-> {
+                try {
+                    apiService.deleteTimeEntry(id);
+                    callback.onSuccess(null);
+                } catch (NetworkApiException e) {
+                    callback.onFailure(e);
+                }
+            });
+        });
     }
 
     public void sync(Runnable callback){

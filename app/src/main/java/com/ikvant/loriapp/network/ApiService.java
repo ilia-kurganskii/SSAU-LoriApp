@@ -9,6 +9,7 @@ import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -33,11 +34,12 @@ public interface ApiService {
     @PUT("/app/rest/v2/entities/ts$TimeEntry/{id}")
     Call<TimeEntry> updateTimeEntry(@Path("id") String id, @Body TimeEntry timeEntry, @Header("Authorization") String token);
 
+    @DELETE("/app/rest/v2/entities/ts$TimeEntry/{id}")
+    Call<Void> deleteTimeEntry(@Path("id") String id, @Header("Authorization") String token);
+
     @GET("/app/rest/v2/entities/ts$TimeEntry?view=timeEntry-full")
     Call<List<TimeEntry>> getTimeEntries(@Header("Authorization") String token);
 
     @GET("/app/rest/v2/entities/ts$Task?view=task-full")
     Call<List<Task>> getTasks(@Header("Authorization") String token);
-
-
 }
