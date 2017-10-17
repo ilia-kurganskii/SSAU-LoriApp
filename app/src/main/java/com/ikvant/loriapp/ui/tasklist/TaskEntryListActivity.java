@@ -3,6 +3,7 @@ package com.ikvant.loriapp.ui.tasklist;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -48,14 +49,37 @@ public class TaskEntryListActivity extends BaseActivity implements ListAdapter.O
         recyclerView.setAdapter(listAdapter);
 
         findViewById(R.id.add).setOnClickListener((view) -> {
-            EditTimeEntryActivity.startMe(this, null);
+            EditTimeEntryActivity.startMe(this);
         });
+
+        SwipeRefreshLayout refreshLayout = findViewById(R.id.refresh_layout);
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                entryController.synс(new SimpleCallback<Void>() {
+                    @Override
+                    public void onSuccess(Void data) {
+                        super.onSuccess(data);
+                        refreshLayout.setRefreshing(false);
+                    }
+
+                    @Override
+                    public void onFailure(Throwable throwable) {
+                        super.onFailure(throwable);
+                        refreshLayout.setRefreshing(false);
+
+                    }
+                });
+            }
+        });
+
+        entryController.synс(new SimpleCallback<Void>());
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        entryController.loadEntries(new SimpleCallback<List<TimeEntry>>() {
+        entryController.loadTimeEntries(new SimpleCallback<List<TimeEntry>>() {
             @Override
             public void onSuccess(List<TimeEntry> data) {
                 listAdapter.setItems(data);

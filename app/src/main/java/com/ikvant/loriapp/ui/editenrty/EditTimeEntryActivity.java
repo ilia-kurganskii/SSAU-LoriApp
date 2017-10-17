@@ -28,7 +28,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 public class EditTimeEntryActivity extends BaseActivity implements TimePickerDialog.OnTimeSetListener, DatePickerDialog.OnDateSetListener {
-    public static final String EXTRA_ID = "EXTRA_ID";
+    private static final String EXTRA_ID = "EXTRA_ID";
 
     @Inject
     protected EntryController entryController;
@@ -62,6 +62,7 @@ public class EditTimeEntryActivity extends BaseActivity implements TimePickerDia
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Task task = taskAdapter.getItem(position);
                 currentTimeEntry.setTask(task);
+                currentTimeEntry.setTaskName(task.getName());
             }
 
             @Override
@@ -80,7 +81,7 @@ public class EditTimeEntryActivity extends BaseActivity implements TimePickerDia
 
         String id = getIntent().getStringExtra(EXTRA_ID);
         if (id != null) {
-            entryController.load(id, new SimpleCallback<TimeEntry>() {
+            entryController.loadTimeEntry(id, new SimpleCallback<TimeEntry>() {
                 @Override
                 public void onSuccess(TimeEntry data) {
                     currentTimeEntry = data;
@@ -106,18 +107,17 @@ public class EditTimeEntryActivity extends BaseActivity implements TimePickerDia
             @Override
             public void onClick(View v) {
                 currentTimeEntry.setDescription(description.getText().toString());
-                entryController.save(currentTimeEntry, new SimpleCallback<TimeEntry>() {
+                entryController.saveTimeEntry(currentTimeEntry, new SimpleCallback<TimeEntry>() {
                     @Override
                     public void onSuccess(TimeEntry data) {
-                        super.onSuccess(data);
                         finish();
                     }
                 });
             }
         });
 
-        findViewById(R.id.edit_delete).setOnClickListener((view)->{
-            entryController.delete(id, new SimpleCallback<Void>(){
+        findViewById(R.id.edit_delete).setOnClickListener((view) -> {
+            entryController.delete(id, new SimpleCallback<Void>() {
                 @Override
                 public void onSuccess(Void data) {
                     super.onSuccess(data);
@@ -173,6 +173,12 @@ public class EditTimeEntryActivity extends BaseActivity implements TimePickerDia
     public static void startMe(Activity activity, String id) {
         Intent intent = new Intent(activity, EditTimeEntryActivity.class);
         intent.putExtra(EXTRA_ID, id);
+        activity.startActivity(intent);
+    }
+
+
+    public static void startMe(Activity activity) {
+        Intent intent = new Intent(activity, EditTimeEntryActivity.class);
         activity.startActivity(intent);
     }
 }

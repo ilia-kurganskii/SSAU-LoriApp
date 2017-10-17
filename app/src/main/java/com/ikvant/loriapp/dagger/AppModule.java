@@ -1,6 +1,9 @@
 package com.ikvant.loriapp.dagger;
 
 import android.arch.persistence.room.Room;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -9,12 +12,14 @@ import com.ikvant.loriapp.database.LoriDatabase;
 import com.ikvant.loriapp.database.task.TaskDao;
 import com.ikvant.loriapp.database.timeentry.TimeEntryDao;
 import com.ikvant.loriapp.database.token.TokenDao;
+import com.ikvant.loriapp.database.user.UserDao;
 import com.ikvant.loriapp.network.ApiService;
 import com.ikvant.loriapp.network.LoriApiService;
+import com.ikvant.loriapp.network.NetworkChecker;
 import com.ikvant.loriapp.state.auth.AuthController;
 import com.ikvant.loriapp.state.auth.LoriAuthController;
-import com.ikvant.loriapp.state.entry.LoriEntryController;
 import com.ikvant.loriapp.state.entry.EntryController;
+import com.ikvant.loriapp.state.entry.LoriEntryController;
 import com.ikvant.loriapp.utils.AppExecutors;
 
 import javax.inject.Singleton;
@@ -58,10 +63,17 @@ class AppModule {
 
     @Singleton
     @Provides
+    UserDao provideUserDao(LoriDatabase db) {
+        return db.userDao();
+    }
+
+
+    @Singleton
+    @Provides
     ApiService provideApiService() {
         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
         return new Retrofit.Builder()
-                .baseUrl("http://192.168.0.100:8080")
+                .baseUrl("http://192.168.0.101:8080")
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build()
                 .create(ApiService.class);
@@ -69,8 +81,18 @@ class AppModule {
 
     @Singleton
     @Provides
-    LoriApiService provideLoriApiService(ApiService baseApi) {
-        return new LoriApiService(baseApi);
+    NetworkChecker networkChecker(LoriApp app) {
+        return () -> {
+            ConnectivityManager internetManager = (ConnectivityManager) app.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = internetManager.getActiveNetworkInfo();
+            return networkInfo != null && networkInfo.isConnected() && networkInfo.isAvailable() && networkInfo.isConnectedOrConnecting();
+        };
+    }
+
+    @Singleton
+    @Provides
+    LoriApiService provideLoriApiService(ApiService baseApi, NetworkChecker networkChecker) {
+        return new LoriApiService(networkChecker, baseApi);
     }
 
 
@@ -82,8 +104,8 @@ class AppModule {
 
     @Singleton
     @Provides
-    EntryController provideTimeEntryController(LoriApiService service, TimeEntryDao dao, AppExecutors appExecutors, TaskDao taskDao) {
-        return new LoriEntryController(dao, service, appExecutors, taskDao);
+    EntryController provideTimeEntryController(LoriApiService service, UserDao userDao, TimeEntryDao dao, AppExecutors appExecutors, TaskDao taskDao) {
+        return new LoriEntryController(dao, userDao, service, appExecutors, taskDao);
     }
 
 }

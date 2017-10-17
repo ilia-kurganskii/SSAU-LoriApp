@@ -5,8 +5,8 @@ import android.util.Log;
 import com.ikvant.loriapp.database.token.Token;
 import com.ikvant.loriapp.database.token.TokenDao;
 import com.ikvant.loriapp.network.LoriApiService;
-import com.ikvant.loriapp.network.NetworkApiException;
 import com.ikvant.loriapp.network.UnauthorizedListener;
+import com.ikvant.loriapp.network.exceptions.NetworkApiException;
 import com.ikvant.loriapp.utils.AppExecutors;
 import com.ikvant.loriapp.utils.Callback;
 

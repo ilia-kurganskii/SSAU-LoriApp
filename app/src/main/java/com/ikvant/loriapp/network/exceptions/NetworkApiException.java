@@ -1,4 +1,4 @@
-package com.ikvant.loriapp.network;
+package com.ikvant.loriapp.network.exceptions;
 
 /**
  * Created by ikvant.
@@ -12,7 +12,7 @@ public class NetworkApiException extends Exception {
         super(message, cause);
     }
 
-    NetworkApiException(Throwable cause) {
+    public NetworkApiException(Throwable cause) {
         super(cause);
     }
 }

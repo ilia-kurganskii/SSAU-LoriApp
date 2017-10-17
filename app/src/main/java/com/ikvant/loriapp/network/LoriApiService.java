@@ -6,10 +6,12 @@ import com.ikvant.loriapp.database.task.Task;
 import com.ikvant.loriapp.database.timeentry.TimeEntry;
 import com.ikvant.loriapp.database.token.Token;
 import com.ikvant.loriapp.database.user.User;
+import com.ikvant.loriapp.network.exceptions.NetworkApiException;
+import com.ikvant.loriapp.network.exceptions.NetworkOfflineException;
+import com.ikvant.loriapp.network.exceptions.UnauthorizedException;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.sql.Time;
 import java.util.List;
 
 import javax.annotation.Nonnull;
@@ -27,9 +29,11 @@ public class LoriApiService {
     private ApiService service;
     private String token;
     private UnauthorizedListener listener;
+    private NetworkChecker checker;
 
-    public LoriApiService(ApiService service) {
+    public LoriApiService(NetworkChecker checker, ApiService service) {
         this.service = service;
+        this.checker = checker;
     }
 
     public void setToken(String token) {
@@ -50,12 +54,12 @@ public class LoriApiService {
         return executeRequest(service.getTasks(getFormattedToken()));
     }
 
-    public void createTimeEntry(TimeEntry entry) throws NetworkApiException {
-        executeRequest(service.createTimeEntry(entry, getFormattedToken()));
+    public TimeEntry createTimeEntry(TimeEntry entry) throws NetworkApiException {
+        return executeRequest(service.createTimeEntry(entry, getFormattedToken()));
     }
 
-    public void updateTimeEntry(TimeEntry timeEntry) throws NetworkApiException {
-        executeRequest(service.updateTimeEntry(timeEntry.getId(), timeEntry, getFormattedToken()));
+    public TimeEntry updateTimeEntry(TimeEntry timeEntry) throws NetworkApiException {
+        return executeRequest(service.updateTimeEntry(timeEntry.getId(), timeEntry, getFormattedToken()));
     }
 
     public void deleteTimeEntry(String id) throws NetworkApiException {
@@ -71,6 +75,7 @@ public class LoriApiService {
     }
 
     private <T> T executeRequest(Call<T> callable) throws NetworkApiException {
+        handleNetworkException();
         try {
             Response<T> response = callable.execute();
             Log.d(TAG, "getTimeEntries() called" + response);
@@ -93,6 +98,9 @@ public class LoriApiService {
         this.listener = listener;
     }
 
-    public class UnauthorizedException extends NetworkApiException {
+    private void handleNetworkException() throws NetworkOfflineException {
+        if (!checker.hasNetwork()) {
+            throw new NetworkOfflineException();
+        }
     }
 }

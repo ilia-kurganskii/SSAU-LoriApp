@@ -5,10 +5,6 @@ import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 
-import com.ikvant.loriapp.database.task.Task;
-import com.ikvant.loriapp.database.token.Token;
-
-import java.sql.Time;
 import java.util.List;
 
 /**
@@ -18,8 +14,8 @@ import java.util.List;
 
 @Dao
 public interface TimeEntryDao {
-    @Query("SELECT * FROM TimeEntry")
-    List<TimeEntry> loadAll();
+    @Query("SELECT * FROM TimeEntry WHERE deleted=:deleted")
+    List<TimeEntry> loadAll(Boolean deleted);
 
     @Query("DELETE FROM TimeEntry WHERE id=:id")
     void delete(String id);
@@ -31,5 +27,11 @@ public interface TimeEntryDao {
     void save(TimeEntry entry);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void saveAll(TimeEntry...timeEntries);
+    void saveAll(TimeEntry... timeEntries);
+
+    @Query("SELECT * FROM TimeEntry WHERE sync=:sync")
+    List<TimeEntry> loadUnSync(boolean sync);
+
+    @Query("DELETE FROM TimeEntry")
+    void deleteAll();
 }

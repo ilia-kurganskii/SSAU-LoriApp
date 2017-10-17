@@ -11,15 +11,15 @@ import java.util.List;
  */
 
 public interface EntryController {
-    boolean needSync();
+    void loadTimeEntry(String id, Callback<TimeEntry> callback);
 
-    void load(String id, Callback<TimeEntry> callback);
-
-    void save(TimeEntry task, Callback<TimeEntry> callback);
+    void saveTimeEntry(TimeEntry task, Callback<TimeEntry> callback);
 
     void loadTasks(Callback<List<Task>> callback);
 
-    void loadEntries(Callback<List<TimeEntry>> callback);
+    void loadTimeEntries(Callback<List<TimeEntry>> callback);
 
     void delete(String id, Callback<Void> callback);
+
+    void synс(Callback<Void> callback);
 }

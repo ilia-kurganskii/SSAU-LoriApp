@@ -14,14 +14,16 @@ import com.ikvant.loriapp.database.timeentry.TimeEntry;
 import com.ikvant.loriapp.database.timeentry.TimeEntryDao;
 import com.ikvant.loriapp.database.token.Token;
 import com.ikvant.loriapp.database.token.TokenDao;
+import com.ikvant.loriapp.database.user.User;
+import com.ikvant.loriapp.database.user.UserDao;
 
-import java.sql.Time;
 
-
-@Database(entities = {Token.class, TimeEntry.class, Task.class}, version = 1)
+@Database(entities = {Token.class, TimeEntry.class, Task.class, User.class}, version = 1)
 @TypeConverters({Converters.class})
 public abstract class LoriDatabase extends RoomDatabase {
     public abstract TokenDao tokenDao();
     public abstract TimeEntryDao timeEntryDao();
     public abstract TaskDao taskDao();
+
+    public abstract UserDao userDao();
 }

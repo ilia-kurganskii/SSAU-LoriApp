@@ -1,16 +1,14 @@
 package com.ikvant.loriapp.database.timeentry;
 
-import android.arch.persistence.room.Embedded;
 import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.PrimaryKey;
-import android.arch.persistence.room.TypeConverter;
 
 import com.google.gson.annotations.Expose;
 import com.ikvant.loriapp.database.task.Task;
 import com.ikvant.loriapp.database.user.User;
 
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * Created by ikvant.
@@ -20,11 +18,9 @@ import java.util.Date;
 public class TimeEntry {
 
     public static final String NEW_ID = "NEW-ts$TimeEntry";
-    private String id;
 
-    @PrimaryKey(autoGenerate = true)
-    @Expose
-    private int localId;
+    @PrimaryKey
+    private String id;
 
     private String description;
 
@@ -38,16 +34,29 @@ public class TimeEntry {
 
     private Date date;
 
+    private boolean sync;
+
+    @Expose
+    private boolean deleted = false;
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    public boolean isSync() {
+        return sync;
+    }
+
+    public void setSync(boolean sync) {
+        this.sync = sync;
+    }
+
     public String getId() {
         return id;
-    }
-
-    public int getLocalId() {
-        return localId;
-    }
-
-    public void setLocalId(int localId) {
-        this.localId = localId;
     }
 
     public User getUser() {
@@ -117,15 +126,16 @@ public class TimeEntry {
         this.date = date;
     }
 
-    public static TimeEntry createNew(){
-        TimeEntry timeEntry =new TimeEntry();
+    public static TimeEntry createNew() {
+        TimeEntry timeEntry = new TimeEntry();
         timeEntry.setDate(new Date());
         timeEntry.setTimeInMinutes(0);
-        timeEntry.setId(NEW_ID);
+        timeEntry.setDeleted(false);
+        timeEntry.setId(NEW_ID + UUID.randomUUID());
         return timeEntry;
     }
 
-    public static boolean isNew(TimeEntry timeEntry){
-        return timeEntry != null && NEW_ID.equals(timeEntry.getId());
+    public static boolean isNew(TimeEntry timeEntry) {
+        return timeEntry != null && timeEntry.getId().startsWith(NEW_ID);
     }
 }
