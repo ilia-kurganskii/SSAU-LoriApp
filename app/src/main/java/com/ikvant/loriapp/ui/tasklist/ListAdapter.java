@@ -29,10 +29,6 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.TaskHolder> {
         notifyDataSetChanged();
     }
 
-    public List<TimeEntry> getItems() {
-        return items;
-    }
-
     // Create new views (invoked by the layout manager)
     @Override
     public ListAdapter.TaskHolder onCreateViewHolder(ViewGroup parent,

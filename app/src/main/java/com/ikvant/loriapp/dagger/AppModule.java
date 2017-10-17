@@ -105,7 +105,7 @@ class AppModule {
     @Singleton
     @Provides
     EntryController provideTimeEntryController(LoriApiService service, UserDao userDao, TimeEntryDao dao, AppExecutors appExecutors, TaskDao taskDao) {
-        return new LoriEntryController(dao, userDao, service, appExecutors, taskDao);
+        return new LoriEntryController(dao, userDao, service, appExecutors);
     }
 
 }

@@ -8,6 +8,7 @@ import com.ikvant.loriapp.database.token.Token;
 import com.ikvant.loriapp.database.user.User;
 import com.ikvant.loriapp.network.exceptions.NetworkApiException;
 import com.ikvant.loriapp.network.exceptions.NetworkOfflineException;
+import com.ikvant.loriapp.network.exceptions.NotFoundException;
 import com.ikvant.loriapp.network.exceptions.UnauthorizedException;
 
 import java.io.IOException;
@@ -87,6 +88,9 @@ public class LoriApiService {
             }
             if (response.isSuccessful()) {
                 return response.body();
+            }
+            if (response.code() == HttpURLConnection.HTTP_NOT_FOUND) {
+                throw new NotFoundException();
             }
             throw new NetworkApiException();
         } catch (IOException e) {

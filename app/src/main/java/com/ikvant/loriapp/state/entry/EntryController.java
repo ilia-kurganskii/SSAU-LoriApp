@@ -1,8 +1,6 @@
 package com.ikvant.loriapp.state.entry;
 
-import com.ikvant.loriapp.database.task.Task;
 import com.ikvant.loriapp.database.timeentry.TimeEntry;
-import com.ikvant.loriapp.utils.Callback;
 
 import java.util.List;
 
@@ -11,15 +9,16 @@ import java.util.List;
  */
 
 public interface EntryController {
-    void loadTimeEntry(String id, Callback<TimeEntry> callback);
+    void loadTimeEntry(String id, LoadDataCallback<TimeEntry> callback);
 
-    void saveTimeEntry(TimeEntry task, Callback<TimeEntry> callback);
+    void createNewTimeEntry(TimeEntry task, LoadDataCallback<TimeEntry> callback);
 
-    void loadTasks(Callback<List<Task>> callback);
+    void updateTimeEntry(TimeEntry timeEntry, LoadDataCallback<TimeEntry> callback);
 
-    void loadTimeEntries(Callback<List<TimeEntry>> callback);
+    void loadTimeEntries(LoadDataCallback<List<TimeEntry>> callback);
 
-    void delete(String id, Callback<Void> callback);
+    void delete(String id, LoadDataCallback<Void> callback);
 
-    void synс(Callback<Void> callback);
+    void refresh();
+
 }

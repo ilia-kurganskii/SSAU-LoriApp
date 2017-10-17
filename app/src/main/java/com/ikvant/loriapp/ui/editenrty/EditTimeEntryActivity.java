@@ -16,8 +16,9 @@ import com.ikvant.loriapp.R;
 import com.ikvant.loriapp.database.task.Task;
 import com.ikvant.loriapp.database.timeentry.TimeEntry;
 import com.ikvant.loriapp.state.entry.EntryController;
+import com.ikvant.loriapp.state.entry.LoadDataCallback;
+import com.ikvant.loriapp.state.entry.TaskController;
 import com.ikvant.loriapp.ui.BaseActivity;
-import com.ikvant.loriapp.utils.SimpleCallback;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -32,6 +33,9 @@ public class EditTimeEntryActivity extends BaseActivity implements TimePickerDia
 
     @Inject
     protected EntryController entryController;
+
+    @Inject
+    protected TaskController taskController;
 
     private AppCompatSpinner taskSpinner;
     private EditText description;
@@ -81,7 +85,7 @@ public class EditTimeEntryActivity extends BaseActivity implements TimePickerDia
 
         String id = getIntent().getStringExtra(EXTRA_ID);
         if (id != null) {
-            entryController.loadTimeEntry(id, new SimpleCallback<TimeEntry>() {
+            entryController.loadTimeEntry(id, new LoadDataCallback<TimeEntry>() {
                 @Override
                 public void onSuccess(TimeEntry data) {
                     currentTimeEntry = data;
@@ -90,15 +94,39 @@ public class EditTimeEntryActivity extends BaseActivity implements TimePickerDia
                     setDateEditText(data.getDate());
                     setTimeInMinutes(data.getTimeInMinutes());
                 }
+
+                @Override
+                public void networkUnreachable(TimeEntry data) {
+                    currentTimeEntry = data;
+                    //taskSpinner.setSelection(taskAdapter.getPosition(data.getTask()));
+                    description.setText(data.getDescription());
+                    setDateEditText(data.getDate());
+                    setTimeInMinutes(data.getTimeInMinutes());
+                }
+
+                @Override
+                public void onFailure(Throwable e) {
+
+                }
             });
         } else {
             currentTimeEntry = TimeEntry.createNew();
         }
 
-        entryController.loadTasks(new SimpleCallback<List<Task>>() {
+        taskController.loadTasks(new LoadDataCallback<List<Task>>() {
             @Override
             public void onSuccess(List<Task> data) {
                 taskAdapter.addAll(data);
+            }
+
+            @Override
+            public void networkUnreachable(List<Task> data) {
+                taskAdapter.addAll(data);
+            }
+
+            @Override
+            public void onFailure(Throwable e) {
+
             }
         });
 
@@ -107,21 +135,59 @@ public class EditTimeEntryActivity extends BaseActivity implements TimePickerDia
             @Override
             public void onClick(View v) {
                 currentTimeEntry.setDescription(description.getText().toString());
-                entryController.saveTimeEntry(currentTimeEntry, new SimpleCallback<TimeEntry>() {
-                    @Override
-                    public void onSuccess(TimeEntry data) {
-                        finish();
-                    }
-                });
+                if (id != null) {
+                    entryController.updateTimeEntry(currentTimeEntry, new LoadDataCallback<TimeEntry>() {
+                        @Override
+                        public void onSuccess(TimeEntry data) {
+                            finish();
+                        }
+
+                        @Override
+                        public void networkUnreachable(TimeEntry localData) {
+                            finish();
+                        }
+
+                        @Override
+                        public void onFailure(Throwable e) {
+
+                        }
+                    });
+                } else {
+                    entryController.createNewTimeEntry(currentTimeEntry, new LoadDataCallback<TimeEntry>() {
+                        @Override
+                        public void onSuccess(TimeEntry data) {
+                            finish();
+                        }
+
+                        @Override
+                        public void networkUnreachable(TimeEntry localData) {
+                            finish();
+                        }
+
+                        @Override
+                        public void onFailure(Throwable e) {
+
+                        }
+                    });
+                }
             }
         });
 
         findViewById(R.id.edit_delete).setOnClickListener((view) -> {
-            entryController.delete(id, new SimpleCallback<Void>() {
+            entryController.delete(id, new LoadDataCallback<Void>() {
                 @Override
                 public void onSuccess(Void data) {
-                    super.onSuccess(data);
                     finish();
+                }
+
+                @Override
+                public void networkUnreachable(Void localData) {
+                    finish();
+                }
+
+                @Override
+                public void onFailure(Throwable e) {
+
                 }
             });
 
