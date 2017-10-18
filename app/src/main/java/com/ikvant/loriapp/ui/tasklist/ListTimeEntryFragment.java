@@ -2,6 +2,7 @@ package com.ikvant.loriapp.ui.tasklist;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.ikvant.loriapp.R;
 import com.ikvant.loriapp.database.timeentry.TimeEntry;
@@ -26,6 +28,8 @@ public class ListTimeEntryFragment extends Fragment implements Contract.View, Li
     private ListAdapter listAdapter;
     private SwipeRefreshLayout refreshLayout;
 
+    private View root;
+
     private Contract.Presenter presenter;
 
 
@@ -34,7 +38,7 @@ public class ListTimeEntryFragment extends Fragment implements Contract.View, Li
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.a_task_list, container, false);
-
+        this.root = root;
         // Set up tasks view
         recyclerView = root.findViewById(R.id.time_entry_list);
         recyclerView.setHasFixedSize(true);
@@ -94,12 +98,12 @@ public class ListTimeEntryFragment extends Fragment implements Contract.View, Li
 
     @Override
     public void showOfflineMessage() {
-
+        Snackbar.make(root, "You are offline", Snackbar.LENGTH_SHORT).show();
     }
 
     @Override
     public void showErrorMessage(String message) {
-
+        Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
     }
 
     @Override
