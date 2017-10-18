@@ -35,7 +35,7 @@ public class LoriEntryController implements EntryController {
         this.apiService = apiService;
         this.executors = executors;
 
-        executors.diskIO().execute(() -> {
+        executors.background().execute(() -> {
             user = userDao.load();
         });
     }
@@ -49,7 +49,7 @@ public class LoriEntryController implements EntryController {
     @Override
     public void loadTimeEntry(String id, LoadDataCallback<TimeEntry> callback) {
         //localId update after update
-        executors.diskIO().execute(() -> {
+        executors.background().execute(() -> {
             try {
                 TimeEntry task = timeEntryDao.load(id);
                 executors.mainThread().execute(() -> callback.onSuccess(task));
@@ -61,7 +61,7 @@ public class LoriEntryController implements EntryController {
 
     @Override
     public void createNewTimeEntry(TimeEntry timeEntry, LoadDataCallback<TimeEntry> callback) {
-        executors.diskIO().execute(() -> {
+        executors.background().execute(() -> {
             timeEntry.setUser(user);
             timeEntry.setSync(false);
             timeEntryDao.save(timeEntry);
@@ -91,7 +91,7 @@ public class LoriEntryController implements EntryController {
 
     @Override
     public void updateTimeEntry(TimeEntry timeEntry, LoadDataCallback<TimeEntry> callback) {
-        executors.diskIO().execute(() -> {
+        executors.background().execute(() -> {
             timeEntry.setSync(false);
             timeEntryDao.save(timeEntry);
             cacheTimeEntry.add(timeEntry);
@@ -113,7 +113,7 @@ public class LoriEntryController implements EntryController {
             callback.onSuccess(new ArrayList<>(cacheTimeEntry));
             return;
         }
-        executors.diskIO().execute(() -> {
+        executors.background().execute(() -> {
             try {
                 List<TimeEntry> newEntries = reloadTimeEntries();
                 timeEntryDao.deleteAll();
@@ -127,8 +127,8 @@ public class LoriEntryController implements EntryController {
                     List<TimeEntry> entries = timeEntryDao.loadAll(false);
                     cacheTimeEntry.clear();
                     cacheTimeEntry.addAll(entries);
-                    cacheIsDirty = true;
-                    executors.mainThread().execute(() -> callback.onSuccess(entries));
+                    cacheIsDirty = false;
+                    executors.mainThread().execute(() -> callback.networkUnreachable(entries));
                 } else {
                     executors.mainThread().execute(() -> callback.onFailure(e));
                 }
@@ -138,7 +138,7 @@ public class LoriEntryController implements EntryController {
 
     @Override
     public void delete(String id, LoadDataCallback<Void> callback) {
-        executors.diskIO().execute(() -> {
+        executors.background().execute(() -> {
             TimeEntry entry = timeEntryDao.load(id);
             entry.setDeleted(true);
             timeEntryDao.save(entry);

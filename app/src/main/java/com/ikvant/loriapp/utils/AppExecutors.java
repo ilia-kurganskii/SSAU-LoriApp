@@ -23,28 +23,21 @@ public class AppExecutors {
 
     private final Executor diskIO;
 
-    private final Executor networkIO;
 
     private final Executor mainThread;
 
-    public AppExecutors(Executor diskIO, Executor networkIO, Executor mainThread) {
+    public AppExecutors(Executor diskIO, Executor mainThread) {
         this.diskIO = diskIO;
-        this.networkIO = networkIO;
         this.mainThread = mainThread;
     }
 
     @Inject
     public AppExecutors() {
-        this(Executors.newSingleThreadExecutor(), Executors.newFixedThreadPool(3),
-                new MainThreadExecutor());
+        this(Executors.newSingleThreadExecutor(), new MainThreadExecutor());
     }
 
-    public Executor diskIO() {
+    public Executor background() {
         return diskIO;
-    }
-
-    public Executor networkIO() {
-        return networkIO;
     }
 
     public Executor mainThread() {

@@ -35,7 +35,7 @@ public class UserController {
             executors.mainThread().execute(() -> callback.onSuccess(cacheUser));
             return;
         }
-        executors.diskIO().execute(() -> {
+        executors.background().execute(() -> {
             try {
                 User user = apiService.getUser();
                 cacheUser = user;

@@ -37,7 +37,7 @@ public class TaskController {
         if (!cacheIsDirty) {
             callback.onSuccess(cacheTasks);
         }
-        executors.diskIO().execute(() -> {
+        executors.background().execute(() -> {
             try {
                 List<Task> newTasks = apiService.getTasks();
                 cacheTasks = newTasks;

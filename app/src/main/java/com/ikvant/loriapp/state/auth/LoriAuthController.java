@@ -25,7 +25,7 @@ public class LoriAuthController implements AuthController, UnauthorizedListener 
         this.tokenDao = tokenDao;
         this.executors = executors;
         this.service.setListener(this);
-        executors.diskIO().execute(new Runnable() {
+        executors.background().execute(new Runnable() {
             @Override
             public void run() {
                 Token token = tokenDao.load();
@@ -38,7 +38,7 @@ public class LoriAuthController implements AuthController, UnauthorizedListener 
 
     @Override
     public void executeLogin(final String login, final String password, final Callback<Boolean> callback) {
-        executors.networkIO().execute(new Runnable() {
+        executors.background().execute(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -66,7 +66,7 @@ public class LoriAuthController implements AuthController, UnauthorizedListener 
 
     @Override
     public void isLogin(final Callback<Boolean> callback) {
-        executors.diskIO().execute(new Runnable() {
+        executors.background().execute(new Runnable() {
             @Override
             public void run() {
                 callback.onSuccess(tokenDao.load() != null);
@@ -77,7 +77,7 @@ public class LoriAuthController implements AuthController, UnauthorizedListener 
     @Override
     public void logout() {
         Log.d(TAG, "logout() called");
-        executors.diskIO().execute(new Runnable() {
+        executors.background().execute(new Runnable() {
             @Override
             public void run() {
                 tokenDao.delete();
