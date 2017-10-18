@@ -34,7 +34,7 @@ public class TimeEntry {
 
     private Date date;
 
-    private boolean sync;
+    private boolean sync = true;
 
     @Expose
     private boolean deleted = false;

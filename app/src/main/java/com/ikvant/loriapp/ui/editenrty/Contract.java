@@ -1,5 +1,7 @@
 package com.ikvant.loriapp.ui.editenrty;
 
+import android.support.annotation.StringRes;
+
 import com.ikvant.loriapp.database.task.Task;
 
 import java.util.Date;
@@ -36,6 +38,8 @@ public interface Contract {
         void showDatePicker(int day, int month, int year);
 
         void showErrorMessage(String text);
+
+        void showErrorMessage(@StringRes int id);
 
         void showOfflineMessage();
 

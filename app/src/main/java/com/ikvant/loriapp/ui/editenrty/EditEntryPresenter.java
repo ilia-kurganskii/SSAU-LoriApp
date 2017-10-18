@@ -1,5 +1,6 @@
 package com.ikvant.loriapp.ui.editenrty;
 
+import com.ikvant.loriapp.R;
 import com.ikvant.loriapp.database.task.Task;
 import com.ikvant.loriapp.database.timeentry.TimeEntry;
 import com.ikvant.loriapp.state.entry.EntryController;
@@ -63,7 +64,11 @@ public class EditEntryPresenter implements Contract.Presenter {
         if (id != null) {
             entryController.updateTimeEntry(currentTimeEntry, saveEntryCallback);
         } else {
-            entryController.createNewTimeEntry(currentTimeEntry, saveEntryCallback);
+            if (currentTimeEntry.getTask() == null) {
+                view.showErrorMessage(R.string.error_task_is_empty);
+            } else {
+                entryController.createNewTimeEntry(currentTimeEntry, saveEntryCallback);
+            }
         }
     }
 

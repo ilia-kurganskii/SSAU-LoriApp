@@ -17,4 +17,5 @@
     <string name="save">Save</string>
     <string name="delete">Delete</string>
     <string name="create">Create</string>
+    <string name="error_task_is_empty">Task not be empty</string>
 </resources>

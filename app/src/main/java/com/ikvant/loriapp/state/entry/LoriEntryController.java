@@ -81,16 +81,22 @@ public class LoriEntryController implements EntryController {
         executors.background().execute(() -> {
             timeEntry.setSync(false);
             timeEntryDao.save(timeEntry);
+
+            cacheTimeEntry.remove(timeEntry);
             cacheTimeEntry.add(timeEntry);
 
             try {
                 TimeEntry newTimeEntry = apiService.updateTimeEntry(timeEntry);
                 cacheTimeEntry.add(newTimeEntry);
+                callback.onSuccess(newTimeEntry);
             } catch (NetworkApiException e) {
-                executors.mainThread().execute(() -> callback.networkUnreachable(timeEntry));
+                if (e instanceof NetworkOfflineException) {
+                    executors.mainThread().execute(() -> callback.networkUnreachable(timeEntry));
+                } else {
+                    executors.mainThread().execute(() -> callback.onFailure(e));
+                }
             }
 
-            callback.onSuccess(timeEntry);
         });
     }
 

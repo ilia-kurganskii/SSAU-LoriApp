@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.ikvant.loriapp.R;
 import com.ikvant.loriapp.database.task.Task;
@@ -188,7 +189,12 @@ public class EditTimeEntryFragment extends Fragment implements Contract.View, Ti
 
     @Override
     public void showErrorMessage(String text) {
+        Toast.makeText(getContext(), text, Toast.LENGTH_LONG).show();
+    }
 
+    @Override
+    public void showErrorMessage(int id) {
+        Toast.makeText(getContext(), id, Toast.LENGTH_LONG).show();
     }
 
     @Override

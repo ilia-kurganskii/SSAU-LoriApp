@@ -42,7 +42,17 @@
         android:layout_marginEnd="8dp"
         android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/i_sync"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="02h 04m" />
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/i_sync"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginEnd="8dp"
+        app:srcCompat="@drawable/ic_sync" />
 </android.support.constraint.ConstraintLayout>
