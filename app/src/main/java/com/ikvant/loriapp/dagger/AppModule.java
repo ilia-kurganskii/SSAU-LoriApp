@@ -20,6 +20,7 @@ import com.ikvant.loriapp.state.auth.AuthController;
 import com.ikvant.loriapp.state.auth.LoriAuthController;
 import com.ikvant.loriapp.state.entry.EntryController;
 import com.ikvant.loriapp.state.entry.LoriEntryController;
+import com.ikvant.loriapp.state.entry.UserController;
 import com.ikvant.loriapp.utils.AppExecutors;
 
 import javax.inject.Singleton;
@@ -104,7 +105,7 @@ class AppModule {
 
     @Singleton
     @Provides
-    EntryController provideTimeEntryController(LoriApiService service, UserDao userDao, TimeEntryDao dao, AppExecutors appExecutors, TaskDao taskDao) {
+    EntryController provideTimeEntryController(LoriApiService service, UserController userDao, TimeEntryDao dao, AppExecutors appExecutors, TaskDao taskDao) {
         return new LoriEntryController(dao, userDao, service, appExecutors);
     }
 

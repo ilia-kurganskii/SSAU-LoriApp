@@ -17,7 +17,7 @@ public interface EntryController {
 
     void loadTimeEntries(LoadDataCallback<List<TimeEntry>> callback);
 
-    void delete(String id, LoadDataCallback<Void> callback);
+    void delete(String id, LoadDataCallback<TimeEntry> callback);
 
     void refresh();
 

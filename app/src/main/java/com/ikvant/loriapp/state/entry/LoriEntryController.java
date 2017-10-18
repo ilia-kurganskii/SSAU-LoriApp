@@ -3,7 +3,6 @@ package com.ikvant.loriapp.state.entry;
 import com.ikvant.loriapp.database.timeentry.TimeEntry;
 import com.ikvant.loriapp.database.timeentry.TimeEntryDao;
 import com.ikvant.loriapp.database.user.User;
-import com.ikvant.loriapp.database.user.UserDao;
 import com.ikvant.loriapp.network.LoriApiService;
 import com.ikvant.loriapp.network.exceptions.NetworkApiException;
 import com.ikvant.loriapp.network.exceptions.NetworkOfflineException;
@@ -25,19 +24,16 @@ public class LoriEntryController implements EntryController {
     private TimeEntryDao timeEntryDao;
     private LoriApiService apiService;
     private AppExecutors executors;
-    private User user;
 
     private boolean cacheIsDirty = true;
     private Set<TimeEntry> cacheTimeEntry = new HashSet<>();
+    private UserController userController;
 
-    public LoriEntryController(TimeEntryDao timeEntryDao, UserDao userDao, LoriApiService apiService, AppExecutors executors) {
+    public LoriEntryController(TimeEntryDao timeEntryDao, UserController userController, LoriApiService apiService, AppExecutors executors) {
         this.timeEntryDao = timeEntryDao;
         this.apiService = apiService;
         this.executors = executors;
-
-        executors.background().execute(() -> {
-            user = userDao.load();
-        });
+        this.userController = userController;
     }
 
 
@@ -61,32 +57,23 @@ public class LoriEntryController implements EntryController {
 
     @Override
     public void createNewTimeEntry(TimeEntry timeEntry, LoadDataCallback<TimeEntry> callback) {
-        executors.background().execute(() -> {
-            timeEntry.setUser(user);
-            timeEntry.setSync(false);
-            timeEntryDao.save(timeEntry);
-            cacheTimeEntry.add(timeEntry);
-
-            try {
-                String oldId = timeEntry.getId();
-                timeEntry.setId(TimeEntry.NEW_ID);
-                TimeEntry newTimeEntry = apiService.createTimeEntry(timeEntry);
-                cacheTimeEntry.add(newTimeEntry);
-
-                timeEntryDao.delete(oldId);
-                timeEntry.setId(oldId);
-                cacheTimeEntry.remove(timeEntry);
-
-                callback.onSuccess(timeEntry);
-            } catch (NetworkApiException e) {
-                if (e instanceof NetworkOfflineException) {
-                    executors.mainThread().execute(() -> callback.networkUnreachable(timeEntry));
-                } else {
-                    executors.mainThread().execute(() -> callback.onFailure(e));
-                }
+        userController.getUser(new LoadDataCallback<User>() {
+            @Override
+            public void onSuccess(User data) {
+                createNewTimeEntry(timeEntry, data, callback);
             }
 
+            @Override
+            public void networkUnreachable(User localData) {
+                createNewTimeEntry(timeEntry, localData, callback);
+            }
+
+            @Override
+            public void onFailure(Throwable e) {
+                callback.onFailure(e);
+            }
         });
+
     }
 
     @Override
@@ -137,7 +124,7 @@ public class LoriEntryController implements EntryController {
     }
 
     @Override
-    public void delete(String id, LoadDataCallback<Void> callback) {
+    public void delete(String id, LoadDataCallback<TimeEntry> callback) {
         executors.background().execute(() -> {
             TimeEntry entry = timeEntryDao.load(id);
             entry.setDeleted(true);
@@ -145,10 +132,39 @@ public class LoriEntryController implements EntryController {
             cacheTimeEntry.remove(entry);
             try {
                 apiService.deleteTimeEntry(entry.getId());
-                executors.mainThread().execute(() -> callback.onSuccess(null));
+                executors.mainThread().execute(() -> callback.onSuccess(entry));
             } catch (NetworkApiException e) {
                 if (e instanceof NetworkOfflineException) {
-                    executors.mainThread().execute(() -> callback.networkUnreachable(null));
+                    executors.mainThread().execute(() -> callback.networkUnreachable(entry));
+                } else {
+                    executors.mainThread().execute(() -> callback.onFailure(e));
+                }
+            }
+
+        });
+    }
+
+    private void createNewTimeEntry(TimeEntry timeEntry, User user, LoadDataCallback<TimeEntry> callback) {
+        executors.background().execute(() -> {
+            timeEntry.setUser(user);
+            timeEntry.setSync(false);
+            timeEntryDao.save(timeEntry);
+            cacheTimeEntry.add(timeEntry);
+
+            try {
+                String oldId = timeEntry.getId();
+                timeEntry.setId(TimeEntry.NEW_ID);
+                TimeEntry newTimeEntry = apiService.createTimeEntry(timeEntry);
+                cacheTimeEntry.add(newTimeEntry);
+
+                timeEntryDao.delete(oldId);
+                timeEntry.setId(oldId);
+                cacheTimeEntry.remove(timeEntry);
+
+                callback.onSuccess(timeEntry);
+            } catch (NetworkApiException e) {
+                if (e instanceof NetworkOfflineException) {
+                    executors.mainThread().execute(() -> callback.networkUnreachable(timeEntry));
                 } else {
                     executors.mainThread().execute(() -> callback.onFailure(e));
                 }
