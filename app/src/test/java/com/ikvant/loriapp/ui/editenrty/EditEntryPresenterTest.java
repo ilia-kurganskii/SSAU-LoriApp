@@ -1,8 +1,11 @@
 package com.ikvant.loriapp.ui.editenrty;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+
+import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -33,6 +36,12 @@ public class EditEntryPresenterTest {
 	public static final Date ENTRY_DATE = new Date();
 	public static final String ENTRY_DESCRIPTION = "Description";
 
+	private static final List<Task> taskList = new ArrayList<Task>(2){{
+		add(new Task("1", "Task1"));
+		add(new Task("2", "Task2"));
+		add(new Task("3", "Task3"));
+	}};
+
 	@Mock
 	private Contract.View view;
 
@@ -48,6 +57,8 @@ public class EditEntryPresenterTest {
 	@Captor
 	private ArgumentCaptor<LoadDataCallback<TimeEntry>> entryCallbackCaptor;
 
+	@Captor
+	private ArgumentCaptor<TimeEntry> entryCaptor;
 
 	private Contract.Presenter presenter;
 
@@ -88,11 +99,9 @@ public class EditEntryPresenterTest {
 	@Test
 	public void testShowInfoEntry(){
 		presenter.onStart();
-		verify(taskController).loadTasks(tasksCallbackCaptor.capture());
-		tasksCallbackCaptor.getValue().onSuccess(Collections.emptyList());
 
-		verify(entryController).loadTimeEntry(eq(ENTRY_ID), entryCallbackCaptor.capture());
-		entryCallbackCaptor.getValue().onSuccess(getTestTimeEntry());
+		mockReturnTestTasks();
+		mockReturnTestEntry();
 
 		verify(view).setDescription(ENTRY_DESCRIPTION);
 		verify(view).setDate(ENTRY_DATE);
@@ -102,14 +111,28 @@ public class EditEntryPresenterTest {
 	@Test
 	public void testCheckEmptyTask(){
 		presenter.onStart();
+
 		verify(taskController).loadTasks(tasksCallbackCaptor.capture());
 		tasksCallbackCaptor.getValue().onSuccess(Collections.emptyList());
 
-		verify(entryController).loadTimeEntry(eq(ENTRY_ID), entryCallbackCaptor.capture());
-		entryCallbackCaptor.getValue().onSuccess(getTestTimeEntry());
+		mockReturnTestEntry();
+
 		presenter.saveEntry();
 
 		verify(view).showErrorMessage(any());
+	}
+
+	@Test
+	public void testChangeDescription(){
+		presenter.onStart();
+		mockReturnTestTasks();
+		mockReturnTestEntry();
+
+		presenter.setDescription("NEW DESCRIPTION");
+		presenter.saveEntry();
+
+		verify(entryController).updateTimeEntry(entryCaptor.capture(), any());
+		Assert.assertEquals(entryCaptor.getValue().getDescription(), "NEW DESCRIPTION");
 	}
 
 	private TimeEntry getTestTimeEntry() {
@@ -119,5 +142,15 @@ public class EditEntryPresenterTest {
 		timeEntry.setDate(ENTRY_DATE);
 		timeEntry.setTimeInMinutes(ENTRY_DURATION);
 		return timeEntry;
+	}
+
+	private void mockReturnTestTasks(){
+		verify(taskController).loadTasks(tasksCallbackCaptor.capture());
+		tasksCallbackCaptor.getValue().onSuccess(taskList);
+	}
+
+	private void mockReturnTestEntry(){
+		verify(entryController).loadTimeEntry(eq(ENTRY_ID), entryCallbackCaptor.capture());
+		entryCallbackCaptor.getValue().onSuccess(getTestTimeEntry());
 	}
 }

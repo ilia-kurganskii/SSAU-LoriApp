@@ -1,6 +1,7 @@
 package com.ikvant.loriapp.database.task;
 
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 
 /**
@@ -17,6 +18,12 @@ public class Task {
 
     public Task(String id) {
         this.id = id;
+    }
+
+    @Ignore
+    public Task(String id, String name) {
+        this.id = id;
+        this.name = name;
     }
 
     public String getId() {
