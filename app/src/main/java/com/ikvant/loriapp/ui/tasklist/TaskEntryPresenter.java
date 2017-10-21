@@ -4,46 +4,33 @@ import com.ikvant.loriapp.database.timeentry.TimeEntry;
 import com.ikvant.loriapp.state.entry.EntryController;
 import com.ikvant.loriapp.state.entry.LoadDataCallback;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
+import java.util.Set;
 
 /**
  * Created by ikvant.
  */
 
-@Singleton
 public class TaskEntryPresenter implements Contract.Presenter {
 
     private Contract.View view;
-    private AtomicBoolean loading = new AtomicBoolean(false);
 
-    private boolean isPause;
+    private EntryController entryController;
 
-    private EntryController controller;
     private List<TimeEntry> entries;
-    private boolean isFirstLoad = true;
+    private int weekIndex;
 
-    @Inject
-    public TaskEntryPresenter(EntryController controller) {
-        this.controller = controller;
+    public TaskEntryPresenter(int weekIndex, EntryController entryController) {
+        this.weekIndex = weekIndex;
+        this.entryController = entryController;
     }
 
     public void setView(Contract.View view) {
         this.view = view;
         view.setPresenter(this);
-    }
-
-    @Override
-    public void reload() {
-        reload(true, true);
-    }
-
-    @Override
-    public void createNewEntry() {
-        view.showNewEntryScreen();
     }
 
     @Override
@@ -56,56 +43,48 @@ public class TaskEntryPresenter implements Contract.Presenter {
 
     @Override
     public void onResume() {
-        isPause = false;
-        reload(isFirstLoad, false);
+        reload();
     }
 
     @Override
     public void onPause() {
-        isPause = true;
     }
 
-    private void reload(boolean force, boolean byUser) {
-        isFirstLoad = false;
-        if (byUser) {
-            view.setRefresh(true);
-        }
-        if (force) {
-            controller.refresh();
-        }
-        if (loading.compareAndSet(false, true)) {
-            controller.loadTimeEntries(new LoadDataCallback<List<TimeEntry>>() {
-                @Override
-                public void onSuccess(List<TimeEntry> data) {
-                    loading.set(false);
-                    entries = data;
-                    if (!isPause) {
-                        view.showTimeEntries(data);
-                        view.setRefresh(false);
-                    }
-                }
+    private void reload() {
+        view.showDiapason(getStartDate(), getEndDate());
+        entryController.loadTimeEntriesByWeek(weekIndex, new LoadDataCallback<Set<TimeEntry>>() {
+            @Override
+            public void onSuccess(Set<TimeEntry> data) {
+                entries = new ArrayList<>(data);
+                view.showTimeEntries(entries);
+            }
 
-                @Override
-                public void networkUnreachable(List<TimeEntry> localData) {
-                    loading.set(false);
-                    entries = localData;
-                    if (!isPause) {
-                        view.showTimeEntries(localData);
-                        view.showOfflineMessage();
-                        view.setRefresh(false);
-                    }
-                }
+            @Override
+            public void networkUnreachable(Set<TimeEntry> localData) {
+                entries = new ArrayList<>(localData);
+                view.showTimeEntries(entries);
+            }
 
-                @Override
-                public void onFailure(Throwable e) {
-                    loading.set(false);
-                    if (!isPause) {
-                        view.showErrorMessage(e.getMessage());
-                        view.setRefresh(false);
-                    }
-                }
-            });
-        }
+            @Override
+            public void onFailure(Throwable e) {
 
+            }
+        });
+    }
+
+    private Date getStartDate() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setFirstDayOfWeek(Calendar.MONDAY);
+        calendar.set(Calendar.WEEK_OF_YEAR, weekIndex);
+        calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+        return calendar.getTime();
+    }
+
+    private Date getEndDate() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setFirstDayOfWeek(Calendar.MONDAY);
+        calendar.set(Calendar.WEEK_OF_YEAR, weekIndex);
+        calendar.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
+        return calendar.getTime();
     }
 }

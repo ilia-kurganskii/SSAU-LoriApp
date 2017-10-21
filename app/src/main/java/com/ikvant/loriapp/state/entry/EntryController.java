@@ -1,8 +1,10 @@
 package com.ikvant.loriapp.state.entry;
 
+import android.util.SparseArray;
+
 import com.ikvant.loriapp.database.timeentry.TimeEntry;
 
-import java.util.List;
+import java.util.Set;
 
 /**
  * Created by ikvant.
@@ -15,7 +17,9 @@ public interface EntryController {
 
     void updateTimeEntry(TimeEntry timeEntry, LoadDataCallback<TimeEntry> callback);
 
-    void loadTimeEntries(LoadDataCallback<List<TimeEntry>> callback);
+    void loadTimeEntries(LoadDataCallback<SparseArray<Set<TimeEntry>>> callback);
+
+    void loadTimeEntriesByWeek(int weekIndex, LoadDataCallback<Set<TimeEntry>> callback);
 
     void delete(String id, LoadDataCallback<TimeEntry> callback);
 

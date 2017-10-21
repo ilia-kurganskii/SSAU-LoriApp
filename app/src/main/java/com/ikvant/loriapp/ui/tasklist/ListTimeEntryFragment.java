@@ -2,20 +2,21 @@ package com.ikvant.loriapp.ui.tasklist;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.ikvant.loriapp.R;
 import com.ikvant.loriapp.database.timeentry.TimeEntry;
 import com.ikvant.loriapp.ui.editenrty.EditTimeEntryActivity;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -26,33 +27,28 @@ public class ListTimeEntryFragment extends Fragment implements Contract.View, Li
 
     private RecyclerView recyclerView;
     private ListAdapter listAdapter;
-    private SwipeRefreshLayout refreshLayout;
+    private TextView dateDiapason;
+
+    private DateFormat dateFormat = new SimpleDateFormat("dd MMM");
 
     private View root;
 
     private Contract.Presenter presenter;
 
-
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.a_task_list, container, false);
         this.root = root;
         // Set up tasks view
         recyclerView = root.findViewById(R.id.time_entry_list);
+        dateDiapason = root.findViewById(R.id.week_diapason);
+
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         listAdapter = new ListAdapter();
         listAdapter.setClickItemListener(this);
         recyclerView.setAdapter(listAdapter);
-
-        root.findViewById(R.id.add).setOnClickListener((view) -> {
-            presenter.createNewEntry();
-        });
-
-        refreshLayout = root.findViewById(R.id.refresh_layout);
-        refreshLayout.setOnRefreshListener(() -> presenter.reload());
 
         setHasOptionsMenu(true);
 
@@ -77,19 +73,10 @@ public class ListTimeEntryFragment extends Fragment implements Contract.View, Li
     }
 
     @Override
-    public void setRefresh(boolean refresh) {
-        refreshLayout.setRefreshing(refresh);
-    }
-
-    @Override
     public void setPresenter(Contract.Presenter presenter) {
         this.presenter = presenter;
     }
 
-    @Override
-    public void showNewEntryScreen() {
-        EditTimeEntryActivity.startMe(getActivity());
-    }
 
     @Override
     public void showEditEntryScreen(String id) {
@@ -97,13 +84,8 @@ public class ListTimeEntryFragment extends Fragment implements Contract.View, Li
     }
 
     @Override
-    public void showOfflineMessage() {
-        Snackbar.make(root, "You are offline", Snackbar.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void showErrorMessage(String message) {
-        Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
+    public void showDiapason(Date start, Date end) {
+        dateDiapason.setText(String.format("%s-%s", dateFormat.format(start), dateFormat.format(end)));
     }
 
     @Override

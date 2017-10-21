@@ -22,8 +22,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.tasklist.TaskEntryListActivity" />
-        <activity android:name=".ui.editenrty.EditTimeEntryActivity"></activity>
+        <activity android:name=".ui.weekpages.WeekPagerActivity" />
+        <activity android:name=".ui.editenrty.EditTimeEntryActivity" />
     </application>
 
 </manifest>

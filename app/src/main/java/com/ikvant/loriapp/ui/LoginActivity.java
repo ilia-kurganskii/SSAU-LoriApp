@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.ikvant.loriapp.R;
 import com.ikvant.loriapp.state.auth.AuthController;
-import com.ikvant.loriapp.ui.tasklist.TaskEntryListActivity;
+import com.ikvant.loriapp.ui.weekpages.WeekPagerActivity;
 import com.ikvant.loriapp.utils.Callback;
 
 import javax.inject.Inject;
@@ -65,7 +65,7 @@ public class LoginActivity extends BaseActivity {
             @Override
             public void onSuccess(Boolean data) {
                 if (data) {
-                    TaskEntryListActivity.startMe(LoginActivity.this);
+                    WeekPagerActivity.startMe(LoginActivity.this);
                     finish();
                 }
             }
@@ -117,7 +117,7 @@ public class LoginActivity extends BaseActivity {
             authController.executeLogin(email, password, new Callback<Boolean>() {
                 @Override
                 public void onSuccess(Boolean data) {
-                    TaskEntryListActivity.startMe(LoginActivity.this);
+                    WeekPagerActivity.startMe(LoginActivity.this);
                     finish();
                 }
 

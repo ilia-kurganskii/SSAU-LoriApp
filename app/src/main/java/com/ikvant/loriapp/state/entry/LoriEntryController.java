@@ -1,5 +1,7 @@
 package com.ikvant.loriapp.state.entry;
 
+import android.util.SparseArray;
+
 import com.ikvant.loriapp.database.timeentry.TimeEntry;
 import com.ikvant.loriapp.database.timeentry.TimeEntryDao;
 import com.ikvant.loriapp.database.user.User;
@@ -9,7 +11,8 @@ import com.ikvant.loriapp.network.exceptions.NetworkOfflineException;
 import com.ikvant.loriapp.network.exceptions.NotFoundException;
 import com.ikvant.loriapp.utils.AppExecutors;
 
-import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -26,7 +29,7 @@ public class LoriEntryController implements EntryController {
     private AppExecutors executors;
 
     private boolean cacheIsDirty = true;
-    private Set<TimeEntry> cacheTimeEntry = new HashSet<>();
+    private SparseArray<Set<TimeEntry>> cacheWeekEntries = new SparseArray<>();
     private UserController userController;
 
     public LoriEntryController(TimeEntryDao timeEntryDao, UserController userController, LoriApiService apiService, AppExecutors executors) {
@@ -82,14 +85,14 @@ public class LoriEntryController implements EntryController {
             timeEntry.setSync(false);
             timeEntryDao.save(timeEntry);
 
-            cacheTimeEntry.remove(timeEntry);
-            cacheTimeEntry.add(timeEntry);
+            cacheWeekEntries.get(getWeekNumber(timeEntry.getDate())).remove(timeEntry);
 
             try {
                 TimeEntry newTimeEntry = apiService.updateTimeEntry(timeEntry);
-                cacheTimeEntry.add(newTimeEntry);
+                getWeekSetFromSource(timeEntry, cacheWeekEntries).add(newTimeEntry);
                 callback.onSuccess(newTimeEntry);
             } catch (NetworkApiException e) {
+                cacheWeekEntries.get(getWeekNumber(timeEntry.getDate())).add(timeEntry);
                 if (e instanceof NetworkOfflineException) {
                     executors.mainThread().execute(() -> callback.networkUnreachable(timeEntry));
                 } else {
@@ -101,9 +104,9 @@ public class LoriEntryController implements EntryController {
     }
 
     @Override
-    public void loadTimeEntries(final LoadDataCallback<List<TimeEntry>> callback) {
+    public void loadTimeEntries(final LoadDataCallback<SparseArray<Set<TimeEntry>>> callback) {
         if (!cacheIsDirty) {
-            callback.onSuccess(new ArrayList<>(cacheTimeEntry));
+            callback.onSuccess(getCacheWeekEntries());
             return;
         }
         executors.background().execute(() -> {
@@ -111,20 +114,38 @@ public class LoriEntryController implements EntryController {
                 List<TimeEntry> newEntries = reloadTimeEntries();
                 timeEntryDao.deleteAll();
                 timeEntryDao.saveAll(newEntries.toArray(new TimeEntry[newEntries.size()]));
-                cacheTimeEntry.clear();
-                cacheTimeEntry.addAll(newEntries);
+                cacheWeekEntries = sortEntryByWeek(newEntries);
                 cacheIsDirty = false;
-                executors.mainThread().execute(() -> callback.onSuccess(newEntries));
+                executors.mainThread().execute(() -> callback.onSuccess(getCacheWeekEntries()));
             } catch (NetworkApiException e) {
                 if (e instanceof NetworkOfflineException) {
                     List<TimeEntry> entries = timeEntryDao.loadAll(false);
-                    cacheTimeEntry.clear();
-                    cacheTimeEntry.addAll(entries);
+                    cacheWeekEntries = sortEntryByWeek(entries);
                     cacheIsDirty = false;
-                    executors.mainThread().execute(() -> callback.networkUnreachable(entries));
+                    executors.mainThread().execute(() -> callback.networkUnreachable(getCacheWeekEntries()));
                 } else {
                     executors.mainThread().execute(() -> callback.onFailure(e));
                 }
+            }
+        });
+    }
+
+    @Override
+    public void loadTimeEntriesByWeek(int weekIndex, LoadDataCallback<Set<TimeEntry>> callback) {
+        loadTimeEntries(new LoadDataCallback<SparseArray<Set<TimeEntry>>>() {
+            @Override
+            public void onSuccess(SparseArray<Set<TimeEntry>> data) {
+                callback.onSuccess(data.get(weekIndex));
+            }
+
+            @Override
+            public void networkUnreachable(SparseArray<Set<TimeEntry>> localData) {
+                callback.networkUnreachable(localData.get(weekIndex));
+            }
+
+            @Override
+            public void onFailure(Throwable e) {
+                callback.onFailure(e);
             }
         });
     }
@@ -135,7 +156,7 @@ public class LoriEntryController implements EntryController {
             TimeEntry entry = timeEntryDao.load(id);
             entry.setDeleted(true);
             timeEntryDao.save(entry);
-            cacheTimeEntry.remove(entry);
+            getWeekSetFromSource(entry, cacheWeekEntries).remove(entry);
             try {
                 apiService.deleteTimeEntry(entry.getId());
                 executors.mainThread().execute(() -> callback.onSuccess(entry));
@@ -155,18 +176,18 @@ public class LoriEntryController implements EntryController {
             timeEntry.setUser(user);
             timeEntry.setSync(false);
             timeEntryDao.save(timeEntry);
-            cacheTimeEntry.add(timeEntry);
+            getWeekSetFromSource(timeEntry, cacheWeekEntries).add(timeEntry);
 
             try {
                 String oldId = timeEntry.getId();
                 timeEntry.setId(TimeEntry.NEW_ID);
                 TimeEntry newTimeEntry = apiService.createTimeEntry(timeEntry);
-                cacheTimeEntry.add(newTimeEntry);
 
                 timeEntryDao.delete(oldId);
                 timeEntry.setId(oldId);
-                cacheTimeEntry.remove(timeEntry);
 
+                getWeekSetFromSource(timeEntry, cacheWeekEntries).remove(timeEntry);
+                getWeekSetFromSource(timeEntry, cacheWeekEntries).add(newTimeEntry);
                 callback.onSuccess(timeEntry);
             } catch (NetworkApiException e) {
                 if (e instanceof NetworkOfflineException) {
@@ -179,6 +200,9 @@ public class LoriEntryController implements EntryController {
         });
     }
 
+    private SparseArray<Set<TimeEntry>> getCacheWeekEntries() {
+        return cacheWeekEntries.clone();
+    }
 
     private List<TimeEntry> reloadTimeEntries() throws NetworkApiException {
         List<TimeEntry> notSync = timeEntryDao.loadUnSync(false);
@@ -204,6 +228,32 @@ public class LoriEntryController implements EntryController {
             }
         } else {
             apiService.updateTimeEntry(entry);
+            entry.setSync(true);
         }
+    }
+
+    private SparseArray<Set<TimeEntry>> sortEntryByWeek(List<TimeEntry> entries) {
+        SparseArray<Set<TimeEntry>> entrySparseArray = new SparseArray<>();
+        for (TimeEntry entry : entries) {
+            getWeekSetFromSource(entry, entrySparseArray).add(entry);
+        }
+        return entrySparseArray;
+    }
+
+    private Set<TimeEntry> getWeekSetFromSource(TimeEntry entry, SparseArray<Set<TimeEntry>> source) {
+        int order = getWeekNumber(entry.getDate());
+        Set<TimeEntry> entries = source.get(getWeekNumber(entry.getDate()));
+        if (entries == null) {
+            entries = new HashSet<>();
+            source.put(order, entries);
+        }
+        return entries;
+    }
+
+    private int getWeekNumber(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setFirstDayOfWeek(Calendar.MONDAY);
+        calendar.setTime(date);
+        return calendar.get(Calendar.WEEK_OF_YEAR);
     }
 }
