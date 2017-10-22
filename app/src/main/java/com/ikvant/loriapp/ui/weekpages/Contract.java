@@ -23,6 +23,8 @@ public interface Contract {
         void showErrorMessage(String message);
 
         void setPresenter(Presenter presenter);
+
+        void showSearchScreen();
     }
 
     interface Presenter {
@@ -33,5 +35,7 @@ public interface Contract {
         void onPause();
 
         void createNewEntry();
+
+        void searchEntries();
     }
 }

@@ -4,6 +4,7 @@ import android.util.SparseArray;
 
 import com.ikvant.loriapp.database.timeentry.TimeEntry;
 
+import java.util.Date;
 import java.util.Set;
 
 /**
@@ -12,6 +13,10 @@ import java.util.Set;
 
 public interface EntryController {
     void loadTimeEntry(String id, LoadDataCallback<TimeEntry> callback);
+
+    void loadByText(String text, LoadDataCallback<Set<TimeEntry>> callback);
+
+    void loadByDate(Date from, Date to, LoadDataCallback<Set<TimeEntry>> callback);
 
     void createNewTimeEntry(TimeEntry task, LoadDataCallback<TimeEntry> callback);
 

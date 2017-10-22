@@ -4,6 +4,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.util.SparseArray;
+import android.view.ViewGroup;
 
 import com.ikvant.loriapp.database.timeentry.TimeEntry;
 import com.ikvant.loriapp.state.entry.EntryController;
@@ -17,7 +18,7 @@ import java.util.Set;
  */
 public class WeekPagerAdapter extends FragmentStatePagerAdapter {
     private SparseArray<Set<TimeEntry>> weekArray = new SparseArray<>();
-
+    private SparseArray<TaskEntryPresenter> presenters = new SparseArray<>();
     private EntryController entryController;
 
     public WeekPagerAdapter(FragmentManager fm, EntryController entryController) {
@@ -38,7 +39,17 @@ public class WeekPagerAdapter extends FragmentStatePagerAdapter {
     @Override
     public Fragment getItem(int position) {
         ListTimeEntryFragment fragment = ListTimeEntryFragment.newInstance();
-        TaskEntryPresenter presenter = new TaskEntryPresenter(weekArray.keyAt(position), entryController);
+
+        return fragment;
+    }
+
+    @Override
+    public Object instantiateItem(ViewGroup container, int position) {
+        ListTimeEntryFragment fragment = (ListTimeEntryFragment) super.instantiateItem(container, position);
+        TaskEntryPresenter presenter = presenters.get(weekArray.keyAt(position));
+        if (presenter == null) {
+            presenter = new TaskEntryPresenter(weekArray.keyAt(position), entryController);
+        }
         presenter.setView(fragment);
         return fragment;
     }

@@ -15,6 +15,7 @@ import com.ikvant.loriapp.R;
 import com.ikvant.loriapp.database.timeentry.TimeEntry;
 import com.ikvant.loriapp.state.entry.EntryController;
 import com.ikvant.loriapp.ui.editenrty.EditTimeEntryActivity;
+import com.ikvant.loriapp.ui.search.SearchActivity;
 
 import java.util.Set;
 
@@ -44,18 +45,23 @@ public class WeekPagerFragment extends DaggerFragment implements Contract.View {
                              Bundle savedInstanceState) {
         root = inflater.inflate(R.layout.a_week_pager, container, false);
         // Set up tasks view
-        adapter = new WeekPagerAdapter(getFragmentManager(), controller);
+        adapter = new WeekPagerAdapter(getChildFragmentManager(), controller);
 
         weekPager = root.findViewById(R.id.week_pager);
         weekPager.setAdapter(adapter);
+
 
         refreshLayout = root.findViewById(R.id.refresh_layout);
         refreshLayout.setOnRefreshListener(() -> {
             presenter.reload();
         });
 
-        root.findViewById(R.id.add).setOnClickListener(v -> {
+        root.findViewById(R.id.add_fab).setOnClickListener(v -> {
             presenter.createNewEntry();
+        });
+
+        root.findViewById(R.id.search_fab).setOnClickListener(v -> {
+            presenter.searchEntries();
         });
 
         return root;
@@ -100,6 +106,11 @@ public class WeekPagerFragment extends DaggerFragment implements Contract.View {
     @Override
     public void setPresenter(Contract.Presenter presenter) {
         this.presenter = presenter;
+    }
+
+    @Override
+    public void showSearchScreen() {
+        SearchActivity.startMe(getActivity());
     }
 
     public static WeekPagerFragment newInstance() {

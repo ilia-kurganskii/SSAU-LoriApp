@@ -56,6 +56,11 @@ public class WeekPagerPresenter implements Contract.Presenter {
         view.showNewEntryScreen();
     }
 
+    @Override
+    public void searchEntries() {
+        view.showSearchScreen();
+    }
+
     private void reload(boolean force, boolean byUser) {
         isFirstLoad = false;
         if (byUser) {

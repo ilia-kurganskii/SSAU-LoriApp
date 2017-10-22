@@ -36,7 +36,6 @@ public class WeekPagerActivity extends DaggerAppCompatActivity {
         }
 
         presenter.setView(weekPagerFragment);
-
     }
 
     public static void startMe(Activity activity) {

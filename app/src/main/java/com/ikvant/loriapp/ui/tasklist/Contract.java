@@ -17,7 +17,7 @@ public interface Contract {
 
         void showEditEntryScreen(String id);
 
-        void showDiapason(Date start, Date end);
+        void showDiapasonLabel(Date start, Date end);
     }
 
     interface Presenter {

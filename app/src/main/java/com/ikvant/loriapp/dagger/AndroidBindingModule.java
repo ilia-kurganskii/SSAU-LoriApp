@@ -6,6 +6,7 @@ package com.ikvant.loriapp.dagger;
 
 import com.ikvant.loriapp.ui.LoginActivity;
 import com.ikvant.loriapp.ui.editenrty.EditTimeEntryActivity;
+import com.ikvant.loriapp.ui.search.SearchActivity;
 import com.ikvant.loriapp.ui.weekpages.WeekPagerActivity;
 import com.ikvant.loriapp.ui.weekpages.WeekPagerFragment;
 
@@ -29,4 +30,7 @@ abstract class AndroidBindingModule {
 
     @ContributesAndroidInjector
     abstract WeekPagerFragment weekPagerFragment();
+
+    @ContributesAndroidInjector
+    abstract SearchActivity searchActivity();
 }

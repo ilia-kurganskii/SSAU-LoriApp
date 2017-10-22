@@ -1,5 +1,7 @@
 package com.ikvant.loriapp.ui.tasklist;
 
+import android.util.Log;
+
 import com.ikvant.loriapp.database.timeentry.TimeEntry;
 import com.ikvant.loriapp.state.entry.EntryController;
 import com.ikvant.loriapp.state.entry.LoadDataCallback;
@@ -15,6 +17,7 @@ import java.util.Set;
  */
 
 public class TaskEntryPresenter implements Contract.Presenter {
+    private static final String TAG = "TaskEntryPresenter";
 
     private Contract.View view;
 
@@ -22,10 +25,12 @@ public class TaskEntryPresenter implements Contract.Presenter {
 
     private List<TimeEntry> entries;
     private int weekIndex;
+    private boolean isActive;
 
     public TaskEntryPresenter(int weekIndex, EntryController entryController) {
         this.weekIndex = weekIndex;
         this.entryController = entryController;
+        Log.d(TAG, "TaskEntryPresenter() called with: weekIndex = [" + weekIndex + "]");
     }
 
     public void setView(Contract.View view) {
@@ -43,26 +48,33 @@ public class TaskEntryPresenter implements Contract.Presenter {
 
     @Override
     public void onResume() {
+        isActive = true;
         reload();
     }
 
     @Override
     public void onPause() {
+        isActive = false;
     }
 
     private void reload() {
-        view.showDiapason(getStartDate(), getEndDate());
         entryController.loadTimeEntriesByWeek(weekIndex, new LoadDataCallback<Set<TimeEntry>>() {
             @Override
             public void onSuccess(Set<TimeEntry> data) {
                 entries = new ArrayList<>(data);
-                view.showTimeEntries(entries);
+                if (isActive) {
+                    view.showTimeEntries(entries);
+                    view.showDiapasonLabel(getStartDate(), getEndDate());
+                }
             }
 
             @Override
             public void networkUnreachable(Set<TimeEntry> localData) {
                 entries = new ArrayList<>(localData);
-                view.showTimeEntries(entries);
+                if (isActive) {
+                    view.showTimeEntries(entries);
+                    view.showDiapasonLabel(getStartDate(), getEndDate());
+                }
             }
 
             @Override
@@ -73,18 +85,20 @@ public class TaskEntryPresenter implements Contract.Presenter {
     }
 
     private Date getStartDate() {
+        Log.d(TAG, "getStartDate() called" + weekIndex);
         Calendar calendar = Calendar.getInstance();
-        calendar.setFirstDayOfWeek(Calendar.MONDAY);
-        calendar.set(Calendar.WEEK_OF_YEAR, weekIndex);
+        calendar.setTime(new Date());
         calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+        calendar.set(Calendar.WEEK_OF_YEAR, weekIndex);
         return calendar.getTime();
     }
 
     private Date getEndDate() {
+        Log.d(TAG, "getStartDate() called" + weekIndex);
         Calendar calendar = Calendar.getInstance();
-        calendar.setFirstDayOfWeek(Calendar.MONDAY);
-        calendar.set(Calendar.WEEK_OF_YEAR, weekIndex);
+        calendar.setTime(new Date());
         calendar.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
+        calendar.set(Calendar.WEEK_OF_YEAR, weekIndex);
         return calendar.getTime();
     }
 }

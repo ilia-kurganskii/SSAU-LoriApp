@@ -5,6 +5,7 @@ import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -34,4 +35,10 @@ public interface TimeEntryDao {
 
     @Query("DELETE FROM TimeEntry")
     void deleteAll();
+
+    @Query("SELECT * FROM TimeEntry WHERE description LIKE'%'||:text||'%'")
+    List<TimeEntry> findByText(String text);
+
+    @Query("SELECT * FROM TimeEntry WHERE date BETWEEN :from AND :to")
+    List<TimeEntry> findByDate(Date from, Date to);
 }

@@ -31,15 +31,12 @@ public class ListTimeEntryFragment extends Fragment implements Contract.View, Li
 
     private DateFormat dateFormat = new SimpleDateFormat("dd MMM");
 
-    private View root;
-
     private Contract.Presenter presenter;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.a_task_list, container, false);
-        this.root = root;
         // Set up tasks view
         recyclerView = root.findViewById(R.id.time_entry_list);
         dateDiapason = root.findViewById(R.id.week_diapason);
@@ -58,13 +55,17 @@ public class ListTimeEntryFragment extends Fragment implements Contract.View, Li
     @Override
     public void onResume() {
         super.onResume();
-        presenter.onResume();
+        if (presenter != null) {
+            presenter.onResume();
+        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        presenter.onPause();
+        if (presenter != null) {
+            presenter.onPause();
+        }
     }
 
     @Override
@@ -75,6 +76,9 @@ public class ListTimeEntryFragment extends Fragment implements Contract.View, Li
     @Override
     public void setPresenter(Contract.Presenter presenter) {
         this.presenter = presenter;
+        if (isResumed()) {
+            presenter.onResume();
+        }
     }
 
 
@@ -84,7 +88,7 @@ public class ListTimeEntryFragment extends Fragment implements Contract.View, Li
     }
 
     @Override
-    public void showDiapason(Date start, Date end) {
+    public void showDiapasonLabel(Date start, Date end) {
         dateDiapason.setText(String.format("%s-%s", dateFormat.format(start), dateFormat.format(end)));
     }
 

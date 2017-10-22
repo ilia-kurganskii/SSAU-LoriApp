@@ -24,6 +24,7 @@
         </activity>
         <activity android:name=".ui.weekpages.WeekPagerActivity" />
         <activity android:name=".ui.editenrty.EditTimeEntryActivity" />
+        <activity android:name=".ui.search.SearchActivity"></activity>
     </application>
 
 </manifest>

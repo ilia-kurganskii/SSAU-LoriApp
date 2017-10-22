@@ -59,6 +59,22 @@ public class LoriEntryController implements EntryController {
     }
 
     @Override
+    public void loadByText(String text, LoadDataCallback<Set<TimeEntry>> callback) {
+        executors.background().execute(() -> {
+            Set<TimeEntry> list = new HashSet<>(timeEntryDao.findByText(text));
+            executors.mainThread().execute(() -> callback.onSuccess(list));
+        });
+    }
+
+    @Override
+    public void loadByDate(Date from, Date to, LoadDataCallback<Set<TimeEntry>> callback) {
+        executors.background().execute(() -> {
+            Set<TimeEntry> list = new HashSet<>(timeEntryDao.findByDate(from, to));
+            executors.mainThread().execute(() -> callback.onSuccess(list));
+        });
+    }
+
+    @Override
     public void createNewTimeEntry(TimeEntry timeEntry, LoadDataCallback<TimeEntry> callback) {
         userController.getUser(new LoadDataCallback<User>() {
             @Override
@@ -252,7 +268,6 @@ public class LoriEntryController implements EntryController {
 
     private int getWeekNumber(Date date) {
         Calendar calendar = Calendar.getInstance();
-        calendar.setFirstDayOfWeek(Calendar.MONDAY);
         calendar.setTime(date);
         return calendar.get(Calendar.WEEK_OF_YEAR);
     }
