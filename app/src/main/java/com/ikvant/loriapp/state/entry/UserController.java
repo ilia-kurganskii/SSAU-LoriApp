@@ -38,6 +38,7 @@ public class UserController {
         executors.background().execute(() -> {
             try {
                 User user = apiService.getUser();
+                userDao.save(user);
                 cacheUser = user;
                 cacheIsDirty = false;
                 executors.mainThread().execute(() -> callback.onSuccess(cacheUser));

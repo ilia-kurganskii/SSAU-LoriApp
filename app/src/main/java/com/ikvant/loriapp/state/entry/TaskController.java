@@ -40,6 +40,7 @@ public class TaskController {
         executors.background().execute(() -> {
             try {
                 List<Task> newTasks = apiService.getTasks();
+                taskDao.saveAll(newTasks.toArray(new Task[newTasks.size()]));
                 cacheTasks = newTasks;
                 cacheIsDirty = false;
                 executors.mainThread().execute(() -> callback.onSuccess(newTasks));
@@ -54,10 +55,4 @@ public class TaskController {
             }
         });
     }
-
-    private void reloadTasks() throws NetworkApiException {
-        List<Task> tasks = apiService.getTasks();
-        taskDao.saveAll(tasks.toArray(new Task[tasks.size()]));
-    }
-
 }
