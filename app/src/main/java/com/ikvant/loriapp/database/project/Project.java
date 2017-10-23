@@ -1,45 +1,33 @@
-package com.ikvant.loriapp.database.task;
+package com.ikvant.loriapp.database.project;
 
 import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
-
-import com.ikvant.loriapp.database.project.Project;
 
 /**
  * Created by ikvant.
  */
 
 @Entity
-public class Task {
-
+public class Project {
     @PrimaryKey
     private String id;
 
     private String name;
 
-    private Project project;
-
-    public Task(String id) {
+    public Project(String id) {
         this.id = id;
-    }
-
-    @Ignore
-    public Task(String id, String name) {
-        this.id = id;
-        this.name = name;
     }
 
     public String getId() {
         return id;
     }
 
-    public String getName() {
-        return name;
-    }
-
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public void setName(String name) {
@@ -56,21 +44,13 @@ public class Task {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Task task = (Task) o;
+        Project project = (Project) o;
 
-        return id != null ? id.equals(task.id) : task.id == null;
+        return id != null ? id.equals(project.id) : project.id == null;
     }
 
     @Override
     public int hashCode() {
         return id != null ? id.hashCode() : 0;
-    }
-
-    public Project getProject() {
-        return project;
-    }
-
-    public void setProject(Project project) {
-        this.project = project;
     }
 }

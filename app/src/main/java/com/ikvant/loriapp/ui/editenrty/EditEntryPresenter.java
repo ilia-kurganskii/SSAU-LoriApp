@@ -1,39 +1,47 @@
 package com.ikvant.loriapp.ui.editenrty;
 
 import com.ikvant.loriapp.R;
+import com.ikvant.loriapp.database.project.Project;
 import com.ikvant.loriapp.database.task.Task;
 import com.ikvant.loriapp.database.timeentry.TimeEntry;
 import com.ikvant.loriapp.state.entry.EntryController;
 import com.ikvant.loriapp.state.entry.LoadDataCallback;
+import com.ikvant.loriapp.state.entry.ProjectController;
 import com.ikvant.loriapp.state.entry.TaskController;
 
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
 /**
  * Created by ikvant.
  */
 
-@Singleton
 public class EditEntryPresenter implements Contract.Presenter {
+    private static final int FIRST_INDEX = 0;
     private String id;
 
     private TimeEntry currentTimeEntry;
+    private Task currentTask;
+    private Project currentProject;
+
     private List<Task> taskList = Collections.emptyList();
+    private List<Project> projectList = Collections.emptyList();
 
     private EntryController entryController;
     private TaskController taskController;
+    private ProjectController projectController;
 
     private Contract.View view;
 
     @Inject
-    public EditEntryPresenter(EntryController entryController, TaskController taskController) {
+    public EditEntryPresenter(EntryController entryController, TaskController taskController, ProjectController projectController) {
         this.entryController = entryController;
         this.taskController = taskController;
+        this.projectController = projectController;
     }
 
     void setView(String id, Contract.View view) {
@@ -61,14 +69,14 @@ public class EditEntryPresenter implements Contract.Presenter {
 
     @Override
     public void saveEntry() {
+        if (currentTask == null) {
+            view.showErrorMessage(R.string.error_task_is_empty);
+            return;
+        }
         if (id != null) {
             entryController.updateTimeEntry(currentTimeEntry, saveEntryCallback);
         } else {
-            if (currentTimeEntry.getTask() == null) {
-                view.showErrorMessage(R.string.error_task_is_empty);
-            } else {
-                entryController.createNewTimeEntry(currentTimeEntry, saveEntryCallback);
-            }
+            entryController.createNewTimeEntry(currentTimeEntry, saveEntryCallback);
         }
     }
 
@@ -85,8 +93,19 @@ public class EditEntryPresenter implements Contract.Presenter {
     }
 
     @Override
+    public void setProject(int position) {
+        Project project = projectList.get(position);
+        if (!Objects.equals(project, currentProject)) {
+            currentProject = project;
+            currentTask = null;
+            loadTasksForProject(project.getId());
+        }
+    }
+
+    @Override
     public void setTask(int position) {
         Task task = taskList.get(position);
+        currentTask = task;
         currentTimeEntry.setTask(task);
         currentTimeEntry.setTaskName(task.getName());
     }
@@ -135,7 +154,7 @@ public class EditEntryPresenter implements Contract.Presenter {
     @Override
     public void onStart() {
         view.showLoadingIndicator(true);
-        loadTasks();
+        loadProjects();
     }
 
     @Override
@@ -143,15 +162,35 @@ public class EditEntryPresenter implements Contract.Presenter {
 
     }
 
-    private void setFieldForEntry(TimeEntry entry) {
-        view.setTask(taskList.indexOf(entry.getTask()));
-        view.setDate(entry.getDate());
-        view.setTime(entry.getTimeInMinutes());
-        view.setDescription(entry.getDescription());
+
+    private void loadProjects() {
+        projectController.loadProjects(new LoadDataCallback<List<Project>>() {
+            @Override
+            public void onSuccess(List<Project> data) {
+                projectList = data;
+                view.setProjects(projectList);
+                loadTimeEntry();
+            }
+
+            @Override
+            public void networkUnreachable(List<Project> localData) {
+                projectList = localData;
+                view.setProjects(projectList);
+                view.showOfflineMessage();
+                loadTimeEntry();
+            }
+
+            @Override
+            public void onFailure(Throwable e) {
+                view.showErrorMessage(e.getMessage());
+            }
+        });
     }
+
 
     private void loadTimeEntry() {
         if (id != null) {
+            view.showLoadingIndicator(true);
             view.showModifyButton();
             view.showDeleteButton();
 
@@ -159,16 +198,15 @@ public class EditEntryPresenter implements Contract.Presenter {
                 @Override
                 public void onSuccess(TimeEntry data) {
                     currentTimeEntry = data;
-                    setFieldForEntry(data);
-                    view.showLoadingIndicator(false);
+                    fillView(currentTimeEntry);
+                    loadTask(currentTimeEntry.getTask().getId());
                 }
 
                 @Override
                 public void networkUnreachable(TimeEntry data) {
                     currentTimeEntry = data;
-                    view.showOfflineMessage();
-                    setFieldForEntry(data);
-                    view.showLoadingIndicator(false);
+                    fillView(currentTimeEntry);
+                    loadTask(currentTimeEntry.getTask().getId());
                 }
 
                 @Override
@@ -179,33 +217,74 @@ public class EditEntryPresenter implements Contract.Presenter {
         } else {
             view.showCreateButton();
             currentTimeEntry = TimeEntry.createNew();
-            if (taskList.size() > 0) {
-                currentTimeEntry.setTask(taskList.get(0));
+            fillView(currentTimeEntry);
+            if (!projectList.isEmpty()) {
+                setProject(FIRST_INDEX);
             }
-            setFieldForEntry(currentTimeEntry);
-            view.showLoadingIndicator(false);
         }
     }
 
-    private void loadTasks() {
-        taskController.loadTasks(new LoadDataCallback<List<Task>>() {
+    private void fillView(TimeEntry entry) {
+        view.setDate(entry.getDate());
+        view.setTime(entry.getTimeInMinutes());
+        view.setDescription(entry.getDescription());
+    }
+
+    private void loadTask(String id) {
+        taskController.loadTask(id, new LoadDataCallback<Task>() {
             @Override
-            public void onSuccess(List<Task> data) {
-                taskList = data;
-                view.setTasks(data);
-                loadTimeEntry();
+            public void onSuccess(Task data) {
+                setTask(data);
             }
 
             @Override
-            public void networkUnreachable(List<Task> data) {
-                view.setTasks(data);
-                view.showOfflineMessage();
-                loadTimeEntry();
+            public void networkUnreachable(Task localData) {
+                setTask(localData);
             }
 
             @Override
             public void onFailure(Throwable e) {
-                view.showErrorMessage(e.getMessage());
+
+            }
+
+            private void setTask(Task data) {
+                currentTask = data;
+                currentProject = currentTask.getProject();
+                view.setProject(projectList.indexOf(currentTask.getProject()));
+                loadTasksForProject(currentTask.getProject().getId());
+            }
+        });
+    }
+
+    private void loadTasksForProject(String id) {
+        view.showLoadingIndicator(true);
+        taskController.loadTasksForProject(id, new LoadDataCallback<List<Task>>() {
+            @Override
+            public void onSuccess(List<Task> data) {
+                setTasks(data);
+                view.showLoadingIndicator(false);
+            }
+
+
+            @Override
+            public void networkUnreachable(List<Task> localData) {
+                setTasks(localData);
+                view.showLoadingIndicator(false);
+            }
+
+            @Override
+            public void onFailure(Throwable e) {
+
+            }
+
+            private void setTasks(List<Task> data) {
+                taskList = data;
+                view.setTasks(taskList);
+                if (currentTask == null && !taskList.isEmpty()) {
+                    setTask(FIRST_INDEX);
+                } else if (currentTask != null) {
+                    setTask(taskList.indexOf(currentTask));
+                }
             }
         });
     }

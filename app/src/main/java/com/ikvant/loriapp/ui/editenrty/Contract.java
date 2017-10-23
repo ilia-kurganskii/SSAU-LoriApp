@@ -2,6 +2,7 @@ package com.ikvant.loriapp.ui.editenrty;
 
 import android.support.annotation.StringRes;
 
+import com.ikvant.loriapp.database.project.Project;
 import com.ikvant.loriapp.database.task.Task;
 
 import java.util.Date;
@@ -22,6 +23,8 @@ public interface Contract {
         void showDeleteButton();
 
         void setTasks(List<Task> tasks);
+
+        void setProjects(List<Project> projects);
 
         void setPresenter(Presenter presenter);
 
@@ -44,6 +47,8 @@ public interface Contract {
         void showOfflineMessage();
 
         void goBack();
+
+        void setProject(int position);
     }
 
     interface Presenter {
@@ -52,6 +57,8 @@ public interface Contract {
         void deleteEntry();
 
         void navigateBack();
+
+        void setProject(int position);
 
         void setTask(int task);
 
@@ -68,6 +75,7 @@ public interface Contract {
         void onStart();
 
         void onPause();
+
     }
 
 }

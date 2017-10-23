@@ -5,8 +5,6 @@ import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 
-import com.ikvant.loriapp.database.timeentry.TimeEntry;
-
 import java.util.List;
 
 /**
@@ -22,9 +20,15 @@ public interface TaskDao {
     @Query("DELETE FROM Task")
     void deleteAll();
 
+    @Query("SELECT * FROM Task WHERE project=:idProject")
+    List<Task> loadTaskForProject(String idProject);
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void save(Task entry);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void saveAll(Task... timeEntries);
+
+    @Query("SELECT * from Task WHERE id=:id")
+    Task load(String id);
 }

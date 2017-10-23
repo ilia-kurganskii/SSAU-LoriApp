@@ -2,6 +2,7 @@ package com.ikvant.loriapp.network;
 
 import android.util.Log;
 
+import com.ikvant.loriapp.database.project.Project;
 import com.ikvant.loriapp.database.task.Task;
 import com.ikvant.loriapp.database.timeentry.TimeEntry;
 import com.ikvant.loriapp.database.token.Token;
@@ -71,6 +72,10 @@ public class LoriApiService {
         return executeRequest(service.getUser(getFormattedToken()));
     }
 
+    public List<Project> getProjects() throws NetworkApiException {
+        return executeRequest(service.getProjects(getFormattedToken()));
+    }
+
     private String getFormattedToken() {
         return "Bearer " + token;
     }
@@ -107,4 +112,6 @@ public class LoriApiService {
             throw new NetworkOfflineException();
         }
     }
+
+
 }

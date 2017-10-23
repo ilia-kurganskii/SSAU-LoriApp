@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -18,6 +19,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.ikvant.loriapp.R;
+import com.ikvant.loriapp.database.project.Project;
 import com.ikvant.loriapp.database.task.Task;
 
 import java.text.DateFormat;
@@ -33,6 +35,7 @@ public class EditTimeEntryFragment extends Fragment implements Contract.View, Ti
     private DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
 
     private AppCompatSpinner taskSpinner;
+    private AppCompatSpinner projectSpinner;
     private EditText description;
     private EditText dateEditText;
     private EditText time;
@@ -43,7 +46,8 @@ public class EditTimeEntryFragment extends Fragment implements Contract.View, Ti
 
     private Contract.Presenter presenter;
 
-    private TaskSpinnerAdapter taskAdapter;
+    private ArrayAdapter<Task> taskAdapter;
+    private ArrayAdapter<Project> projectAdapter;
 
 
     @Nullable
@@ -52,6 +56,7 @@ public class EditTimeEntryFragment extends Fragment implements Contract.View, Ti
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.a_edit_time_entry, container, false);
         taskSpinner = root.findViewById(R.id.edit_task_spinner);
+        projectSpinner = root.findViewById(R.id.edit_project_spinner);
         description = root.findViewById(R.id.edit_description);
         dateEditText = root.findViewById(R.id.edit_date);
         save = root.findViewById(R.id.edit_save);
@@ -60,13 +65,28 @@ public class EditTimeEntryFragment extends Fragment implements Contract.View, Ti
         progressBar = root.findViewById(R.id.progress);
         content = root.findViewById(R.id.content);
 
-        taskAdapter = new TaskSpinnerAdapter(getContext());
+        taskAdapter = new ArrayAdapter<>(getContext(), R.layout.i_spinner_task, R.id.task_name);
         taskSpinner.setAdapter(taskAdapter);
 
         taskSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 presenter.setTask(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        projectAdapter = new ArrayAdapter<Project>(getContext(), R.layout.i_spinner_task, R.id.task_name);
+        projectSpinner.setAdapter(projectAdapter);
+
+        projectSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                presenter.setProject(position);
             }
 
             @Override
@@ -153,6 +173,12 @@ public class EditTimeEntryFragment extends Fragment implements Contract.View, Ti
     }
 
     @Override
+    public void setProjects(List<Project> projects) {
+        projectAdapter.clear();
+        projectAdapter.addAll(projects);
+    }
+
+    @Override
     public void setPresenter(Contract.Presenter presenter) {
         this.presenter = presenter;
     }
@@ -175,6 +201,11 @@ public class EditTimeEntryFragment extends Fragment implements Contract.View, Ti
     @Override
     public void setTask(int position) {
         taskSpinner.setSelection(position);
+    }
+
+    @Override
+    public void setProject(int position) {
+        projectSpinner.setSelection(position);
     }
 
     @Override

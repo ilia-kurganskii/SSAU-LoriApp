@@ -1,11 +1,11 @@
 package com.ikvant.loriapp.network;
 
+import com.ikvant.loriapp.database.project.Project;
 import com.ikvant.loriapp.database.task.Task;
 import com.ikvant.loriapp.database.timeentry.TimeEntry;
 import com.ikvant.loriapp.database.token.Token;
 import com.ikvant.loriapp.database.user.User;
 
-import java.sql.Time;
 import java.util.List;
 
 import retrofit2.Call;
@@ -46,6 +46,9 @@ public interface ApiService {
 
     @GET("/app/rest/v2/entities/ts$Task?view=task-full")
     Call<List<Task>> getTasks(@Header("Authorization") String token);
+
+    @GET("/app/rest/v2/entities/ts$Project")
+    Call<List<Project>> getProjects(@Header("Authorization") String token);
 
     @GET("/app/rest/v2/userInfo")
     Call<User> getUser(@Header("Authorization") String token);

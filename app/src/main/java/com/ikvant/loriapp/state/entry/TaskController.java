@@ -55,4 +55,18 @@ public class TaskController {
             }
         });
     }
+
+    public void loadTasksForProject(String projectId, final LoadDataCallback<List<Task>> callback) {
+        executors.background().execute(() -> {
+            List<Task> data = taskDao.loadTaskForProject(projectId);
+            executors.mainThread().execute(() -> callback.onSuccess(data));
+        });
+    }
+
+    public void loadTask(String id, final LoadDataCallback<Task> callback) {
+        executors.background().execute(() -> {
+            Task data = taskDao.load(id);
+            executors.mainThread().execute(() -> callback.onSuccess(data));
+        });
+    }
 }

@@ -2,6 +2,7 @@ package com.ikvant.loriapp.database;
 
 import android.arch.persistence.room.TypeConverter;
 
+import com.ikvant.loriapp.database.project.Project;
 import com.ikvant.loriapp.database.task.Task;
 import com.ikvant.loriapp.database.user.User;
 
@@ -17,6 +18,16 @@ import java.util.Locale;
 
 public class Converters {
     private static DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.UK);
+
+    @TypeConverter
+    public static Project projectFromId(String id) {
+        return id == null ? null : new Project(id);
+    }
+
+    @TypeConverter
+    public static String projectToId(Project project) {
+        return project == null ? null : project.getId();
+    }
 
     @TypeConverter
     public static Task taskFromTaskId(String id) {

@@ -7,15 +7,30 @@
 
     <android.support.v4.widget.ContentLoadingProgressBar
         android:id="@+id/progress"
+        style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+
         android:layout_centerInParent="true" />
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/content"
-        android:visibility="invisible"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <android.support.v7.widget.AppCompatSpinner
+            android:id="@+id/edit_project_spinner"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:spinnerMode="dialog"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:listitem="@layout/i_spinner_task" />
 
         <android.support.v7.widget.AppCompatSpinner
             android:id="@+id/edit_task_spinner"
@@ -24,9 +39,10 @@
             android:layout_marginEnd="16dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
+            android:spinnerMode="dialog"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/edit_project_spinner"
             tools:listitem="@layout/i_spinner_task" />
 
         <EditText
@@ -39,6 +55,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/edit_task_spinner"
+            android:hint="@string/Date"
             tools:text="Date" />
 
         <EditText
@@ -51,6 +68,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/edit_date"
+            android:hint="@string/spend_time"
             tools:text="Time" />
 
         <EditText
@@ -62,6 +80,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/edit_time"
+            android:hint="@string/Description"
             tools:text="Description" />
 
 
