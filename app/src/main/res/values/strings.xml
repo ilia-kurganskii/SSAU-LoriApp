@@ -22,4 +22,6 @@
     <string name="spend_time">Spend time</string>
     <string name="Description">Description</string>
     <string name="Date">Date</string>
+    <string name="search_by_date">Search by date</string>
+    <string name="from">From</string>
 </resources>

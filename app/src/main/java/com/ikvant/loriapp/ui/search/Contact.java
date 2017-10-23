@@ -8,10 +8,30 @@ import java.util.Date;
  * Created by ikvant.
  */
 
-public class Contact {
-    interface Presenter extends Contract.Presenter {
-        void searchByText(String text);
+public interface Contact {
+    interface View extends Contract.View {
+        void setDateFrom(Date date);
 
-        void searchByDate(Date from, Date to);
+        void setDateTo(Date to);
+
+        void showDateFromDialog(int day, int month, int year);
+
+        void showDateToDialog(int day, int month, int year);
+    }
+
+    interface Presenter extends Contract.Presenter {
+        void search();
+
+        void searchByDateEnable(boolean enable);
+
+        void setDateFrom(int dayOfMonth, int month, int year);
+
+        void setDateTo(int dayOfMonth, int month, int year);
+
+        void setText(String text);
+
+        void openFromDialog();
+
+        void openToDialog();
     }
 }
