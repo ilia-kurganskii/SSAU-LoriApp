@@ -15,16 +15,23 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".ui.LoginActivity"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.weekpages.WeekPagerActivity" />
-        <activity android:name=".ui.editenrty.EditTimeEntryActivity" />
-        <activity android:name=".ui.search.SearchActivity"></activity>
+        <activity
+            android:name=".ui.weekpages.WeekPagerActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.editenrty.EditTimeEntryActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.search.SearchActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>
