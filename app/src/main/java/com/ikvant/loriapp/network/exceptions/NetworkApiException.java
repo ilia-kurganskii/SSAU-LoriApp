@@ -8,6 +8,10 @@ public class NetworkApiException extends Exception {
         super();
     }
 
+    public NetworkApiException(String message) {
+        super(message);
+    }
+
     public NetworkApiException(String message, Throwable cause) {
         super(message, cause);
     }

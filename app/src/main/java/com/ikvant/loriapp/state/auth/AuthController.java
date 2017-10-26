@@ -1,6 +1,5 @@
 package com.ikvant.loriapp.state.auth;
 
-import com.ikvant.loriapp.database.token.Token;
 import com.ikvant.loriapp.utils.Callback;
 
 /**
@@ -8,6 +7,8 @@ import com.ikvant.loriapp.utils.Callback;
  */
 
 public interface AuthController {
+    public static final String LOGOUT_ACTION = "ACTION_LOGOUT";
+
     void executeLogin(String login, String password, Callback<Boolean> callback);
     void isLogin(Callback<Boolean> callback);
     void logout();

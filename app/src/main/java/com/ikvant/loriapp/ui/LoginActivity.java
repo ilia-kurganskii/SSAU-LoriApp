@@ -1,5 +1,7 @@
 package com.ikvant.loriapp.ui;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -17,10 +19,12 @@ import com.ikvant.loriapp.utils.Callback;
 
 import javax.inject.Inject;
 
+import dagger.android.support.DaggerAppCompatActivity;
+
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends BaseActivity {
+public class LoginActivity extends DaggerAppCompatActivity {
 
     // UI references.
     private EditText mEmailView;
@@ -141,6 +145,12 @@ public class LoginActivity extends BaseActivity {
      * Shows the progress UI and hides the login form.
      */
     private void showProgress(final boolean show) {
+    }
+
+    public static void startMe(Activity activity) {
+        Intent intent = new Intent(activity, LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        activity.startActivity(intent);
     }
 }
 

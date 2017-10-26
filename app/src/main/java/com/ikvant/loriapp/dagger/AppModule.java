@@ -4,6 +4,7 @@ import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.v4.content.LocalBroadcastManager;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -81,7 +82,7 @@ class AppModule {
     ApiService provideApiService() {
         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
         return new Retrofit.Builder()
-                .baseUrl("http://192.168.0.102:8080")
+                .baseUrl("http://10.60.8.252:8080")
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build()
                 .create(ApiService.class);
@@ -106,8 +107,8 @@ class AppModule {
 
     @Singleton
     @Provides
-    AuthController provideAuthManager(LoriApiService service, TokenDao dao, AppExecutors appExecutors) {
-        return new LoriAuthController(service, dao, appExecutors);
+    AuthController provideAuthManager(LoriApp app, LoriApiService service, TokenDao dao, AppExecutors appExecutors) {
+        return new LoriAuthController(LocalBroadcastManager.getInstance(app), service, dao, appExecutors);
     }
 
     @Singleton

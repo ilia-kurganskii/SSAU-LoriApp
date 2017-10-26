@@ -1,5 +1,7 @@
 package com.ikvant.loriapp.state.auth;
 
+import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.ikvant.loriapp.database.token.Token;
@@ -19,11 +21,13 @@ public class LoriAuthController implements AuthController, UnauthorizedListener 
     private LoriApiService service;
     private TokenDao tokenDao;
     private AppExecutors executors;
+    private LocalBroadcastManager broadcastManager;
 
-    public LoriAuthController(final LoriApiService service, final TokenDao tokenDao, AppExecutors executors) {
+    public LoriAuthController(LocalBroadcastManager broadcastManager, final LoriApiService service, final TokenDao tokenDao, AppExecutors executors) {
         this.service = service;
         this.tokenDao = tokenDao;
         this.executors = executors;
+        this.broadcastManager = broadcastManager;
         this.service.setListener(this);
         executors.background().execute(new Runnable() {
             @Override
@@ -77,6 +81,7 @@ public class LoriAuthController implements AuthController, UnauthorizedListener 
     @Override
     public void logout() {
         Log.d(TAG, "logout() called");
+        broadcastManager.sendBroadcast(new Intent(LOGOUT_ACTION));
         executors.background().execute(new Runnable() {
             @Override
             public void run() {

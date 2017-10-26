@@ -10,6 +10,7 @@ import android.widget.EditText;
 
 import com.ikvant.loriapp.R;
 import com.ikvant.loriapp.database.timeentry.TimeEntry;
+import com.ikvant.loriapp.ui.BaseActivity;
 import com.ikvant.loriapp.ui.tasklist.Contract;
 import com.ikvant.loriapp.ui.tasklist.ListTimeEntryFragment;
 import com.ikvant.loriapp.utils.ActivityUtils;
@@ -21,9 +22,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import dagger.android.support.DaggerAppCompatActivity;
-
-public class SearchActivity extends DaggerAppCompatActivity implements Contact.View {
+public class SearchActivity extends BaseActivity implements Contact.View {
     private DateFormat dateFormat = new SimpleDateFormat("dd MMM");
 
     @Inject

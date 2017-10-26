@@ -1,7 +1,10 @@
 package com.ikvant.loriapp.network;
 
+import android.text.TextUtils;
 import android.util.Log;
 
+import com.google.gson.Gson;
+import com.google.gson.annotations.SerializedName;
 import com.ikvant.loriapp.database.project.Project;
 import com.ikvant.loriapp.database.task.Task;
 import com.ikvant.loriapp.database.timeentry.TimeEntry;
@@ -18,6 +21,7 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -80,24 +84,41 @@ public class LoriApiService {
         return "Bearer " + token;
     }
 
+    private int debugStatic = 0;
+
     private <T> T executeRequest(Call<T> callable) throws NetworkApiException {
         handleNetworkException();
         try {
             Response<T> response = callable.execute();
             Log.d(TAG, "getTimeEntries() called" + response);
-            if (response.code() == HttpURLConnection.HTTP_UNAUTHORIZED) {
-                if (listener != null) {
-                    listener.onUnauthorized();
-                }
-                throw new UnauthorizedException();
-            }
+
             if (response.isSuccessful()) {
                 return response.body();
             }
-            if (response.code() == HttpURLConnection.HTTP_NOT_FOUND) {
-                throw new NotFoundException();
+            switch (response.code()) {
+                case HttpURLConnection.HTTP_UNAUTHORIZED: {
+                    if (listener != null) {
+                        listener.onUnauthorized();
+                    }
+                    throw new UnauthorizedException();
+                }
+                case HttpURLConnection.HTTP_NOT_FOUND:
+                    throw new NotFoundException();
+                default:
+                    ResponseBody errorBody = response.errorBody();
+                    if (errorBody != null) {
+                        try {
+                            Gson gson = new Gson();
+                            ErrorMessage message = gson.fromJson(errorBody.string(), ErrorMessage.class);
+                            if (!TextUtils.isEmpty(message.description)) {
+                                throw new NetworkApiException(message.description);
+                            }
+                        } catch (IOException e) {
+                            Log.w(TAG, "convert to error message error: ", e);
+                        }
+                    }
+                    throw new NetworkApiException("Response code " + response.code());
             }
-            throw new NetworkApiException();
         } catch (IOException e) {
             throw new NetworkApiException(e);
         }
@@ -111,6 +132,12 @@ public class LoriApiService {
         if (!checker.hasNetwork()) {
             throw new NetworkOfflineException();
         }
+    }
+
+    private class ErrorMessage {
+        String error;
+        @SerializedName("error_description")
+        String description;
     }
 
 
