@@ -89,7 +89,7 @@ public class ListTimeEntryFragment extends Fragment implements Contract.View, Li
 
     @Override
     public void showDiapasonLabel(Date start, Date end) {
-        dateDiapason.setText(String.format("%s-%s", dateFormat.format(start), dateFormat.format(end)));
+        dateDiapason.setText(String.format("%s - %s", dateFormat.format(start), dateFormat.format(end)));
     }
 
     @Override

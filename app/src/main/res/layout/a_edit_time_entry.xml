@@ -10,12 +10,13 @@
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
+        tools:visibility="invisible"
         android:layout_centerInParent="true" />
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/content"
         android:visibility="gone"
+        tools:visibility="visible"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -23,8 +24,6 @@
             android:id="@+id/edit_project_spinner"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:spinnerMode="dialog"
             app:layout_constraintEnd_toEndOf="parent"
@@ -36,9 +35,7 @@
             android:id="@+id/edit_task_spinner"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="4dp"
             android:spinnerMode="dialog"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
