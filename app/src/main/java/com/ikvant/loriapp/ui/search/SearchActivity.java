@@ -5,6 +5,7 @@ import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.SwitchCompat;
+import android.util.SparseArray;
 import android.view.View;
 import android.widget.EditText;
 
@@ -18,7 +19,7 @@ import com.ikvant.loriapp.utils.ActivityUtils;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -113,7 +114,7 @@ public class SearchActivity extends BaseActivity implements Contact.View {
     }
 
     @Override
-    public void showTimeEntries(List<TimeEntry> entryList) {
+    public void showTimeEntries(SparseArray<Set<TimeEntry>> entryList) {
         listTimeEntryFragment.showTimeEntries(entryList);
     }
 
@@ -128,7 +129,28 @@ public class SearchActivity extends BaseActivity implements Contact.View {
     }
 
     @Override
-    public void showDiapasonLabel(Date start, Date end) {
-        listTimeEntryFragment.showDiapasonLabel(start, end);
+    public void showNewEntryScreen() {
+
     }
+
+    @Override
+    public void showSearchScreen() {
+
+    }
+
+    @Override
+    public void showOfflineMessage() {
+
+    }
+
+    @Override
+    public void showErrorMessage(String message) {
+
+    }
+
+    @Override
+    public void showLoadingIndicator(boolean isLoading) {
+
+    }
+
 }

@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.ikvant.loriapp.R;
 import com.ikvant.loriapp.state.auth.AuthController;
-import com.ikvant.loriapp.ui.weekpages.WeekPagerActivity;
+import com.ikvant.loriapp.ui.tasklist.ListEntriesActivity;
 import com.ikvant.loriapp.utils.Callback;
 
 import javax.inject.Inject;
@@ -69,7 +69,7 @@ public class LoginActivity extends DaggerAppCompatActivity {
             @Override
             public void onSuccess(Boolean data) {
                 if (data) {
-                    WeekPagerActivity.startMe(LoginActivity.this);
+                    ListEntriesActivity.startMe(LoginActivity.this);
                     finish();
                 }
             }
@@ -121,7 +121,7 @@ public class LoginActivity extends DaggerAppCompatActivity {
             authController.executeLogin(email, password, new Callback<Boolean>() {
                 @Override
                 public void onSuccess(Boolean data) {
-                    WeekPagerActivity.startMe(LoginActivity.this);
+                    ListEntriesActivity.startMe(LoginActivity.this);
                     finish();
                 }
 

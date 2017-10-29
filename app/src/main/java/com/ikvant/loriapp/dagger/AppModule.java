@@ -82,7 +82,7 @@ class AppModule {
     ApiService provideApiService() {
         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
         return new Retrofit.Builder()
-                .baseUrl("http://10.60.8.252:8080")
+                .baseUrl("http://192.168.0.111:8080")
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build()
                 .create(ApiService.class);

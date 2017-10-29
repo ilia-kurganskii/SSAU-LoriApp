@@ -24,7 +24,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.weekpages.WeekPagerActivity"
+            android:name=".ui.tasklist.ListEntriesActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.editenrty.EditTimeEntryActivity"

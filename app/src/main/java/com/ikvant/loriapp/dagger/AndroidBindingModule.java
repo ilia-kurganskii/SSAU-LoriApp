@@ -7,8 +7,7 @@ package com.ikvant.loriapp.dagger;
 import com.ikvant.loriapp.ui.LoginActivity;
 import com.ikvant.loriapp.ui.editenrty.EditTimeEntryActivity;
 import com.ikvant.loriapp.ui.search.SearchActivity;
-import com.ikvant.loriapp.ui.weekpages.WeekPagerActivity;
-import com.ikvant.loriapp.ui.weekpages.WeekPagerFragment;
+import com.ikvant.loriapp.ui.tasklist.ListEntriesActivity;
 
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
@@ -23,13 +22,10 @@ abstract class AndroidBindingModule {
     abstract LoginActivity loginActivity();
 
     @ContributesAndroidInjector
-    abstract WeekPagerActivity listActivity();
+    abstract ListEntriesActivity listActivity();
 
     @ContributesAndroidInjector
     abstract EditTimeEntryActivity editTimeEntryActivity();
-
-    @ContributesAndroidInjector
-    abstract WeekPagerFragment weekPagerFragment();
 
     @ContributesAndroidInjector
     abstract SearchActivity searchActivity();

@@ -43,20 +43,34 @@ public class SearchPresenter implements Contact.Presenter {
 
 
     @Override
-    public void openEntryDetail(int position) {
-        String id = entryList.get(position).getId();
+    public void openEntryDetail(String id) {
         view.showEditEntryScreen(id);
     }
 
     @Override
     public void onResume() {
-        view.showTimeEntries(entryList);
+        //todo showEntry
         view.setDateFrom(from);
         view.setDateTo(to);
     }
 
     @Override
     public void onPause() {
+
+    }
+
+    @Override
+    public void createNewEntry() {
+
+    }
+
+    @Override
+    public void searchEntries() {
+
+    }
+
+    @Override
+    public void reload() {
 
     }
 
@@ -124,13 +138,13 @@ public class SearchPresenter implements Contact.Presenter {
             @Override
             public void onSuccess(Set<TimeEntry> data) {
                 entryList = new ArrayList<>(data);
-                view.showTimeEntries(entryList);
+                //view.showTimeEntries(entryList);
             }
 
             @Override
             public void networkUnreachable(Set<TimeEntry> data) {
                 entryList = new ArrayList<>(data);
-                view.showTimeEntries(entryList);
+                //view.showTimeEntries(entryList);
             }
 
             @Override
@@ -145,13 +159,13 @@ public class SearchPresenter implements Contact.Presenter {
             @Override
             public void onSuccess(Set<TimeEntry> data) {
                 entryList = new ArrayList<>(data);
-                view.showTimeEntries(entryList);
+                //view.showTimeEntries(entryList);
             }
 
             @Override
             public void networkUnreachable(Set<TimeEntry> data) {
                 entryList = new ArrayList<>(data);
-                view.showTimeEntries(entryList);
+                //view.showTimeEntries(entryList);
             }
 
             @Override

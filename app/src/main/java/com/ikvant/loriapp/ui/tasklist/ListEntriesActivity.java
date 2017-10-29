@@ -1,4 +1,4 @@
-package com.ikvant.loriapp.ui.weekpages;
+package com.ikvant.loriapp.ui.tasklist;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -15,22 +15,22 @@ import javax.inject.Inject;
  * Created by ikvant.
  */
 
-public class WeekPagerActivity extends BaseActivity {
+public class ListEntriesActivity extends BaseActivity {
 
     @Inject
     protected EntryController entryController;
 
     @Inject
-    protected WeekPagerPresenter presenter;
+    protected TaskEntryPresenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.content);
 
-        WeekPagerFragment weekPagerFragment = (WeekPagerFragment) getSupportFragmentManager().findFragmentById(R.id.content);
+        ListTimeEntryFragment weekPagerFragment = (ListTimeEntryFragment) getSupportFragmentManager().findFragmentById(R.id.content);
         if (weekPagerFragment == null) {
-            weekPagerFragment = WeekPagerFragment.newInstance();
+            weekPagerFragment = ListTimeEntryFragment.newInstance();
             ActivityUtils.addFragmentToActivity(getSupportFragmentManager(), weekPagerFragment, R.id.content);
         }
 
@@ -38,7 +38,7 @@ public class WeekPagerActivity extends BaseActivity {
     }
 
     public static void startMe(Activity activity) {
-        Intent intent = new Intent(activity, WeekPagerActivity.class);
+        Intent intent = new Intent(activity, ListEntriesActivity.class);
         activity.startActivity(intent);
     }
 }

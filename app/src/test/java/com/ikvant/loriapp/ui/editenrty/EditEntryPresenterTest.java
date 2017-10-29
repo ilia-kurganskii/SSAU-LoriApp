@@ -1,9 +1,11 @@
 package com.ikvant.loriapp.ui.editenrty;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import com.ikvant.loriapp.database.task.Task;
+import com.ikvant.loriapp.database.timeentry.TimeEntry;
+import com.ikvant.loriapp.network.exceptions.NetworkApiException;
+import com.ikvant.loriapp.state.entry.EntryController;
+import com.ikvant.loriapp.state.entry.LoadDataCallback;
+import com.ikvant.loriapp.state.entry.TaskController;
 
 import junit.framework.Assert;
 
@@ -17,12 +19,10 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.ikvant.loriapp.database.task.Task;
-import com.ikvant.loriapp.database.timeentry.TimeEntry;
-import com.ikvant.loriapp.network.exceptions.NetworkApiException;
-import com.ikvant.loriapp.state.entry.EntryController;
-import com.ikvant.loriapp.state.entry.LoadDataCallback;
-import com.ikvant.loriapp.state.entry.TaskController;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -65,9 +65,9 @@ public class EditEntryPresenterTest {
 	@Before
 	public void setupPresenter() {
 		MockitoAnnotations.initMocks(this);
-		EditEntryPresenter presenter = new EditEntryPresenter(entryController, taskController);
-		presenter.setView(ENTRY_ID, view);
-		this.presenter = presenter;
+        //EditEntryPresenter presenter = new EditEntryPresenter(entryController, taskController, );
+        //presenter.setView(ENTRY_ID, view);
+        this.presenter = presenter;
 	}
 
 	@Test

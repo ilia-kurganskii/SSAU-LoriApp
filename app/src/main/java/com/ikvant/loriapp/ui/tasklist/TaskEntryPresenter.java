@@ -1,21 +1,21 @@
 package com.ikvant.loriapp.ui.tasklist;
 
-import android.util.Log;
+import android.util.SparseArray;
 
 import com.ikvant.loriapp.database.timeentry.TimeEntry;
 import com.ikvant.loriapp.state.entry.EntryController;
 import com.ikvant.loriapp.state.entry.LoadDataCallback;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 /**
  * Created by ikvant.
  */
-
+@Singleton
 public class TaskEntryPresenter implements Contract.Presenter {
     private static final String TAG = "TaskEntryPresenter";
 
@@ -24,13 +24,13 @@ public class TaskEntryPresenter implements Contract.Presenter {
     private EntryController entryController;
 
     private List<TimeEntry> entries;
-    private int weekIndex;
+
+    private boolean isFirstLoad;
     private boolean isActive;
 
-    public TaskEntryPresenter(int weekIndex, EntryController entryController) {
-        this.weekIndex = weekIndex;
+    @Inject
+    public TaskEntryPresenter(EntryController entryController) {
         this.entryController = entryController;
-        Log.d(TAG, "TaskEntryPresenter() called with: weekIndex = [" + weekIndex + "]");
     }
 
     public void setView(Contract.View view) {
@@ -39,17 +39,14 @@ public class TaskEntryPresenter implements Contract.Presenter {
     }
 
     @Override
-    public void openEntryDetail(int position) {
-        TimeEntry entry = entries.get(position);
-        if (entry != null) {
-            view.showEditEntryScreen(entry.getId());
-        }
+    public void openEntryDetail(String id) {
+        view.showEditEntryScreen(id);
     }
 
     @Override
     public void onResume() {
         isActive = true;
-        reload();
+        reload(isFirstLoad, false);
     }
 
     @Override
@@ -57,48 +54,56 @@ public class TaskEntryPresenter implements Contract.Presenter {
         isActive = false;
     }
 
-    private void reload() {
-        entryController.loadTimeEntriesByWeek(weekIndex, new LoadDataCallback<Set<TimeEntry>>() {
+    @Override
+    public void createNewEntry() {
+        view.showNewEntryScreen();
+    }
+
+    @Override
+    public void searchEntries() {
+        view.showSearchScreen();
+    }
+
+    @Override
+    public void reload() {
+        reload(isFirstLoad, true);
+    }
+
+    private void reload(boolean force, boolean byUser) {
+        isFirstLoad = false;
+        if (byUser) {
+            view.showLoadingIndicator(true);
+        }
+        if (force) {
+            entryController.refresh();
+        }
+        entryController.loadTimeEntries(new LoadDataCallback<SparseArray<Set<TimeEntry>>>() {
             @Override
-            public void onSuccess(Set<TimeEntry> data) {
-                entries = new ArrayList<>(data);
+            public void onSuccess(SparseArray<Set<TimeEntry>> data) {
                 if (isActive) {
-                    view.showTimeEntries(entries);
-                    view.showDiapasonLabel(getStartDate(), getEndDate());
+                    view.showLoadingIndicator(false);
+                    view.showTimeEntries(data);
                 }
             }
 
             @Override
-            public void networkUnreachable(Set<TimeEntry> localData) {
-                entries = new ArrayList<>(localData);
+            public void networkUnreachable(SparseArray<Set<TimeEntry>> localData) {
                 if (isActive) {
-                    view.showTimeEntries(entries);
-                    view.showDiapasonLabel(getStartDate(), getEndDate());
+                    view.showLoadingIndicator(false);
+                    view.showTimeEntries(localData);
+                    view.showOfflineMessage();
                 }
             }
 
             @Override
             public void onFailure(Throwable e) {
-
+                if (isActive) {
+                    view.showLoadingIndicator(false);
+                    view.showErrorMessage(e.getMessage());
+                }
             }
         });
     }
 
-    private Date getStartDate() {
-        Log.d(TAG, "getStartDate() called" + weekIndex);
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Date());
-        calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-        calendar.set(Calendar.WEEK_OF_YEAR, weekIndex);
-        return calendar.getTime();
-    }
 
-    private Date getEndDate() {
-        Log.d(TAG, "getStartDate() called" + weekIndex);
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Date());
-        calendar.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
-        calendar.set(Calendar.WEEK_OF_YEAR, weekIndex);
-        return calendar.getTime();
-    }
 }
