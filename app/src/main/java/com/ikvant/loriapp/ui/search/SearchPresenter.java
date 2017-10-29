@@ -60,21 +60,6 @@ public class SearchPresenter implements Contact.Presenter {
     }
 
     @Override
-    public void createNewEntry() {
-
-    }
-
-    @Override
-    public void searchEntries() {
-
-    }
-
-    @Override
-    public void reload() {
-
-    }
-
-    @Override
     public void search() {
         if (dateEnable) {
             searchByDate(from, to);
@@ -90,22 +75,12 @@ public class SearchPresenter implements Contact.Presenter {
 
     @Override
     public void setDateFrom(int dayOfMonth, int month, int year) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-        calendar.set(Calendar.MONTH, month);
-        calendar.set(Calendar.YEAR, year);
-        from = calendar.getTime();
-        view.setDateFrom(from);
+
     }
 
     @Override
     public void setDateTo(int dayOfMonth, int month, int year) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-        calendar.set(Calendar.MONTH, month);
-        calendar.set(Calendar.YEAR, year);
-        to = calendar.getTime();
-        view.setDateTo(to);
+
     }
 
     @Override
@@ -133,7 +108,8 @@ public class SearchPresenter implements Contact.Presenter {
         view.showDateToDialog(day, month, year);
     }
 
-    private void searchByDate(Date from, Date to) {
+    @Override
+    public void searchByDate(Date from, Date to) {
         controller.loadByDate(from, to, new LoadDataCallback<Set<TimeEntry>>() {
             @Override
             public void onSuccess(Set<TimeEntry> data) {
@@ -154,7 +130,8 @@ public class SearchPresenter implements Contact.Presenter {
         });
     }
 
-    private void searchByText(String text) {
+    @Override
+    public void searchByText(String text) {
         controller.loadByText(text, new LoadDataCallback<Set<TimeEntry>>() {
             @Override
             public void onSuccess(Set<TimeEntry> data) {
