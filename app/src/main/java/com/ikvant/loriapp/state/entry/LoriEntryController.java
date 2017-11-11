@@ -59,17 +59,17 @@ public class LoriEntryController implements EntryController {
     }
 
     @Override
-    public void loadByText(String text, LoadDataCallback<Set<TimeEntry>> callback) {
+    public void loadByText(String text, LoadDataCallback<SparseArray<Set<TimeEntry>>> callback) {
         executors.background().execute(() -> {
-            Set<TimeEntry> list = new HashSet<>(timeEntryDao.findByText(text));
+            SparseArray<Set<TimeEntry>> list = sortEntryByWeek(timeEntryDao.findByText(text));
             executors.mainThread().execute(() -> callback.onSuccess(list));
         });
     }
 
     @Override
-    public void loadByDate(Date from, Date to, LoadDataCallback<Set<TimeEntry>> callback) {
+    public void loadByDate(Date from, Date to, LoadDataCallback<SparseArray<Set<TimeEntry>>> callback) {
         executors.background().execute(() -> {
-            Set<TimeEntry> list = new HashSet<>(timeEntryDao.findByDate(from, to));
+            SparseArray<Set<TimeEntry>> list = sortEntryByWeek(timeEntryDao.findByDate(from, to));
             executors.mainThread().execute(() -> callback.onSuccess(list));
         });
     }

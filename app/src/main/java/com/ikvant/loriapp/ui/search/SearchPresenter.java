@@ -1,10 +1,11 @@
 package com.ikvant.loriapp.ui.search;
 
+import android.util.SparseArray;
+
 import com.ikvant.loriapp.database.timeentry.TimeEntry;
 import com.ikvant.loriapp.state.entry.EntryController;
 import com.ikvant.loriapp.state.entry.LoadDataCallback;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
@@ -75,12 +76,24 @@ public class SearchPresenter implements Contact.Presenter {
 
     @Override
     public void setDateFrom(int dayOfMonth, int month, int year) {
-
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(from);
+        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+        calendar.set(Calendar.MONTH, month);
+        calendar.set(Calendar.YEAR, year);
+        from = calendar.getTime();
+        view.setDateFrom(calendar.getTime());
     }
 
     @Override
     public void setDateTo(int dayOfMonth, int month, int year) {
-
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(from);
+        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+        calendar.set(Calendar.MONTH, month);
+        calendar.set(Calendar.YEAR, year);
+        to = calendar.getTime();
+        view.setDateTo(calendar.getTime());
     }
 
     @Override
@@ -110,17 +123,15 @@ public class SearchPresenter implements Contact.Presenter {
 
     @Override
     public void searchByDate(Date from, Date to) {
-        controller.loadByDate(from, to, new LoadDataCallback<Set<TimeEntry>>() {
+        controller.loadByDate(from, to, new LoadDataCallback<SparseArray<Set<TimeEntry>>>() {
             @Override
-            public void onSuccess(Set<TimeEntry> data) {
-                entryList = new ArrayList<>(data);
-                //view.showTimeEntries(entryList);
+            public void onSuccess(SparseArray<Set<TimeEntry>> data) {
+                view.showTimeEntries(data);
             }
 
             @Override
-            public void networkUnreachable(Set<TimeEntry> data) {
-                entryList = new ArrayList<>(data);
-                //view.showTimeEntries(entryList);
+            public void networkUnreachable(SparseArray<Set<TimeEntry>> data) {
+                view.showTimeEntries(data);
             }
 
             @Override
@@ -132,17 +143,15 @@ public class SearchPresenter implements Contact.Presenter {
 
     @Override
     public void searchByText(String text) {
-        controller.loadByText(text, new LoadDataCallback<Set<TimeEntry>>() {
+        controller.loadByText(text, new LoadDataCallback<SparseArray<Set<TimeEntry>>>() {
             @Override
-            public void onSuccess(Set<TimeEntry> data) {
-                entryList = new ArrayList<>(data);
-                //view.showTimeEntries(entryList);
+            public void onSuccess(SparseArray<Set<TimeEntry>> data) {
+                view.showTimeEntries(data);
             }
 
             @Override
-            public void networkUnreachable(Set<TimeEntry> data) {
-                entryList = new ArrayList<>(data);
-                //view.showTimeEntries(entryList);
+            public void networkUnreachable(SparseArray<Set<TimeEntry>> data) {
+                view.showTimeEntries(data);
             }
 
             @Override

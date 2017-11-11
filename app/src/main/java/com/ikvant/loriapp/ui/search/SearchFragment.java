@@ -27,7 +27,7 @@ import java.util.Set;
  * Created by ikvant.
  */
 
-public class SearchFragment extends Fragment implements Contact.View {
+public class SearchFragment extends Fragment implements Contact.View, ListAdapter.OnItemClickListener {
 
 
     private DateFormat dateFormat = new SimpleDateFormat("dd MMM");
@@ -53,7 +53,6 @@ public class SearchFragment extends Fragment implements Contact.View {
 
         to.setOnClickListener(v -> {
             presenter.openToDialog();
-
         });
 
         from.setOnClickListener(v -> {
@@ -84,6 +83,7 @@ public class SearchFragment extends Fragment implements Contact.View {
         recyclerView = root.findViewById(R.id.searched_entry_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new ListAdapter();
+        adapter.setClickItemListener(this);
         recyclerView.setAdapter(adapter);
 
         return root;
@@ -136,5 +136,10 @@ public class SearchFragment extends Fragment implements Contact.View {
 
     public static SearchFragment newInstance() {
         return new SearchFragment();
+    }
+
+    @Override
+    public void onClick(View view, String id) {
+        presenter.openEntryDetail(id);
     }
 }

@@ -14,9 +14,9 @@ import java.util.Set;
 public interface EntryController {
     void loadTimeEntry(String id, LoadDataCallback<TimeEntry> callback);
 
-    void loadByText(String text, LoadDataCallback<Set<TimeEntry>> callback);
+    void loadByText(String text, LoadDataCallback<SparseArray<Set<TimeEntry>>> callback);
 
-    void loadByDate(Date from, Date to, LoadDataCallback<Set<TimeEntry>> callback);
+    void loadByDate(Date from, Date to, LoadDataCallback<SparseArray<Set<TimeEntry>>> callback);
 
     void createNewTimeEntry(TimeEntry task, LoadDataCallback<TimeEntry> callback);
 
