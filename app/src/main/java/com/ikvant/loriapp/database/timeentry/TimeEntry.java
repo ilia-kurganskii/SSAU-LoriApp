@@ -4,10 +4,12 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
 import com.google.gson.annotations.Expose;
+import com.ikvant.loriapp.database.tags.Tag;
 import com.ikvant.loriapp.database.task.Task;
 import com.ikvant.loriapp.database.user.User;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -38,6 +40,16 @@ public class TimeEntry {
 
     @Expose
     private boolean deleted = false;
+
+    private List<Tag> tags;
+
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
+    }
 
     public boolean isDeleted() {
         return deleted;

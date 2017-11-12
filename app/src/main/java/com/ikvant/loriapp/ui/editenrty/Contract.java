@@ -49,6 +49,8 @@ public interface Contract {
         void goBack();
 
         void setProject(int position);
+
+        void setTags(String[] nameTags, boolean[] selectedTags, List<String> selectedListTags);
     }
 
     interface Presenter {
@@ -75,6 +77,10 @@ public interface Contract {
         void onStart();
 
         void onPause();
+
+        void checkTag(int index, boolean checked);
+
+        void saveTags();
 
     }
 

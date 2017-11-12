@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.ikvant.loriapp.R;
+import com.ikvant.loriapp.database.tags.Tag;
 import com.ikvant.loriapp.database.timeentry.TimeEntry;
 import com.ikvant.loriapp.utils.DateUtils;
 
@@ -86,6 +87,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ItemViewHolder
     private class TaskHolder extends ItemViewHolder<TimeEntry> implements View.OnClickListener {
         private TextView desciription;
         private TextView taskName;
+        private TextView tags;
         private TextView time;
         private AppCompatImageView syncView;
 
@@ -98,6 +100,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ItemViewHolder
             desciription = itemView.findViewById(R.id.i_description);
             taskName = itemView.findViewById(R.id.i_task);
             time = itemView.findViewById(R.id.i_time);
+            tags = itemView.findViewById(R.id.i_tags);
             syncView = itemView.findViewById(R.id.i_sync);
         }
 
@@ -107,7 +110,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ItemViewHolder
             taskName.setText(entry.getTaskName());
             time.setText(String.format("%2dh %2dm", entry.getTimeInMinutes() / 60, entry.getTimeInMinutes() % 60));
             syncView.setImageResource(entry.isSync() ? R.drawable.ic_sync : R.drawable.ic_not_sync);
-
+            tags.setText(getFormattedTags(entry.getTags()));
             id = entry.getId();
         }
 
@@ -117,6 +120,14 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ItemViewHolder
             if (listener != null) {
                 listener.onClick(view, id);
             }
+        }
+
+        private String getFormattedTags(List<Tag> tags) {
+            StringBuilder result = new StringBuilder();
+            for (Tag tag : tags) {
+                result.append(tag.getName()).append(" ");
+            }
+            return result.toString();
         }
     }
 

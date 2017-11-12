@@ -1,6 +1,7 @@
 package com.ikvant.loriapp.network;
 
 import com.ikvant.loriapp.database.project.Project;
+import com.ikvant.loriapp.database.tags.Tag;
 import com.ikvant.loriapp.database.task.Task;
 import com.ikvant.loriapp.database.timeentry.TimeEntry;
 import com.ikvant.loriapp.database.token.Token;
@@ -46,6 +47,9 @@ public interface ApiService {
 
     @GET("/app/rest/v2/entities/ts$Task?view=task-full")
     Call<List<Task>> getTasks(@Header("Authorization") String token);
+
+    @GET("/app/rest/v2/entities/ts$Tag")
+    Call<List<Tag>> getTags(@Header("Authorization") String token);
 
     @GET("/app/rest/v2/entities/ts$Project")
     Call<List<Project>> getProjects(@Header("Authorization") String token);

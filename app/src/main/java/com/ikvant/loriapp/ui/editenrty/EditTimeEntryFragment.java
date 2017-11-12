@@ -2,10 +2,12 @@ package com.ikvant.loriapp.ui.editenrty;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.ContentLoadingProgressBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatSpinner;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,10 +41,14 @@ public class EditTimeEntryFragment extends Fragment implements Contract.View, Ti
     private EditText description;
     private EditText dateEditText;
     private EditText time;
+    private EditText editTags;
     private Button save;
     private Button delete;
     private ContentLoadingProgressBar progressBar;
     private View content;
+
+    private String[] nameTags;
+    private boolean[] checkedTags;
 
     private Contract.Presenter presenter;
 
@@ -59,6 +65,7 @@ public class EditTimeEntryFragment extends Fragment implements Contract.View, Ti
         projectSpinner = root.findViewById(R.id.edit_project_spinner);
         description = root.findViewById(R.id.edit_description);
         dateEditText = root.findViewById(R.id.edit_date);
+        editTags = root.findViewById(R.id.edit_tags);
         save = root.findViewById(R.id.edit_save);
         delete = root.findViewById(R.id.edit_delete);
         time = root.findViewById(R.id.edit_time);
@@ -111,6 +118,21 @@ public class EditTimeEntryFragment extends Fragment implements Contract.View, Ti
 
         delete.setOnClickListener((view) -> {
             presenter.deleteEntry();
+        });
+
+        editTags.setOnClickListener(v -> {
+            AlertDialog dialog = new AlertDialog.Builder(getActivity())
+                    .setTitle(R.string.select_tags)
+                    .setMultiChoiceItems(nameTags, checkedTags, new DialogInterface.OnMultiChoiceClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int indexSelected, boolean isChecked) {
+                            presenter.checkTag(indexSelected, isChecked);
+                        }
+                    }).setPositiveButton("OK", (dialog1, id) -> {
+                        presenter.saveTags();
+                    }).setNegativeButton("Cancel", (dialog12, id) -> {
+                    }).create();
+            dialog.show();
         });
 
         setHasOptionsMenu(true);
@@ -206,6 +228,17 @@ public class EditTimeEntryFragment extends Fragment implements Contract.View, Ti
     @Override
     public void setProject(int position) {
         projectSpinner.setSelection(position);
+    }
+
+    @Override
+    public void setTags(String[] nameTags, boolean[] selectedTags, List<String> selectedListTags) {
+        this.nameTags = nameTags;
+        this.checkedTags = selectedTags;
+        StringBuilder tags = new StringBuilder();
+        for (String name : selectedListTags) {
+            tags.append(name).append(" ");
+        }
+        editTags.setText(tags.toString());
     }
 
     @Override

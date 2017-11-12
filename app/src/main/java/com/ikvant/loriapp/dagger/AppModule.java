@@ -11,6 +11,7 @@ import com.google.gson.GsonBuilder;
 import com.ikvant.loriapp.LoriApp;
 import com.ikvant.loriapp.database.LoriDatabase;
 import com.ikvant.loriapp.database.project.ProjectDao;
+import com.ikvant.loriapp.database.tags.TagDao;
 import com.ikvant.loriapp.database.task.TaskDao;
 import com.ikvant.loriapp.database.timeentry.TimeEntryDao;
 import com.ikvant.loriapp.database.token.TokenDao;
@@ -74,6 +75,12 @@ class AppModule {
     @Provides
     ProjectDao provideProjectDao(LoriDatabase db) {
         return db.projectDao();
+    }
+
+    @Singleton
+    @Provides
+    TagDao provideTagsDao(LoriDatabase db) {
+        return db.tagDao();
     }
 
 

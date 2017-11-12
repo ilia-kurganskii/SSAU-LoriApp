@@ -6,6 +6,7 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import com.ikvant.loriapp.database.project.Project;
+import com.ikvant.loriapp.database.tags.Tag;
 import com.ikvant.loriapp.database.task.Task;
 import com.ikvant.loriapp.database.timeentry.TimeEntry;
 import com.ikvant.loriapp.database.token.Token;
@@ -80,11 +81,13 @@ public class LoriApiService {
         return executeRequest(service.getProjects(getFormattedToken()));
     }
 
+    public List<Tag> getTags() throws NetworkApiException {
+        return executeRequest(service.getTags(getFormattedToken()));
+    }
+
     private String getFormattedToken() {
         return "Bearer " + token;
     }
-
-    private int debugStatic = 0;
 
     private <T> T executeRequest(Call<T> callable) throws NetworkApiException {
         handleNetworkException();

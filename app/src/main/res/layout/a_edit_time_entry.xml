@@ -81,6 +81,19 @@
             tools:text="Description" />
 
 
+        <EditText
+            android:id="@+id/edit_tags"
+            style="@style/Lori.ClickableEditView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/edit_description"
+            android:hint="@string/spend_time"
+            tools:text="Time" />
+
         <Button
             android:id="@+id/edit_save"
             style="@style/Widget.AppCompat.Button.Colored"
@@ -90,7 +103,7 @@
             android:text="@string/save"
             app:layout_constraintEnd_toStartOf="@id/edit_delete"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/edit_description" />
+            app:layout_constraintTop_toBottomOf="@id/edit_tags" />
 
         <Button
             android:id="@+id/edit_delete"
@@ -101,7 +114,7 @@
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/edit_save"
-            app:layout_constraintTop_toBottomOf="@id/edit_description" />
+            app:layout_constraintTop_toBottomOf="@id/edit_tags" />
 
     </android.support.constraint.ConstraintLayout>
 </RelativeLayout>
