@@ -271,4 +271,25 @@ public class LoriEntryController implements EntryController {
         calendar.setTime(date);
         return calendar.get(Calendar.WEEK_OF_YEAR);
     }
+
+    @Override
+    public void reload(Callback callback) {
+        refresh();
+        loadTimeEntries(new LoadDataCallback<SparseArray<Set<TimeEntry>>>() {
+            @Override
+            public void onSuccess(SparseArray<Set<TimeEntry>> data) {
+                callback.onSuccess();
+            }
+
+            @Override
+            public void networkUnreachable(SparseArray<Set<TimeEntry>> localData) {
+                callback.onOffline();
+            }
+
+            @Override
+            public void onFailure(Throwable e) {
+                callback.onFailure(e);
+            }
+        });
+    }
 }

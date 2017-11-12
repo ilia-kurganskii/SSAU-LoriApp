@@ -17,7 +17,7 @@ import javax.inject.Singleton;
  */
 
 @Singleton
-public class TaskController {
+public class TaskController implements Reloadable {
 
     private LoriApiService apiService;
     private AppExecutors executors;
@@ -33,7 +33,11 @@ public class TaskController {
         this.taskDao = taskDao;
     }
 
-    public void loadTasks(final LoadDataCallback<List<Task>> callback) {
+    public void refresh() {
+        cacheIsDirty = true;
+    }
+
+    public void load(final LoadDataCallback<List<Task>> callback) {
         if (!cacheIsDirty) {
             callback.onSuccess(cacheTasks);
         }
@@ -67,6 +71,27 @@ public class TaskController {
         executors.background().execute(() -> {
             Task data = taskDao.load(id);
             executors.mainThread().execute(() -> callback.onSuccess(data));
+        });
+    }
+
+    @Override
+    public void reload(Callback callback) {
+        refresh();
+        load(new LoadDataCallback<List<Task>>() {
+            @Override
+            public void onSuccess(List<Task> data) {
+                callback.onSuccess();
+            }
+
+            @Override
+            public void networkUnreachable(List<Task> localData) {
+                callback.onOffline();
+            }
+
+            @Override
+            public void onFailure(Throwable e) {
+                callback.onFailure(e);
+            }
         });
     }
 }

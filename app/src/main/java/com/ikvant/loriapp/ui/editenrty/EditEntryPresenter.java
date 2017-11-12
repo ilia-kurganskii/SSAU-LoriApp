@@ -164,7 +164,7 @@ public class EditEntryPresenter implements Contract.Presenter {
 
 
     private void loadProjects() {
-        projectController.loadProjects(new LoadDataCallback<List<Project>>() {
+        projectController.load(new LoadDataCallback<List<Project>>() {
             @Override
             public void onSuccess(List<Project> data) {
                 projectList = data;

@@ -11,7 +11,7 @@ import java.util.Set;
  * Created by ikvant.
  */
 
-public interface EntryController {
+public interface EntryController extends Reloadable {
     void loadTimeEntry(String id, LoadDataCallback<TimeEntry> callback);
 
     void loadByText(String text, LoadDataCallback<SparseArray<Set<TimeEntry>>> callback);

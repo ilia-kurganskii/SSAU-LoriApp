@@ -15,7 +15,7 @@ import javax.inject.Singleton;
  */
 
 @Singleton
-public class UserController {
+public class UserController implements Reloadable {
     private LoriApiService apiService;
     private AppExecutors executors;
     private UserDao userDao;
@@ -57,5 +57,26 @@ public class UserController {
 
     public void refresh() {
         cacheIsDirty = true;
+    }
+
+    @Override
+    public void reload(Callback callback) {
+        refresh();
+        getUser(new LoadDataCallback<User>() {
+            @Override
+            public void onSuccess(User data) {
+                callback.onSuccess();
+            }
+
+            @Override
+            public void networkUnreachable(User localData) {
+                callback.onOffline();
+            }
+
+            @Override
+            public void onFailure(Throwable e) {
+                callback.onFailure(e);
+            }
+        });
     }
 }

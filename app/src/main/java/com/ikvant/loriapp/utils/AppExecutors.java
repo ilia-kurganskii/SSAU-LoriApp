@@ -33,7 +33,7 @@ public class AppExecutors {
 
     @Inject
     public AppExecutors() {
-        this(Executors.newSingleThreadExecutor(), new MainThreadExecutor());
+        this(Executors.newFixedThreadPool(3), new MainThreadExecutor());
     }
 
     public Executor background() {

@@ -3,10 +3,11 @@ package com.ikvant.loriapp.ui.tasklist;
 import android.util.SparseArray;
 
 import com.ikvant.loriapp.database.timeentry.TimeEntry;
+import com.ikvant.loriapp.state.SyncController;
 import com.ikvant.loriapp.state.entry.EntryController;
 import com.ikvant.loriapp.state.entry.LoadDataCallback;
+import com.ikvant.loriapp.state.entry.Reloadable;
 
-import java.util.List;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -22,15 +23,15 @@ public class TaskEntryPresenter implements Contract.Presenter {
     private Contract.View view;
 
     private EntryController entryController;
+    private SyncController syncController;
 
-    private List<TimeEntry> entries;
-
-    private boolean isFirstLoad;
+    private boolean isFirstLoad = true;
     private boolean isActive;
 
     @Inject
-    public TaskEntryPresenter(EntryController entryController) {
+    public TaskEntryPresenter(EntryController entryController, SyncController syncController) {
         this.entryController = entryController;
+        this.syncController = syncController;
     }
 
     public void setView(Contract.View view) {
@@ -75,8 +76,32 @@ public class TaskEntryPresenter implements Contract.Presenter {
             view.showLoadingIndicator(true);
         }
         if (force) {
-            entryController.refresh();
+            syncController.sync(new Reloadable.Callback() {
+                @Override
+                public void onSuccess() {
+                    loadTimeEntries();
+                }
+
+                @Override
+                public void onOffline() {
+                    loadTimeEntries();
+                }
+
+                @Override
+                public void onFailure(Throwable e) {
+                    if (isActive) {
+                        view.showLoadingIndicator(false);
+                        view.showErrorMessage(e.getMessage());
+                    }
+                }
+            });
+        } else {
+            loadTimeEntries();
         }
+
+    }
+
+    private void loadTimeEntries() {
         entryController.loadTimeEntries(new LoadDataCallback<SparseArray<Set<TimeEntry>>>() {
             @Override
             public void onSuccess(SparseArray<Set<TimeEntry>> data) {

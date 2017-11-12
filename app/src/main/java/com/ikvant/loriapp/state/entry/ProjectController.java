@@ -17,7 +17,7 @@ import javax.inject.Singleton;
  */
 
 @Singleton
-public class ProjectController {
+public class ProjectController implements Reloadable {
 
     private LoriApiService apiService;
     private AppExecutors executors;
@@ -33,7 +33,11 @@ public class ProjectController {
         this.projectDao = projectDao;
     }
 
-    public void loadProjects(final LoadDataCallback<List<Project>> callback) {
+    public void refresh() {
+        cacheIsDirty = true;
+    }
+
+    public void load(final LoadDataCallback<List<Project>> callback) {
         if (!cacheIsDirty) {
             callback.onSuccess(cacheTasks);
         }
@@ -52,6 +56,27 @@ public class ProjectController {
                 } else {
                     executors.mainThread().execute(() -> callback.onFailure(e));
                 }
+            }
+        });
+    }
+
+    @Override
+    public void reload(Callback callback) {
+        refresh();
+        load(new LoadDataCallback<List<Project>>() {
+            @Override
+            public void onSuccess(List<Project> data) {
+                callback.onSuccess();
+            }
+
+            @Override
+            public void networkUnreachable(List<Project> localData) {
+                callback.onOffline();
+            }
+
+            @Override
+            public void onFailure(Throwable e) {
+                callback.onFailure(e);
             }
         });
     }
