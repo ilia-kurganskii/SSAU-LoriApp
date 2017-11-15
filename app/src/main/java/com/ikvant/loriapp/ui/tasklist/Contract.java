@@ -12,7 +12,9 @@ import java.util.Set;
 
 public interface Contract {
     interface View {
-        void showTimeEntries(SparseArray<Set<TimeEntry>> entryList);
+        void setTimeEntries(SparseArray<Set<TimeEntry>> entryList);
+
+        void addTimeEntries(SparseArray<Set<TimeEntry>> entryList);
 
         void setPresenter(Presenter presenter);
 
@@ -42,5 +44,7 @@ public interface Contract {
         void searchEntries();
 
         void reload();
+
+        void onEndOfPage();
     }
 }

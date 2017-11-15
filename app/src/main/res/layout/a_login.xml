@@ -37,6 +37,7 @@
 
             <EditText
                 android:id="@+id/login"
+                android:text="admin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/login.login_hint"
@@ -58,6 +59,7 @@
                 android:id="@+id/password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:text="admin"
                 android:hint="@string/login.pass_hint"
                 android:inputType="textPassword"
                 android:imeOptions="actionDone"

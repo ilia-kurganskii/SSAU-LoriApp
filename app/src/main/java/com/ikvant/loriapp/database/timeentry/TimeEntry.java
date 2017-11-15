@@ -8,6 +8,7 @@ import com.ikvant.loriapp.database.tags.Tag;
 import com.ikvant.loriapp.database.task.Task;
 import com.ikvant.loriapp.database.user.User;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -141,7 +142,8 @@ public class TimeEntry {
     public static TimeEntry createNew() {
         TimeEntry timeEntry = new TimeEntry();
         timeEntry.setDate(new Date());
-        timeEntry.setTimeInMinutes(0);
+        timeEntry.setTimeInMinutes(60);
+        timeEntry.setTags(new ArrayList<>());
         timeEntry.setDeleted(false);
         timeEntry.setId(NEW_ID + UUID.randomUUID());
         return timeEntry;

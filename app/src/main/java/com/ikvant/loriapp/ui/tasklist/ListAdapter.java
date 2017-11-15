@@ -27,13 +27,31 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ItemViewHolder
     private List<Object> items = new ArrayList<>(0);
     private OnItemClickListener listener;
 
+    private int lastWeekIndex;
+
     public void setItems(SparseArray<Set<TimeEntry>> list) {
         items.clear();
         for (int i = 0; i < list.size(); i++) {
             items.add(list.keyAt(i));
             items.addAll(list.valueAt(i));
+            lastWeekIndex = list.keyAt(i);
         }
         notifyDataSetChanged();
+    }
+
+    public void addItems(SparseArray<Set<TimeEntry>> list) {
+        int lastPosition = items.size();
+        if (lastWeekIndex != list.keyAt(0)) {
+            items.add(list.keyAt(0));
+            lastWeekIndex = list.keyAt(0);
+        }
+        items.addAll(list.valueAt(0));
+        for (int i = 1; i < list.size(); i++) {
+            items.add(list.keyAt(i));
+            items.addAll(list.valueAt(i));
+            lastWeekIndex = list.keyAt(i);
+        }
+        notifyItemInserted(lastPosition);
     }
 
     // Create new views (invoked by the layout manager)

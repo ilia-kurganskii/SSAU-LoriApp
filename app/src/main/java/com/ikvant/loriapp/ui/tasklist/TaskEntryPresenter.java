@@ -19,6 +19,7 @@ import javax.inject.Singleton;
 @Singleton
 public class TaskEntryPresenter implements Contract.Presenter {
     private static final String TAG = "TaskEntryPresenter";
+    private static final int OFFSET_STEP = 8;
 
     private Contract.View view;
 
@@ -27,6 +28,10 @@ public class TaskEntryPresenter implements Contract.Presenter {
 
     private boolean isFirstLoad = true;
     private boolean isActive;
+
+    private int loadedOffset;
+
+    private boolean isLoading = false;
 
     @Inject
     public TaskEntryPresenter(EntryController entryController, SyncController syncController) {
@@ -67,7 +72,7 @@ public class TaskEntryPresenter implements Contract.Presenter {
 
     @Override
     public void reload() {
-        reload(isFirstLoad, true);
+        reload(true, true);
     }
 
     private void reload(boolean force, boolean byUser) {
@@ -76,15 +81,16 @@ public class TaskEntryPresenter implements Contract.Presenter {
             view.showLoadingIndicator(true);
         }
         if (force) {
+            loadedOffset = 0;
             syncController.sync(new Reloadable.Callback() {
                 @Override
                 public void onSuccess() {
-                    loadTimeEntries();
+                    loadTimeEntries(0);
                 }
 
                 @Override
                 public void onOffline() {
-                    loadTimeEntries();
+                    loadTimeEntries(0);
                 }
 
                 @Override
@@ -96,39 +102,62 @@ public class TaskEntryPresenter implements Contract.Presenter {
                 }
             });
         } else {
-            loadTimeEntries();
+            loadTimeEntries(loadedOffset);
         }
 
     }
 
-    private void loadTimeEntries() {
-        entryController.loadTimeEntries(new LoadDataCallback<SparseArray<Set<TimeEntry>>>() {
-            @Override
-            public void onSuccess(SparseArray<Set<TimeEntry>> data) {
-                if (isActive) {
-                    view.showLoadingIndicator(false);
-                    view.showTimeEntries(data);
+    private void loadTimeEntries(int offset) {
+        if (!isLoading) {
+            isLoading = true;
+            entryController.loadTimeEntries(offset, OFFSET_STEP, new LoadDataCallback<SparseArray<Set<TimeEntry>>>() {
+                @Override
+                public void onSuccess(SparseArray<Set<TimeEntry>> data) {
+                    if (isActive) {
+                        view.showLoadingIndicator(false);
+                        if (data.size() > 0) {
+                            if (offset == 0) {
+                                view.setTimeEntries(data);
+                            } else {
+                                view.addTimeEntries(data);
+                            }
+                        }
+                        loadedOffset = offset + OFFSET_STEP;
+                    }
+                    isLoading = false;
                 }
-            }
 
-            @Override
-            public void networkUnreachable(SparseArray<Set<TimeEntry>> localData) {
-                if (isActive) {
-                    view.showLoadingIndicator(false);
-                    view.showTimeEntries(localData);
-                    view.showOfflineMessage();
+                @Override
+                public void networkUnreachable(SparseArray<Set<TimeEntry>> localData) {
+                    if (isActive) {
+                        view.showLoadingIndicator(false);
+                        if (localData.size() > 0) {
+                            if (offset == 0) {
+                                view.setTimeEntries(localData);
+                            } else {
+                                view.addTimeEntries(localData);
+                            }
+                        }
+                        view.showOfflineMessage();
+                        loadedOffset = offset + OFFSET_STEP;
+                    }
+                    isLoading = false;
                 }
-            }
 
-            @Override
-            public void onFailure(Throwable e) {
-                if (isActive) {
-                    view.showLoadingIndicator(false);
-                    view.showErrorMessage(e.getMessage());
+                @Override
+                public void onFailure(Throwable e) {
+                    if (isActive) {
+                        view.showLoadingIndicator(false);
+                        view.showErrorMessage(e.getMessage());
+                    }
+                    isLoading = false;
                 }
-            }
-        });
+            });
+        }
     }
 
+    public void onEndOfPage() {
+        loadTimeEntries(loadedOffset);
+    }
 
 }

@@ -22,9 +22,7 @@ public interface EntryController extends Reloadable {
 
     void updateTimeEntry(TimeEntry timeEntry, LoadDataCallback<TimeEntry> callback);
 
-    void loadTimeEntries(LoadDataCallback<SparseArray<Set<TimeEntry>>> callback);
-
-    void loadTimeEntriesByWeek(int weekIndex, LoadDataCallback<Set<TimeEntry>> callback);
+    void loadTimeEntries(int offset, int size, LoadDataCallback<SparseArray<Set<TimeEntry>>> callback);
 
     void delete(String id, LoadDataCallback<TimeEntry> callback);
 

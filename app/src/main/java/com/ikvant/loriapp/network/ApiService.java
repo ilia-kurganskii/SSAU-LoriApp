@@ -20,6 +20,7 @@ import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 /**
  * Created by ikvant.
@@ -44,6 +45,9 @@ public interface ApiService {
 
     @GET("/app/rest/v2/entities/ts$TimeEntry?view=timeEntry-full")
     Call<List<TimeEntry>> getTimeEntries(@Header("Authorization") String token);
+
+    @GET("/app/rest/v2/entities/ts$TimeEntry?view=timeEntry-full&sort=date")
+    Call<List<TimeEntry>> getTimeEntries(@Query("offset") int offset, @Query("limit") int limit, @Header("Authorization") String token);
 
     @GET("/app/rest/v2/entities/ts$Task?view=task-full")
     Call<List<Task>> getTasks(@Header("Authorization") String token);

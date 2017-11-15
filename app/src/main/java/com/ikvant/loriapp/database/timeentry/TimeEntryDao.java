@@ -15,8 +15,8 @@ import java.util.List;
 
 @Dao
 public interface TimeEntryDao {
-    @Query("SELECT * FROM TimeEntry WHERE deleted=:deleted")
-    List<TimeEntry> loadAll(Boolean deleted);
+    @Query("SELECT * FROM TimeEntry WHERE deleted=:deleted LIMIT :offset")
+    List<TimeEntry> loadAll(Boolean deleted, int offset);
 
     @Query("DELETE FROM TimeEntry WHERE id=:id")
     void delete(String id);

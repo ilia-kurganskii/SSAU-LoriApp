@@ -31,17 +31,40 @@ public class ListTimeEntryFragment extends Fragment implements Contract.View, Li
     private ListAdapter listAdapter;
     private SwipeRefreshLayout refreshLayout;
 
+    private LinearLayoutManager layoutManager;
 
     private Contract.Presenter presenter;
+
+    private RecyclerView.OnScrollListener recyclerViewOnScrollListener = new RecyclerView.OnScrollListener() {
+        @Override
+        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            super.onScrollStateChanged(recyclerView, newState);
+        }
+
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+            int visibleItemCount = layoutManager.getChildCount();
+            int totalItemCount = layoutManager.getItemCount();
+            int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
+
+            if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount
+                    && firstVisibleItemPosition >= 0) {
+                presenter.onEndOfPage();
+            }
+        }
+    };
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         root = inflater.inflate(R.layout.a_task_list, container, false);
-        // Set up tasks view
+
+        layoutManager = new LinearLayoutManager(getContext());
         recyclerView = root.findViewById(R.id.time_entry_list);
         recyclerView.setHasFixedSize(false);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.addOnScrollListener(recyclerViewOnScrollListener);
+        recyclerView.setLayoutManager(layoutManager);
 
         listAdapter = new ListAdapter();
         listAdapter.setClickItemListener(this);
@@ -82,8 +105,13 @@ public class ListTimeEntryFragment extends Fragment implements Contract.View, Li
     }
 
     @Override
-    public void showTimeEntries(SparseArray<Set<TimeEntry>> entryList) {
+    public void setTimeEntries(SparseArray<Set<TimeEntry>> entryList) {
         listAdapter.setItems(entryList);
+    }
+
+    @Override
+    public void addTimeEntries(SparseArray<Set<TimeEntry>> entryList) {
+        listAdapter.addItems(entryList);
     }
 
     @Override
