@@ -5,11 +5,11 @@ import com.ikvant.loriapp.database.project.Project;
 import com.ikvant.loriapp.database.tags.Tag;
 import com.ikvant.loriapp.database.task.Task;
 import com.ikvant.loriapp.database.timeentry.TimeEntry;
-import com.ikvant.loriapp.state.entry.EntryController;
 import com.ikvant.loriapp.state.entry.LoadDataCallback;
 import com.ikvant.loriapp.state.entry.ProjectController;
 import com.ikvant.loriapp.state.entry.TagsController;
 import com.ikvant.loriapp.state.entry.TaskController;
+import com.ikvant.loriapp.state.entry.TimeEntryController;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -35,7 +35,7 @@ public class EditEntryPresenter implements Contract.Presenter {
     private List<Project> projectList = Collections.emptyList();
     private List<Tag> tagList = Collections.emptyList();
 
-    private EntryController entryController;
+    private TimeEntryController timeEntryController;
     private TaskController taskController;
     private ProjectController projectController;
     private TagsController tagsController;
@@ -45,8 +45,8 @@ public class EditEntryPresenter implements Contract.Presenter {
     private Contract.View view;
 
     @Inject
-    public EditEntryPresenter(EntryController entryController, TaskController taskController, ProjectController projectController, TagsController tagsController) {
-        this.entryController = entryController;
+    public EditEntryPresenter(TimeEntryController timeEntryController, TaskController taskController, ProjectController projectController, TagsController tagsController) {
+        this.timeEntryController = timeEntryController;
         this.taskController = taskController;
         this.projectController = projectController;
         this.tagsController = tagsController;
@@ -82,16 +82,16 @@ public class EditEntryPresenter implements Contract.Presenter {
             return;
         }
         if (id != null) {
-            entryController.updateTimeEntry(currentTimeEntry, saveEntryCallback);
+            timeEntryController.updateTimeEntry(currentTimeEntry, saveEntryCallback);
         } else {
-            entryController.createNewTimeEntry(currentTimeEntry, saveEntryCallback);
+            timeEntryController.createNewTimeEntry(currentTimeEntry, saveEntryCallback);
         }
     }
 
     @Override
     public void deleteEntry() {
         if (id != null) {
-            entryController.delete(id, saveEntryCallback);
+            timeEntryController.delete(id, saveEntryCallback);
         }
     }
 
@@ -239,7 +239,7 @@ public class EditEntryPresenter implements Contract.Presenter {
             view.showModifyButton();
             view.showDeleteButton();
 
-            entryController.loadTimeEntry(id, new LoadDataCallback<TimeEntry>() {
+            timeEntryController.loadTimeEntry(id, new LoadDataCallback<TimeEntry>() {
                 @Override
                 public void onSuccess(TimeEntry data) {
                     currentTimeEntry = data;

@@ -1,14 +1,12 @@
 package com.ikvant.loriapp.ui.tasklist;
 
-import android.util.SparseArray;
-
 import com.ikvant.loriapp.database.timeentry.TimeEntry;
 import com.ikvant.loriapp.state.SyncController;
-import com.ikvant.loriapp.state.entry.EntryController;
 import com.ikvant.loriapp.state.entry.LoadDataCallback;
 import com.ikvant.loriapp.state.entry.Reloadable;
+import com.ikvant.loriapp.state.entry.TimeEntryController;
 
-import java.util.Set;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -23,7 +21,7 @@ public class TaskEntryPresenter implements Contract.Presenter {
 
     private Contract.View view;
 
-    private EntryController entryController;
+    private TimeEntryController timeEntryController;
     private SyncController syncController;
 
     private boolean isFirstLoad = true;
@@ -34,8 +32,8 @@ public class TaskEntryPresenter implements Contract.Presenter {
     private boolean isLoading = false;
 
     @Inject
-    public TaskEntryPresenter(EntryController entryController, SyncController syncController) {
-        this.entryController = entryController;
+    public TaskEntryPresenter(TimeEntryController timeEntryController, SyncController syncController) {
+        this.timeEntryController = timeEntryController;
         this.syncController = syncController;
     }
 
@@ -110,17 +108,15 @@ public class TaskEntryPresenter implements Contract.Presenter {
     private void loadTimeEntries(int offset) {
         if (!isLoading) {
             isLoading = true;
-            entryController.loadTimeEntries(offset, OFFSET_STEP, new LoadDataCallback<SparseArray<Set<TimeEntry>>>() {
+            timeEntryController.loadTimeEntries(offset, OFFSET_STEP, new LoadDataCallback<List<TimeEntry>>() {
                 @Override
-                public void onSuccess(SparseArray<Set<TimeEntry>> data) {
+                public void onSuccess(List<TimeEntry> data) {
                     if (isActive) {
                         view.showLoadingIndicator(false);
-                        if (data.size() > 0) {
-                            if (offset == 0) {
-                                view.setTimeEntries(data);
-                            } else {
-                                view.addTimeEntries(data);
-                            }
+                        if (offset == 0) {
+                            view.setTimeEntries(data);
+                        } else {
+                            view.addTimeEntries(data);
                         }
                         loadedOffset = offset + OFFSET_STEP;
                     }
@@ -128,15 +124,13 @@ public class TaskEntryPresenter implements Contract.Presenter {
                 }
 
                 @Override
-                public void networkUnreachable(SparseArray<Set<TimeEntry>> localData) {
+                public void networkUnreachable(List<TimeEntry> localData) {
                     if (isActive) {
                         view.showLoadingIndicator(false);
-                        if (localData.size() > 0) {
-                            if (offset == 0) {
-                                view.setTimeEntries(localData);
-                            } else {
-                                view.addTimeEntries(localData);
-                            }
+                        if (offset == 0) {
+                            view.setTimeEntries(localData);
+                        } else {
+                            view.addTimeEntries(localData);
                         }
                         view.showOfflineMessage();
                         loadedOffset = offset + OFFSET_STEP;

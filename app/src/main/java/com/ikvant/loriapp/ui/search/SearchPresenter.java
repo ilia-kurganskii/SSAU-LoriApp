@@ -1,16 +1,13 @@
 package com.ikvant.loriapp.ui.search;
 
-import android.util.SparseArray;
-
 import com.ikvant.loriapp.database.timeentry.TimeEntry;
-import com.ikvant.loriapp.state.entry.EntryController;
 import com.ikvant.loriapp.state.entry.LoadDataCallback;
+import com.ikvant.loriapp.state.entry.TimeEntryController;
 
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -22,7 +19,7 @@ import javax.inject.Singleton;
 @Singleton
 public class SearchPresenter implements Contact.Presenter {
 
-    private EntryController controller;
+    private TimeEntryController controller;
 
     private Contact.View view;
     private boolean dateEnable;
@@ -33,7 +30,7 @@ public class SearchPresenter implements Contact.Presenter {
     private List<TimeEntry> entryList = Collections.emptyList();
 
     @Inject
-    public SearchPresenter(EntryController controller) {
+    public SearchPresenter(TimeEntryController controller) {
         this.controller = controller;
     }
 
@@ -123,14 +120,14 @@ public class SearchPresenter implements Contact.Presenter {
 
     @Override
     public void searchByDate(Date from, Date to) {
-        controller.loadByDate(from, to, new LoadDataCallback<SparseArray<Set<TimeEntry>>>() {
+        controller.loadByDate(from, to, new LoadDataCallback<List<TimeEntry>>() {
             @Override
-            public void onSuccess(SparseArray<Set<TimeEntry>> data) {
+            public void onSuccess(List<TimeEntry> data) {
                 view.showTimeEntries(data);
             }
 
             @Override
-            public void networkUnreachable(SparseArray<Set<TimeEntry>> data) {
+            public void networkUnreachable(List<TimeEntry> data) {
                 view.showTimeEntries(data);
             }
 
@@ -143,14 +140,14 @@ public class SearchPresenter implements Contact.Presenter {
 
     @Override
     public void searchByText(String text) {
-        controller.loadByText(text, new LoadDataCallback<SparseArray<Set<TimeEntry>>>() {
+        controller.loadByText(text, new LoadDataCallback<List<TimeEntry>>() {
             @Override
-            public void onSuccess(SparseArray<Set<TimeEntry>> data) {
+            public void onSuccess(List<TimeEntry> data) {
                 view.showTimeEntries(data);
             }
 
             @Override
-            public void networkUnreachable(SparseArray<Set<TimeEntry>> data) {
+            public void networkUnreachable(List<TimeEntry> data) {
                 view.showTimeEntries(data);
             }
 

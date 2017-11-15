@@ -3,7 +3,6 @@ package com.ikvant.loriapp.ui.tasklist;
 import android.annotation.SuppressLint;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.RecyclerView;
-import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +18,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ItemViewHolder> {
     private static final int ID_TASK = 1;
@@ -29,27 +27,21 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ItemViewHolder
 
     private int lastWeekIndex;
 
-    public void setItems(SparseArray<Set<TimeEntry>> list) {
+    public void setItems(List<TimeEntry> list) {
         items.clear();
-        for (int i = 0; i < list.size(); i++) {
-            items.add(list.keyAt(i));
-            items.addAll(list.valueAt(i));
-            lastWeekIndex = list.keyAt(i);
-        }
-        notifyDataSetChanged();
+        lastWeekIndex = -1;
+        addItems(list);
     }
 
-    public void addItems(SparseArray<Set<TimeEntry>> list) {
+    public void addItems(List<TimeEntry> list) {
         int lastPosition = items.size();
-        if (lastWeekIndex != list.keyAt(0)) {
-            items.add(list.keyAt(0));
-            lastWeekIndex = list.keyAt(0);
-        }
-        items.addAll(list.valueAt(0));
-        for (int i = 1; i < list.size(); i++) {
-            items.add(list.keyAt(i));
-            items.addAll(list.valueAt(i));
-            lastWeekIndex = list.keyAt(i);
+        for (TimeEntry entry : list) {
+            int weekIndex = DateUtils.getWeekIndex(entry.getDate());
+            if (lastWeekIndex != weekIndex) {
+                lastWeekIndex = weekIndex;
+                items.add(weekIndex);
+            }
+            items.add(entry);
         }
         notifyItemInserted(lastPosition);
     }

@@ -1,10 +1,10 @@
 package com.ikvant.loriapp.state;
 
-import com.ikvant.loriapp.state.entry.EntryController;
 import com.ikvant.loriapp.state.entry.ProjectController;
 import com.ikvant.loriapp.state.entry.Reloadable;
 import com.ikvant.loriapp.state.entry.TagsController;
 import com.ikvant.loriapp.state.entry.TaskController;
+import com.ikvant.loriapp.state.entry.TimeEntryController;
 import com.ikvant.loriapp.utils.AppExecutors;
 
 import java.util.ArrayList;
@@ -26,12 +26,12 @@ public class SyncController {
 
     @Inject
     public SyncController(AppExecutors executors,
-                          EntryController entryController,
+                          TimeEntryController timeEntryController,
                           TagsController tagsController,
                           ProjectController projectController,
                           TaskController taskController) {
         this.executors = executors;
-        add(entryController);
+        add(timeEntryController);
         add(tagsController);
         add(projectController);
         add(taskController);

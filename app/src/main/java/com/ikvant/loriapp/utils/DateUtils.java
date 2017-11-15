@@ -23,4 +23,10 @@ public class DateUtils {
         calendar.set(Calendar.WEEK_OF_YEAR, weekIndex);
         return calendar.getTime();
     }
+
+    public static int getWeekIndex(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        return calendar.get(Calendar.WEEK_OF_YEAR);
+    }
 }

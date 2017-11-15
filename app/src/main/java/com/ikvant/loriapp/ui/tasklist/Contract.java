@@ -1,10 +1,8 @@
 package com.ikvant.loriapp.ui.tasklist;
 
-import android.util.SparseArray;
-
 import com.ikvant.loriapp.database.timeentry.TimeEntry;
 
-import java.util.Set;
+import java.util.List;
 
 /**
  * Created by ikvant.
@@ -12,9 +10,9 @@ import java.util.Set;
 
 public interface Contract {
     interface View {
-        void setTimeEntries(SparseArray<Set<TimeEntry>> entryList);
+        void setTimeEntries(List<TimeEntry> entryList);
 
-        void addTimeEntries(SparseArray<Set<TimeEntry>> entryList);
+        void addTimeEntries(List<TimeEntry> entryList);
 
         void setPresenter(Presenter presenter);
 

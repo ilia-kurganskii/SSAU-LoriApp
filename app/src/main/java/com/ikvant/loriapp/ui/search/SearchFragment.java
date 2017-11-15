@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
-import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +20,7 @@ import com.ikvant.loriapp.ui.tasklist.ListAdapter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 /**
  * Created by ikvant.
@@ -115,7 +114,7 @@ public class SearchFragment extends Fragment implements Contact.View, ListAdapte
     }
 
     @Override
-    public void showTimeEntries(SparseArray<Set<TimeEntry>> entryList) {
+    public void showTimeEntries(List<TimeEntry> entryList) {
         adapter.setItems(entryList);
     }
 

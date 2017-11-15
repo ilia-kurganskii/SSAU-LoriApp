@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.ikvant.loriapp.R;
-import com.ikvant.loriapp.state.entry.EntryController;
 import com.ikvant.loriapp.ui.BaseActivity;
 import com.ikvant.loriapp.utils.ActivityUtils;
 
@@ -16,9 +15,6 @@ import javax.inject.Inject;
  */
 
 public class ListEntriesActivity extends BaseActivity {
-
-    @Inject
-    protected EntryController entryController;
 
     @Inject
     protected TaskEntryPresenter presenter;

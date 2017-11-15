@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +17,7 @@ import com.ikvant.loriapp.database.timeentry.TimeEntry;
 import com.ikvant.loriapp.ui.editenrty.EditTimeEntryActivity;
 import com.ikvant.loriapp.ui.search.SearchActivity;
 
-import java.util.Set;
+import java.util.List;
 
 /**
  * Created by ikvant.
@@ -105,12 +104,12 @@ public class ListTimeEntryFragment extends Fragment implements Contract.View, Li
     }
 
     @Override
-    public void setTimeEntries(SparseArray<Set<TimeEntry>> entryList) {
+    public void setTimeEntries(List<TimeEntry> entryList) {
         listAdapter.setItems(entryList);
     }
 
     @Override
-    public void addTimeEntries(SparseArray<Set<TimeEntry>> entryList) {
+    public void addTimeEntries(List<TimeEntry> entryList) {
         listAdapter.addItems(entryList);
     }
 

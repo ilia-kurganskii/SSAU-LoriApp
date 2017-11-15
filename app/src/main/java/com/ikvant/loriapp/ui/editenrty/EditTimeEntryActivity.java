@@ -5,8 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.ikvant.loriapp.R;
-import com.ikvant.loriapp.state.entry.EntryController;
 import com.ikvant.loriapp.state.entry.TaskController;
+import com.ikvant.loriapp.state.entry.TimeEntryController;
 import com.ikvant.loriapp.ui.BaseActivity;
 import com.ikvant.loriapp.utils.ActivityUtils;
 
@@ -16,7 +16,7 @@ public class EditTimeEntryActivity extends BaseActivity {
     private static final String EXTRA_ID = "EXTRA_ID";
 
     @Inject
-    protected EntryController entryController;
+    protected TimeEntryController timeEntryController;
 
     @Inject
     protected TaskController taskController;

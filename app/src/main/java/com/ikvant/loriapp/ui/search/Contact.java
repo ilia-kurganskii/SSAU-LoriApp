@@ -1,11 +1,9 @@
 package com.ikvant.loriapp.ui.search;
 
-import android.util.SparseArray;
-
 import com.ikvant.loriapp.database.timeentry.TimeEntry;
 
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 /**
  * Created by ikvant.
@@ -21,7 +19,7 @@ public interface Contact {
 
         void showDateToDialog(int day, int month, int year);
 
-        void showTimeEntries(SparseArray<Set<TimeEntry>> entryList);
+        void showTimeEntries(List<TimeEntry> entryList);
 
         void showEditEntryScreen(String id);
 

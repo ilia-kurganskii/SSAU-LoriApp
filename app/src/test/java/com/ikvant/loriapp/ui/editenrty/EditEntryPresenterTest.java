@@ -3,9 +3,9 @@ package com.ikvant.loriapp.ui.editenrty;
 import com.ikvant.loriapp.database.task.Task;
 import com.ikvant.loriapp.database.timeentry.TimeEntry;
 import com.ikvant.loriapp.network.exceptions.NetworkApiException;
-import com.ikvant.loriapp.state.entry.EntryController;
 import com.ikvant.loriapp.state.entry.LoadDataCallback;
 import com.ikvant.loriapp.state.entry.TaskController;
+import com.ikvant.loriapp.state.entry.TimeEntryController;
 
 import junit.framework.Assert;
 
@@ -46,7 +46,7 @@ public class EditEntryPresenterTest {
 	private Contract.View view;
 
 	@Mock
-	private EntryController entryController;
+	private TimeEntryController timeEntryController;
 
 	@Mock
 	private TaskController taskController;
@@ -65,8 +65,8 @@ public class EditEntryPresenterTest {
 	@Before
 	public void setupPresenter() {
 		MockitoAnnotations.initMocks(this);
-        //EditEntryPresenter presenter = new EditEntryPresenter(entryController, taskController, );
-        //presenter.setView(ENTRY_ID, view);
+		//EditEntryPresenter presenter = new EditEntryPresenter(timeEntryController, taskController, );
+		//presenter.setView(ENTRY_ID, view);
         this.presenter = presenter;
 	}
 
@@ -80,7 +80,7 @@ public class EditEntryPresenterTest {
 	public void testShowError(){
 		presenter.onStart();
 
-		verify(taskController).loadTasks(tasksCallbackCaptor.capture());
+		verify(taskController).load(tasksCallbackCaptor.capture());
 		tasksCallbackCaptor.getValue().onFailure(new NetworkApiException());
 
 		verify(view).showErrorMessage(any());
@@ -90,7 +90,7 @@ public class EditEntryPresenterTest {
 	public void testShowOfflineMessage(){
 		presenter.onStart();
 
-		verify(taskController).loadTasks(tasksCallbackCaptor.capture());
+		verify(taskController).load(tasksCallbackCaptor.capture());
 		tasksCallbackCaptor.getValue().networkUnreachable(Collections.emptyList());
 
 		verify(view).showOfflineMessage();
@@ -112,7 +112,7 @@ public class EditEntryPresenterTest {
 	public void testCheckEmptyTask(){
 		presenter.onStart();
 
-		verify(taskController).loadTasks(tasksCallbackCaptor.capture());
+		verify(taskController).load(tasksCallbackCaptor.capture());
 		tasksCallbackCaptor.getValue().onSuccess(Collections.emptyList());
 
 		mockReturnTestEntry();
@@ -131,7 +131,7 @@ public class EditEntryPresenterTest {
 		presenter.setDescription("NEW DESCRIPTION");
 		presenter.saveEntry();
 
-		verify(entryController).updateTimeEntry(entryCaptor.capture(), any());
+		verify(timeEntryController).updateTimeEntry(entryCaptor.capture(), any());
 		Assert.assertEquals(entryCaptor.getValue().getDescription(), "NEW DESCRIPTION");
 	}
 
@@ -145,12 +145,12 @@ public class EditEntryPresenterTest {
 	}
 
 	private void mockReturnTestTasks(){
-		verify(taskController).loadTasks(tasksCallbackCaptor.capture());
+		verify(taskController).load(tasksCallbackCaptor.capture());
 		tasksCallbackCaptor.getValue().onSuccess(taskList);
 	}
 
 	private void mockReturnTestEntry(){
-		verify(entryController).loadTimeEntry(eq(ENTRY_ID), entryCallbackCaptor.capture());
+		verify(timeEntryController).loadTimeEntry(eq(ENTRY_ID), entryCallbackCaptor.capture());
 		entryCallbackCaptor.getValue().onSuccess(getTestTimeEntry());
 	}
 }
