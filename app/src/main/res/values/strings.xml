@@ -26,4 +26,5 @@
     <string name="from">From</string>
 
     <string name="select_tags">Select tags</string>
+    <string name="login_error_title">Login error</string>
 </resources>

@@ -1,8 +1,8 @@
 package com.ikvant.loriapp.ui.tasklist;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 
 import com.ikvant.loriapp.R;
 import com.ikvant.loriapp.ui.BaseActivity;
@@ -33,9 +33,9 @@ public class ListEntriesActivity extends BaseActivity {
         presenter.setView(weekPagerFragment);
     }
 
-    public static void startMe(Activity activity) {
-        Intent intent = new Intent(activity, ListEntriesActivity.class);
-        activity.startActivity(intent);
+    public static void startMe(Fragment fragment) {
+        Intent intent = new Intent(fragment.getActivity(), ListEntriesActivity.class);
+        fragment.startActivity(intent);
     }
 }
 

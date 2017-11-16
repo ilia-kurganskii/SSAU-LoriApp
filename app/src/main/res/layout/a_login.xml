@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.ikvant.loriapp.ui.LoginActivity">
+    tools:context="com.ikvant.loriapp.ui.login.LoginActivity">
 
     <ImageView
         android:id="@+id/login.logo"
@@ -15,6 +15,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_logo" />
+
 
     <LinearLayout
         android:id="@+id/login.form"
@@ -37,14 +38,14 @@
 
             <EditText
                 android:id="@+id/login"
-                android:text="admin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/login.login_hint"
-                android:inputType="text|textNoSuggestions"
                 android:imeOptions="actionGo"
+                android:inputType="text|textNoSuggestions"
                 android:maxLines="1"
-                android:nextFocusDown="@id/password" />
+                android:nextFocusDown="@id/password"
+                android:text="admin" />
 
         </android.support.design.widget.TextInputLayout>
 
@@ -59,11 +60,11 @@
                 android:id="@+id/password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="admin"
                 android:hint="@string/login.pass_hint"
-                android:inputType="textPassword"
                 android:imeOptions="actionDone"
-                android:lines="1" />
+                android:inputType="textPassword"
+                android:lines="1"
+                android:text="admin" />
 
         </android.support.design.widget.TextInputLayout>
 
@@ -75,6 +76,21 @@
             android:layout_gravity="center"
             android:text="@string/login.login" />
     </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/progress"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/progress_background">
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
+    </RelativeLayout>
 
 
 </android.support.constraint.ConstraintLayout>
