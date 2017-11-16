@@ -70,7 +70,7 @@ public class Converters {
     public static String tagsToString(List<Tag> tags) {
         StringBuilder buffer = new StringBuilder();
         for (Tag tag : tags) {
-            buffer.append(tag.getId()).append(":").append(tag.getName());
+            buffer.append(tag.getId()).append(":").append(tag.getName()).append(";");
         }
         return buffer.toString();
     }
