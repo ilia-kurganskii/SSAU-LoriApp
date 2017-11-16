@@ -1,8 +1,10 @@
 package com.ikvant.loriapp.ui.editenrty;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -267,8 +269,32 @@ public class EditTimeEntryFragment extends Fragment implements Contract.View, Ti
     }
 
     @Override
-    public void goBack() {
+    public void finish() {
         getActivity().finish();
+    }
+
+    @Override
+    public void setResultDeleted(String id) {
+        Intent intent = new Intent();
+        intent.putExtra(EditTimeEntryActivity.EXTRA_RESULT, EditTimeEntryActivity.DELETED);
+        intent.putExtra(EditTimeEntryActivity.EXTRA_ID, id);
+        getActivity().setResult(Activity.RESULT_OK, intent);
+    }
+
+    @Override
+    public void setResultCreated(String id) {
+        Intent intent = new Intent();
+        intent.putExtra(EditTimeEntryActivity.EXTRA_RESULT, EditTimeEntryActivity.CREATED);
+        intent.putExtra(EditTimeEntryActivity.EXTRA_ID, id);
+        getActivity().setResult(Activity.RESULT_OK, intent);
+    }
+
+    @Override
+    public void setResultChanged(String id) {
+        Intent intent = new Intent();
+        intent.putExtra(EditTimeEntryActivity.EXTRA_RESULT, EditTimeEntryActivity.CHANGED);
+        intent.putExtra(EditTimeEntryActivity.EXTRA_ID, id);
+        getActivity().setResult(Activity.RESULT_OK, intent);
     }
 
     public static EditTimeEntryFragment newInstance() {

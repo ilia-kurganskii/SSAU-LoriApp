@@ -46,11 +46,17 @@ public interface Contract {
 
         void showOfflineMessage();
 
-        void goBack();
+        void finish();
 
         void setProject(int position);
 
         void setTags(String[] nameTags, boolean[] selectedTags, List<String> selectedListTags);
+
+        void setResultCreated(String id);
+
+        void setResultDeleted(String id);
+
+        void setResultChanged(String id);
     }
 
     interface Presenter {

@@ -16,6 +16,8 @@ import com.ikvant.loriapp.utils.DateUtils;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -30,21 +32,17 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ItemViewHolder
     public void setItems(List<TimeEntry> list) {
         items.clear();
         lastWeekIndex = -1;
-        addItems(list);
+        addAll(list);
+        notifyDataSetChanged();
     }
 
     public void addItems(List<TimeEntry> list) {
         int lastPosition = items.size();
-        for (TimeEntry entry : list) {
-            int weekIndex = DateUtils.getWeekIndex(entry.getDate());
-            if (lastWeekIndex != weekIndex) {
-                lastWeekIndex = weekIndex;
-                items.add(weekIndex);
-            }
-            items.add(entry);
-        }
-        notifyItemInserted(lastPosition);
+        addAll(list);
+        int newItemsSize = items.size() - lastPosition;
+        notifyItemRangeInserted(lastPosition, newItemsSize);
     }
+
 
     // Create new views (invoked by the layout manager)
     @Override
@@ -92,6 +90,59 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ItemViewHolder
 
     public void setClickItemListener(OnItemClickListener listener) {
         this.listener = listener;
+    }
+
+    public void deleteItem(TimeEntry item) {
+        int position = items.indexOf(item);
+        if (position != -1) {
+            items.remove(position);
+            notifyItemRemoved(position);
+        }
+    }
+
+    public void insertItem(TimeEntry item) {
+        int position = Collections.binarySearch(items, getWeekDayIndex(item.getDate()), (o1, key) -> {
+            int weekDayIndex = 0;
+            if (o1 instanceof TimeEntry) {
+                weekDayIndex = getWeekDayIndex(((TimeEntry) o1).getDate());
+            } else {
+                weekDayIndex = ((Integer) o1) * 10;
+            }
+            return Integer.compare(weekDayIndex, (Integer) key);
+        });
+        if (position < 0) {
+            position = -position - 1;
+        }
+        items.add(position, item);
+        notifyItemInserted(position);
+    }
+
+    public void changeItem(TimeEntry item) {
+        int position = items.indexOf(item);
+        if (position != -1) {
+            items.set(position, item);
+            notifyItemChanged(position);
+        }
+    }
+
+    private void addAll(List<TimeEntry> list) {
+        for (TimeEntry entry : list) {
+            int weekIndex = DateUtils.getWeekIndex(entry.getDate());
+            if (lastWeekIndex != weekIndex) {
+                lastWeekIndex = weekIndex;
+                items.add(weekIndex);
+            }
+            items.add(entry);
+        }
+    }
+
+    private int getWeekDayIndex(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        int week = calendar.get(Calendar.WEEK_OF_YEAR);
+        //0 - FOR week name
+        int day = calendar.get(Calendar.DAY_OF_WEEK) + 1;
+        return week * 10 + day;
     }
 
     private class TaskHolder extends ItemViewHolder<TimeEntry> implements View.OnClickListener {

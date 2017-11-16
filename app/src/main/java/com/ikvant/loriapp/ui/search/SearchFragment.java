@@ -125,7 +125,7 @@ public class SearchFragment extends Fragment implements Contact.View, ListAdapte
 
     @Override
     public void showEditEntryScreen(String id) {
-        EditTimeEntryActivity.startMe(getActivity(), id);
+        EditTimeEntryActivity.startMeForResult(getActivity(), id);
     }
 
     @Override

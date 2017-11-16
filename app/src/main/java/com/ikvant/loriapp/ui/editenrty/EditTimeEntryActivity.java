@@ -3,6 +3,7 @@ package com.ikvant.loriapp.ui.editenrty;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 
 import com.ikvant.loriapp.R;
 import com.ikvant.loriapp.state.entry.TaskController;
@@ -13,7 +14,12 @@ import com.ikvant.loriapp.utils.ActivityUtils;
 import javax.inject.Inject;
 
 public class EditTimeEntryActivity extends BaseActivity {
-    private static final String EXTRA_ID = "EXTRA_ID";
+    public static final String EXTRA_ID = "EXTRA_ID";
+    public static final String EXTRA_RESULT = "result";
+
+    public static final int CREATED = 0;
+    public static final int DELETED = 1;
+    public static final int CHANGED = 2;
 
     @Inject
     protected TimeEntryController timeEntryController;
@@ -28,7 +34,6 @@ public class EditTimeEntryActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         String id = getIntent().getStringExtra(EXTRA_ID);
-
         setContentView(R.layout.content);
 
         EditTimeEntryFragment tasksFragment = (EditTimeEntryFragment) getSupportFragmentManager().findFragmentById(R.id.content);
@@ -40,14 +45,19 @@ public class EditTimeEntryActivity extends BaseActivity {
         presenter.setView(id, tasksFragment);
     }
 
-    public static void startMe(Activity activity, String id) {
+    public static void startMeForResult(Fragment fragment, String id, int code) {
+        Intent intent = new Intent(fragment.getActivity(), EditTimeEntryActivity.class);
+        intent.putExtra(EXTRA_ID, id);
+        fragment.startActivityForResult(intent, code);
+    }
+
+    public static void startMeForResult(Activity activity, String id) {
         Intent intent = new Intent(activity, EditTimeEntryActivity.class);
         intent.putExtra(EXTRA_ID, id);
         activity.startActivity(intent);
     }
 
-    public static void startMe(Activity activity) {
-        Intent intent = new Intent(activity, EditTimeEntryActivity.class);
-        activity.startActivity(intent);
+    public static void startMeForResult(Fragment fragment, int code) {
+        startMeForResult(fragment, null, code);
     }
 }

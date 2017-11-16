@@ -58,23 +58,6 @@ public class EditEntryPresenter implements Contract.Presenter {
         view.setPresenter(this);
     }
 
-    private LoadDataCallback<TimeEntry> saveEntryCallback = new LoadDataCallback<TimeEntry>() {
-        @Override
-        public void onSuccess(TimeEntry data) {
-            view.goBack();
-        }
-
-        @Override
-        public void networkUnreachable(TimeEntry localData) {
-            view.goBack();
-        }
-
-        @Override
-        public void onFailure(Throwable e) {
-
-        }
-    };
-
     @Override
     public void saveEntry() {
         if (currentTask == null) {
@@ -82,22 +65,73 @@ public class EditEntryPresenter implements Contract.Presenter {
             return;
         }
         if (id != null) {
-            timeEntryController.updateTimeEntry(currentTimeEntry, saveEntryCallback);
+            timeEntryController.updateTimeEntry(currentTimeEntry, new LoadDataCallback<TimeEntry>() {
+                @Override
+                public void onSuccess(TimeEntry data) {
+                    view.setResultChanged(data.getId());
+                    view.finish();
+                }
+
+                @Override
+                public void networkUnreachable(TimeEntry localData) {
+                    view.setResultChanged(localData.getId());
+                    view.finish();
+                }
+
+                @Override
+                public void onFailure(Throwable e) {
+                    view.showErrorMessage(e.getMessage());
+                }
+            });
         } else {
-            timeEntryController.createNewTimeEntry(currentTimeEntry, saveEntryCallback);
+            timeEntryController.createNewTimeEntry(currentTimeEntry, new LoadDataCallback<TimeEntry>() {
+                @Override
+                public void onSuccess(TimeEntry data) {
+                    view.setResultCreated(data.getId());
+                    view.finish();
+                }
+
+                @Override
+                public void networkUnreachable(TimeEntry localData) {
+                    view.setResultCreated(localData.getId());
+                    view.finish();
+                }
+
+                @Override
+                public void onFailure(Throwable e) {
+                    view.showErrorMessage(e.getMessage());
+                }
+            });
         }
     }
 
     @Override
     public void deleteEntry() {
         if (id != null) {
-            timeEntryController.delete(id, saveEntryCallback);
+            timeEntryController.delete(id, new LoadDataCallback<TimeEntry>() {
+                @Override
+                public void onSuccess(TimeEntry data) {
+                    view.setResultDeleted(id);
+                    view.finish();
+                }
+
+                @Override
+                public void networkUnreachable(TimeEntry localData) {
+                    view.setResultDeleted(id);
+                    view.finish();
+                }
+
+                @Override
+                public void onFailure(Throwable e) {
+                    view.showErrorMessage(e.getMessage());
+                }
+            });
         }
     }
 
     @Override
     public void navigateBack() {
-
+        view.finish();
     }
 
     @Override

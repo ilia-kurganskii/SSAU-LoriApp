@@ -9,12 +9,10 @@ import com.ikvant.loriapp.state.entry.TimeEntryController;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
 /**
  * Created by ikvant.
  */
-@Singleton
 public class TaskEntryPresenter implements Contract.Presenter {
     private static final String TAG = "TaskEntryPresenter";
     private static final int OFFSET_STEP = 8;
@@ -152,6 +150,65 @@ public class TaskEntryPresenter implements Contract.Presenter {
 
     public void onEndOfPage() {
         loadTimeEntries(loadedOffset);
+    }
+
+    @Override
+    public void onDeleteEntry(String id) {
+        timeEntryController.loadById(id, new LoadDataCallback<TimeEntry>() {
+            @Override
+            public void onSuccess(TimeEntry data) {
+                view.deleteItem(data);
+            }
+
+            @Override
+            public void networkUnreachable(TimeEntry localData) {
+                view.deleteItem(localData);
+            }
+
+            @Override
+            public void onFailure(Throwable e) {
+
+            }
+        });
+    }
+
+    @Override
+    public void onCreateEntry(String id) {
+        timeEntryController.loadById(id, new LoadDataCallback<TimeEntry>() {
+            @Override
+            public void onSuccess(TimeEntry data) {
+                view.insertItem(data);
+            }
+
+            @Override
+            public void networkUnreachable(TimeEntry localData) {
+                view.insertItem(localData);
+            }
+
+            @Override
+            public void onFailure(Throwable e) {
+
+            }
+        });
+    }
+
+    @Override
+    public void onChangeEntry(String id) {
+        timeEntryController.loadById(id, new LoadDataCallback<TimeEntry>() {
+            @Override
+            public void onSuccess(TimeEntry data) {
+                view.changeItem(data);
+            }
+
+            @Override
+            public void networkUnreachable(TimeEntry localData) {
+                view.changeItem(localData);
+            }
+
+            @Override
+            public void onFailure(Throwable e) {
+            }
+        });
     }
 
 }

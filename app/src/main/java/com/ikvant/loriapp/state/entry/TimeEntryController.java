@@ -10,7 +10,6 @@ import com.ikvant.loriapp.network.exceptions.NotFoundException;
 import com.ikvant.loriapp.utils.AppExecutors;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -99,6 +98,8 @@ public class TimeEntryController implements Reloadable {
 
             try {
                 TimeEntry newTimeEntry = apiService.updateTimeEntry(timeEntry);
+
+                timeEntryDao.save(newTimeEntry);
                 addToCache(newTimeEntry);
                 callback.onSuccess(newTimeEntry);
             } catch (NetworkApiException e) {
@@ -134,7 +135,7 @@ public class TimeEntryController implements Reloadable {
                 executors.mainThread().execute(() -> callback.onSuccess(newEntries));
             } catch (NetworkApiException e) {
                 if (e instanceof NetworkOfflineException) {
-                    cacheWeekEntries.addAll(timeEntryDao.loadAll(false, offset + size));
+                    cacheWeekEntries.addAll(timeEntryDao.loadAll(false, offset, size));
                     cacheIsDirty = false;
                     cacheSize = offset + size;
                     executors.mainThread().execute(() -> callback.networkUnreachable(getCacheWeekEntries(offset, size)));
@@ -165,6 +166,13 @@ public class TimeEntryController implements Reloadable {
         });
     }
 
+    public void loadById(String id, LoadDataCallback<TimeEntry> callback) {
+        executors.background().execute(() -> {
+            TimeEntry entry = timeEntryDao.load(id);
+            executors.mainThread().execute(() -> callback.onSuccess(entry));
+        });
+    }
+
     private void createNewTimeEntry(TimeEntry timeEntry, User user, LoadDataCallback<TimeEntry> callback) {
         executors.background().execute(() -> {
             timeEntry.setUser(user);
@@ -175,22 +183,15 @@ public class TimeEntryController implements Reloadable {
             try {
                 String oldId = timeEntry.getId();
                 timeEntry.setId(TimeEntry.NEW_ID);
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTime(timeEntry.getDate());
 
-
-//                for (int i = 0; i < 200; i++) {
-//                    calendar.add(Calendar.DAY_OF_YEAR, 1);
-//                    timeEntry.setDate(calendar.getTime());
-//                    timeEntry.setDescription("Entry#" + String.valueOf(i));
-//                    TimeEntry newTimeEntry = apiService.createTimeEntry(timeEntry);
-//                }
                 TimeEntry newTimeEntry = apiService.createTimeEntry(timeEntry);
+
                 timeEntryDao.delete(oldId);
-                timeEntry.setId(oldId);
                 removeFromCache(timeEntry);
+
+                timeEntryDao.save(newTimeEntry);
                 addToCache(newTimeEntry);
-                callback.onSuccess(timeEntry);
+                callback.onSuccess(newTimeEntry);
             } catch (NetworkApiException e) {
                 if (e instanceof NetworkOfflineException) {
                     executors.mainThread().execute(() -> callback.networkUnreachable(timeEntry));
@@ -267,4 +268,6 @@ public class TimeEntryController implements Reloadable {
             }
         });
     }
+
+
 }

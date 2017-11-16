@@ -1,5 +1,7 @@
 package com.ikvant.loriapp.ui.tasklist;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -25,6 +27,7 @@ import java.util.List;
 
 public class ListTimeEntryFragment extends Fragment implements Contract.View, ListAdapter.OnItemClickListener {
 
+    public static final int EDIT_ACTIVIY_CODE = 1;
     private View root;
     private RecyclerView recyclerView;
     private ListAdapter listAdapter;
@@ -88,6 +91,26 @@ public class ListTimeEntryFragment extends Fragment implements Contract.View, Li
     }
 
     @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == EDIT_ACTIVIY_CODE && resultCode == Activity.RESULT_OK) {
+            String id = data.getStringExtra(EditTimeEntryActivity.EXTRA_ID);
+            int code = data.getIntExtra(EditTimeEntryActivity.EXTRA_RESULT, -1);
+            switch (code) {
+                case EditTimeEntryActivity.CHANGED:
+                    presenter.onChangeEntry(id);
+                    break;
+                case EditTimeEntryActivity.CREATED:
+                    presenter.onCreateEntry(id);
+                    break;
+                case EditTimeEntryActivity.DELETED:
+                    presenter.onDeleteEntry(id);
+                    break;
+            }
+        }
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         if (presenter != null) {
@@ -124,11 +147,11 @@ public class ListTimeEntryFragment extends Fragment implements Contract.View, Li
 
     @Override
     public void showEditEntryScreen(String id) {
-        EditTimeEntryActivity.startMe(getActivity(), id);
+        EditTimeEntryActivity.startMeForResult(this, id, EDIT_ACTIVIY_CODE);
     }
 
     public void showNewEntryScreen() {
-        EditTimeEntryActivity.startMe(getActivity());
+        EditTimeEntryActivity.startMeForResult(this, EDIT_ACTIVIY_CODE);
     }
 
     @Override
@@ -149,6 +172,21 @@ public class ListTimeEntryFragment extends Fragment implements Contract.View, Li
     @Override
     public void showLoadingIndicator(boolean isLoading) {
         refreshLayout.setRefreshing(isLoading);
+    }
+
+    @Override
+    public void deleteItem(TimeEntry item) {
+        listAdapter.deleteItem(item);
+    }
+
+    @Override
+    public void insertItem(TimeEntry item) {
+        listAdapter.insertItem(item);
+    }
+
+    @Override
+    public void changeItem(TimeEntry item) {
+        listAdapter.changeItem(item);
     }
 
     @Override

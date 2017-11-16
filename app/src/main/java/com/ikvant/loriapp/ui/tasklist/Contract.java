@@ -27,6 +27,12 @@ public interface Contract {
         void showErrorMessage(String message);
 
         void showLoadingIndicator(boolean isLoading);
+
+        void deleteItem(TimeEntry item);
+
+        void insertItem(TimeEntry item);
+
+        void changeItem(TimeEntry item);
     }
 
     interface Presenter {
@@ -44,5 +50,11 @@ public interface Contract {
         void reload();
 
         void onEndOfPage();
+
+        void onDeleteEntry(String id);
+
+        void onCreateEntry(String id);
+
+        void onChangeEntry(String id);
     }
 }
