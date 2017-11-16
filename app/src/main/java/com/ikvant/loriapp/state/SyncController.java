@@ -5,6 +5,7 @@ import com.ikvant.loriapp.state.entry.Reloadable;
 import com.ikvant.loriapp.state.entry.TagsController;
 import com.ikvant.loriapp.state.entry.TaskController;
 import com.ikvant.loriapp.state.entry.TimeEntryController;
+import com.ikvant.loriapp.state.entry.UserController;
 import com.ikvant.loriapp.utils.AppExecutors;
 
 import java.util.ArrayList;
@@ -29,8 +30,10 @@ public class SyncController {
                           TimeEntryController timeEntryController,
                           TagsController tagsController,
                           ProjectController projectController,
-                          TaskController taskController) {
+                          TaskController taskController,
+                          UserController userController) {
         this.executors = executors;
+        add(userController);
         add(timeEntryController);
         add(tagsController);
         add(projectController);

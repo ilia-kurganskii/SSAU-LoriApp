@@ -179,14 +179,13 @@ public class TimeEntryController implements Reloadable {
             timeEntry.setSync(false);
             timeEntryDao.save(timeEntry);
             addToCache(timeEntry);
-
+            String localId = timeEntry.getId();
             try {
-                String oldId = timeEntry.getId();
                 timeEntry.setId(TimeEntry.NEW_ID);
 
                 TimeEntry newTimeEntry = apiService.createTimeEntry(timeEntry);
 
-                timeEntryDao.delete(oldId);
+                timeEntryDao.delete(localId);
                 removeFromCache(timeEntry);
 
                 timeEntryDao.save(newTimeEntry);
@@ -194,6 +193,7 @@ public class TimeEntryController implements Reloadable {
                 callback.onSuccess(newTimeEntry);
             } catch (NetworkApiException e) {
                 if (e instanceof NetworkOfflineException) {
+                    timeEntry.setId(localId);
                     executors.mainThread().execute(() -> callback.networkUnreachable(timeEntry));
                 } else {
                     executors.mainThread().execute(() -> callback.onFailure(e));
