@@ -119,7 +119,12 @@ public class EditTimeEntryFragment extends Fragment implements Contract.View, Ti
         });
 
         delete.setOnClickListener((view) -> {
-            presenter.deleteEntry();
+            new AlertDialog.Builder(getActivity())
+                    .setMessage(R.string.edit_do_you_delete)
+                    .setNegativeButton(R.string.delete, (dialog, which) -> presenter.deleteEntry())
+                    .setPositiveButton(R.string.cancel, null)
+                    .create()
+                    .show();
         });
 
         editTags.setOnClickListener(v -> {
@@ -130,9 +135,9 @@ public class EditTimeEntryFragment extends Fragment implements Contract.View, Ti
                         public void onClick(DialogInterface dialog, int indexSelected, boolean isChecked) {
                             presenter.checkTag(indexSelected, isChecked);
                         }
-                    }).setPositiveButton("OK", (dialog1, id) -> {
+                    }).setPositiveButton(R.string.ok, (dialog1, id) -> {
                         presenter.saveTags();
-                    }).setNegativeButton("Cancel", (dialog12, id) -> {
+                    }).setNegativeButton(R.string.cancel, (dialog12, id) -> {
                     }).create();
             dialog.show();
         });
@@ -295,6 +300,12 @@ public class EditTimeEntryFragment extends Fragment implements Contract.View, Ti
         intent.putExtra(EditTimeEntryActivity.EXTRA_RESULT, EditTimeEntryActivity.CHANGED);
         intent.putExtra(EditTimeEntryActivity.EXTRA_ID, id);
         getActivity().setResult(Activity.RESULT_OK, intent);
+    }
+
+    @Override
+    public void setEnabledSpinners(boolean enable) {
+        taskSpinner.setEnabled(enable);
+        projectSpinner.setEnabled(enable);
     }
 
     public static EditTimeEntryFragment newInstance() {

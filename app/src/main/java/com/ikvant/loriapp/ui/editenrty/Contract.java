@@ -57,6 +57,8 @@ public interface Contract {
         void setResultDeleted(String id);
 
         void setResultChanged(String id);
+
+        void setEnabledSpinners(boolean enable);
     }
 
     interface Presenter {

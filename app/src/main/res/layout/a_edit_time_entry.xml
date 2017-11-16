@@ -91,7 +91,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/edit_description"
-            android:hint="@string/spend_time"
+            android:hint="@string/select_tags"
             tools:text="Time" />
 
         <Button

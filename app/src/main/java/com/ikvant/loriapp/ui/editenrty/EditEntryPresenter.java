@@ -337,11 +337,12 @@ public class EditEntryPresenter implements Contract.Presenter {
     }
 
     private void loadTasksForProject(String id) {
-        view.showLoadingIndicator(true);
+        view.setEnabledSpinners(false);
         taskController.loadTasksForProject(id, new LoadDataCallback<List<Task>>() {
             @Override
             public void onSuccess(List<Task> data) {
                 setTasks(data);
+                view.setEnabledSpinners(true);
                 view.showLoadingIndicator(false);
             }
 
@@ -349,6 +350,7 @@ public class EditEntryPresenter implements Contract.Presenter {
             @Override
             public void networkUnreachable(List<Task> localData) {
                 setTasks(localData);
+                view.setEnabledSpinners(true);
                 view.showLoadingIndicator(false);
             }
 
