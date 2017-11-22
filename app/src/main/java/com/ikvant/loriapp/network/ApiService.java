@@ -43,10 +43,7 @@ public interface ApiService {
     @POST("/app/rest/v2/entities/ts$TimeEntry")
     Call<TimeEntry> createTimeEntry(@Body TimeEntry timeEntry, @Header("Authorization") String token);
 
-    @GET("/app/rest/v2/entities/ts$TimeEntry?view=timeEntry-full")
-    Call<List<TimeEntry>> getTimeEntries(@Header("Authorization") String token);
-
-    @GET("/app/rest/v2/entities/ts$TimeEntry?view=timeEntry-full&sort=date")
+    @GET("/app/rest/v2/entities/ts$TimeEntry?view=timeEntry-full&sort=-date")
     Call<List<TimeEntry>> getTimeEntries(@Query("offset") int offset, @Query("limit") int limit, @Header("Authorization") String token);
 
     @GET("/app/rest/v2/entities/ts$Task?view=task-full")

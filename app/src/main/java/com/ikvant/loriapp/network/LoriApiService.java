@@ -52,11 +52,6 @@ public class LoriApiService {
     }
 
     @Nonnull
-    public List<TimeEntry> getTimeEntries() throws NetworkApiException {
-        return executeRequest(service.getTimeEntries(getFormattedToken()));
-    }
-
-    @Nonnull
     public List<TimeEntry> getTimeEntries(int offset, int size) throws NetworkApiException {
         return executeRequest(service.getTimeEntries(offset, size, getFormattedToken()));
     }

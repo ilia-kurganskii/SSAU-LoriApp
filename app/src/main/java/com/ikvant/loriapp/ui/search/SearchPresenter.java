@@ -10,13 +10,11 @@ import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
 /**
  * Created by ikvant.
  */
 
-@Singleton
 public class SearchPresenter implements Contact.Presenter {
 
     private TimeEntryController controller;

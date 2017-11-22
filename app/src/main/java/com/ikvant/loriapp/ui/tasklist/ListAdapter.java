@@ -141,16 +141,19 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ItemViewHolder
         calendar.setTime(date);
         int week = calendar.get(Calendar.WEEK_OF_YEAR);
         //0 - FOR week name
-        int day = calendar.get(Calendar.DAY_OF_WEEK) + 1;
+        int day = 7 - calendar.get(Calendar.DAY_OF_WEEK);
         return week * 10 + day;
     }
 
     private class TaskHolder extends ItemViewHolder<TimeEntry> implements View.OnClickListener {
+        private final DateFormat dateFormat = new SimpleDateFormat("E");
+
         private TextView desciription;
         private TextView taskName;
         private TextView tags;
         private TextView time;
         private AppCompatImageView syncView;
+        private TextView letter;
 
         private String id;
 
@@ -163,6 +166,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ItemViewHolder
             time = itemView.findViewById(R.id.i_time);
             tags = itemView.findViewById(R.id.i_tags);
             syncView = itemView.findViewById(R.id.i_sync);
+            letter = itemView.findViewById(R.id.i_letter);
         }
 
         @SuppressLint("DefaultLocale")
@@ -173,6 +177,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ItemViewHolder
             syncView.setImageResource(entry.isSync() ? R.drawable.ic_sync : R.drawable.ic_not_sync);
             tags.setText(getFormattedTags(entry.getTags()));
             id = entry.getId();
+            letter.setText(dateFormat.format(entry.getDate()));
         }
 
 
