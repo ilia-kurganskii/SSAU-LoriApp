@@ -13,7 +13,7 @@ import dagger.android.AndroidInjector;
 
 @Singleton
 @Component(modules = {
-        AppModule.class, AndroidBindingModule.class
+        AppModule.class,DatabaseModule.class, AndroidBindingModule.class
 })
 public interface AppComponent extends AndroidInjector<LoriApp> {
     @Component.Builder

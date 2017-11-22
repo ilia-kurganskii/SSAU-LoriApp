@@ -1,58 +1,58 @@
 package com.ikvant.loriapp.ui.editenrty;
 
-import com.ikvant.loriapp.database.task.Task;
-import com.ikvant.loriapp.database.timeentry.TimeEntry;
-import com.ikvant.loriapp.network.exceptions.NetworkApiException;
-import com.ikvant.loriapp.state.entry.LoadDataCallback;
-import com.ikvant.loriapp.state.entry.TaskController;
-import com.ikvant.loriapp.state.entry.TimeEntryController;
-
-import junit.framework.Assert;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.mockito.runners.MockitoJUnitRunner;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Executors;
+
+import junit.framework.Assert;
+
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
+
+import com.ikvant.loriapp.database.project.Project;
+import com.ikvant.loriapp.database.task.Task;
+import com.ikvant.loriapp.database.timeentry.TimeEntry;
+import com.ikvant.loriapp.network.exceptions.NetworkApiException;
+import com.ikvant.loriapp.state.entry.LoadDataCallback;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class EditEntryPresenterTest {
+public class EditEntry_PresenterTest extends EditEntryBaseTest {
+	@Rule
+	public MockitoRule mockitoRule = MockitoJUnit.rule();
 
 	public static final String ENTRY_ID = "1";
 	public static final int ENTRY_DURATION = 200;
 	public static final Date ENTRY_DATE = new Date();
 	public static final String ENTRY_DESCRIPTION = "Description";
 
-	private static final List<Task> taskList = new ArrayList<Task>(2){{
+	protected static final List<Task> taskList = new ArrayList<Task>(2){{
 		add(new Task("1", "Task1"));
 		add(new Task("2", "Task2"));
 		add(new Task("3", "Task3"));
 	}};
+	public static final String TASK_NAME = "Task name";
+	public static final String TASK_ID = "taskId";
+	public static final String PROJECT_ID = "projectId";
+	public static final String PROJECT_NAME = "Project1";
 
-	@Mock
-	private Contract.View view;
-
-	@Mock
-	private TimeEntryController timeEntryController;
-
-	@Mock
-	private TaskController taskController;
 
 	@Captor
 	private ArgumentCaptor<LoadDataCallback<List<Task>>> tasksCallbackCaptor;
+
+	@Captor
+	private ArgumentCaptor<LoadDataCallback<List<Project>>> projectCallbackCaptor;
 
 	@Captor
 	private ArgumentCaptor<LoadDataCallback<TimeEntry>> entryCallbackCaptor;
@@ -60,14 +60,17 @@ public class EditEntryPresenterTest {
 	@Captor
 	private ArgumentCaptor<TimeEntry> entryCaptor;
 
-	private Contract.Presenter presenter;
+	private EditEntryPresenter presenter;
 
 	@Before
 	public void setupPresenter() {
-		MockitoAnnotations.initMocks(this);
-		//EditEntryPresenter presenter = new EditEntryPresenter(timeEntryController, taskController, );
-		//presenter.setView(ENTRY_ID, view);
-        this.presenter = presenter;
+		when(executors.background()).thenReturn(Executors.newFixedThreadPool(3));
+		when(executors.mainThread()).thenReturn(Executors.newSingleThreadExecutor());
+
+		when(projectDao.loadAll()).thenReturn(Collections.singletonList(new Project("id")));
+
+		presenter = new EditEntryPresenter(timeEntryController, taskController, projectController, tagsController);
+		presenter.setView(ENTRY_ID, view);
 	}
 
 	@Test
@@ -100,7 +103,6 @@ public class EditEntryPresenterTest {
 	public void testShowInfoEntry(){
 		presenter.onStart();
 
-		mockReturnTestTasks();
 		mockReturnTestEntry();
 
 		verify(view).setDescription(ENTRY_DESCRIPTION);
@@ -142,6 +144,22 @@ public class EditEntryPresenterTest {
 		timeEntry.setDate(ENTRY_DATE);
 		timeEntry.setTimeInMinutes(ENTRY_DURATION);
 		return timeEntry;
+	}
+
+	private Task getTestTask() {
+		Task task = new Task(TASK_ID, TASK_NAME);
+		task.setProject(getTestProject());
+		return task;
+	}
+
+	private Project getTestProject() {
+		Project project = new Project(PROJECT_ID);
+		project.setName(PROJECT_NAME);
+		return project;
+	}
+
+	private void mockReturnTestProject(){
+		verify(projectController).load(projectCallbackCaptor.capture());
 	}
 
 	private void mockReturnTestTasks(){

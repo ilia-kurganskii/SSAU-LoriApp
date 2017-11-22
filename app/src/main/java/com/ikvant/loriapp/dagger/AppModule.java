@@ -38,50 +38,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 
 @Module(includes = {AndroidSupportInjectionModule.class})
-class AppModule {
-
-    @Singleton
-    @Provides
-    LoriDatabase provideDb(LoriApp app) {
-        return Room.databaseBuilder(app, LoriDatabase.class, "lori.db").build();
-    }
-
-    @Singleton
-    @Provides
-    TokenDao provideTokenDao(LoriDatabase db) {
-        return db.tokenDao();
-    }
-
-    @Singleton
-    @Provides
-    TimeEntryDao provideTimeEntryDao(LoriDatabase db) {
-        return db.timeEntryDao();
-    }
-
-    @Singleton
-    @Provides
-    TaskDao provideTaskDao(LoriDatabase db) {
-        return db.taskDao();
-    }
-
-    @Singleton
-    @Provides
-    UserDao provideUserDao(LoriDatabase db) {
-        return db.userDao();
-    }
-
-    @Singleton
-    @Provides
-    ProjectDao provideProjectDao(LoriDatabase db) {
-        return db.projectDao();
-    }
-
-    @Singleton
-    @Provides
-    TagDao provideTagsDao(LoriDatabase db) {
-        return db.tagDao();
-    }
-
+public class AppModule {
 
     @Singleton
     @Provides
@@ -115,12 +72,6 @@ class AppModule {
     @Provides
     AuthController provideAuthManager(LoriApp app, LoriApiService service, TokenDao dao, AppExecutors appExecutors) {
         return new LoriAuthController(LocalBroadcastManager.getInstance(app), service, dao, appExecutors);
-    }
-
-    @Singleton
-    @Provides
-    TimeEntryController provideTimeEntryController(LoriApiService service, UserController userDao, TimeEntryDao dao, AppExecutors appExecutors, TaskDao taskDao) {
-        return new TimeEntryController(dao, userDao, service, appExecutors);
     }
 
 }
