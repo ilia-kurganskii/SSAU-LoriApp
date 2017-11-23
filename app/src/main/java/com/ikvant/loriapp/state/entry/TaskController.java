@@ -70,7 +70,11 @@ public class TaskController implements Reloadable {
     public void loadTask(String id, final LoadDataCallback<Task> callback) {
         executors.background().execute(() -> {
             Task data = taskDao.load(id);
-            executors.mainThread().execute(() -> callback.onSuccess(data));
+            if (data != null) {
+                executors.mainThread().execute(() -> callback.onSuccess(data));
+            } else {
+                executors.mainThread().execute(() -> callback.onFailure(new NonEntryException()));
+            }
         });
     }
 

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.ikvant.loriapp.LoriApp;
 import com.ikvant.loriapp.database.token.Token;
 import com.ikvant.loriapp.database.token.TokenDao;
 import com.ikvant.loriapp.network.LoriApiService;
@@ -12,22 +13,29 @@ import com.ikvant.loriapp.network.exceptions.NetworkApiException;
 import com.ikvant.loriapp.utils.AppExecutors;
 import com.ikvant.loriapp.utils.Callback;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 /**
  * Created by ikvant.
  */
 
-public class LoriAuthController implements AuthController, UnauthorizedListener {
+@Singleton
+public class LoriAuthController implements UnauthorizedListener {
+    public static final String LOGOUT_ACTION = "LOGOUT ACTION";
+
     private static final String TAG = "LoriAuthController";
     private LoriApiService service;
     private TokenDao tokenDao;
     private AppExecutors executors;
     private LocalBroadcastManager broadcastManager;
 
-    public LoriAuthController(LocalBroadcastManager broadcastManager, final LoriApiService service, final TokenDao tokenDao, AppExecutors executors) {
+    @Inject
+    public LoriAuthController(LoriApp app, final LoriApiService service, final TokenDao tokenDao, AppExecutors executors) {
         this.service = service;
         this.tokenDao = tokenDao;
         this.executors = executors;
-        this.broadcastManager = broadcastManager;
+        this.broadcastManager = LocalBroadcastManager.getInstance(app);
         this.service.setListener(this);
         executors.background().execute(new Runnable() {
             @Override
@@ -40,7 +48,6 @@ public class LoriAuthController implements AuthController, UnauthorizedListener 
         });
     }
 
-    @Override
     public void executeLogin(final String login, final String password, final Callback<Boolean> callback) {
         executors.background().execute(new Runnable() {
             @Override
@@ -68,7 +75,6 @@ public class LoriAuthController implements AuthController, UnauthorizedListener 
 
     }
 
-    @Override
     public void isLogin(final Callback<Boolean> callback) {
         executors.background().execute(new Runnable() {
             @Override
@@ -78,7 +84,6 @@ public class LoriAuthController implements AuthController, UnauthorizedListener 
         });
     }
 
-    @Override
     public void logout() {
         Log.d(TAG, "logout() called");
         broadcastManager.sendBroadcast(new Intent(LOGOUT_ACTION));

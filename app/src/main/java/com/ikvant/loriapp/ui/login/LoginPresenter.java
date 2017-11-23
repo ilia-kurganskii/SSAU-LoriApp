@@ -1,6 +1,6 @@
 package com.ikvant.loriapp.ui.login;
 
-import com.ikvant.loriapp.state.auth.AuthController;
+import com.ikvant.loriapp.state.auth.LoriAuthController;
 import com.ikvant.loriapp.utils.Callback;
 
 import javax.inject.Inject;
@@ -10,12 +10,12 @@ import javax.inject.Inject;
  */
 
 public class LoginPresenter implements Contract.Presenter {
-    protected AuthController authController;
+    protected LoriAuthController authController;
 
     private Contract.View view;
 
     @Inject
-    protected LoginPresenter(AuthController authController) {
+    protected LoginPresenter(LoriAuthController authController) {
         this.authController = authController;
     }
 

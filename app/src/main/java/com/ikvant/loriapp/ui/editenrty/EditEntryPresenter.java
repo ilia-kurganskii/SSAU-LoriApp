@@ -324,7 +324,9 @@ public class EditEntryPresenter implements Contract.Presenter {
 
             @Override
             public void onFailure(Throwable e) {
-
+                view.showErrorMessage(e.getMessage());
+                view.showLoadingIndicator(false);
+                currentTask = currentTimeEntry.getTask();
             }
 
             private void setTask(Task data) {
@@ -356,7 +358,7 @@ public class EditEntryPresenter implements Contract.Presenter {
 
             @Override
             public void onFailure(Throwable e) {
-
+                view.showErrorMessage(e.getMessage());
             }
 
             private void setTasks(List<Task> data) {

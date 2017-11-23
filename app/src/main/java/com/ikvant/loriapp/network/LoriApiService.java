@@ -21,6 +21,8 @@ import java.net.HttpURLConnection;
 import java.util.List;
 
 import javax.annotation.Nonnull;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -30,6 +32,7 @@ import retrofit2.Response;
  * Created by ikvant.
  */
 
+@Singleton
 public class LoriApiService {
     private static final String TAG = "LoriApiService";
 
@@ -38,6 +41,7 @@ public class LoriApiService {
     private UnauthorizedListener listener;
     private NetworkChecker checker;
 
+    @Inject
     public LoriApiService(NetworkChecker checker, ApiService service) {
         this.service = service;
         this.checker = checker;

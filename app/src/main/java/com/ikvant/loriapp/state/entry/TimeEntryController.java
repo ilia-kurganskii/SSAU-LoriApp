@@ -52,7 +52,11 @@ public class TimeEntryController implements Reloadable {
         executors.background().execute(() -> {
             try {
                 TimeEntry task = timeEntryDao.load(id);
-                executors.mainThread().execute(() -> callback.onSuccess(task));
+                if (task != null) {
+                    executors.mainThread().execute(() -> callback.onSuccess(task));
+                } else {
+                    executors.mainThread().execute(()->callback.onFailure(new NonEntryException("Entry with id " + id +" not found")));
+                }
             } catch (Exception e) {
                 executors.mainThread().execute(() -> callback.onFailure(e));
             }

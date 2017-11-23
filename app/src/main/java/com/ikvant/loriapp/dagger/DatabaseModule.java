@@ -15,8 +15,10 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import dagger.android.support.AndroidSupportInjection;
+import dagger.android.support.AndroidSupportInjectionModule;
 
-@Module(includes = AppModule.class)
+@Module(includes = AndroidSupportInjectionModule.class)
 public class DatabaseModule {
 	@Singleton
 	@Provides
