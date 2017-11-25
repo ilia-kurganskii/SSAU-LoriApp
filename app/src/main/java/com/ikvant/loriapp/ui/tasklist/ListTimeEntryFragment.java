@@ -31,6 +31,7 @@ import java.util.List;
 public class ListTimeEntryFragment extends Fragment implements Contract.View, ListAdapter.OnItemClickListener {
 
     public static final int EDIT_ACTIVIY_CODE = 1;
+    public static final int LOAD_THRESHOLD = 10;
     private View root;
     private RecyclerView recyclerView;
     private ListAdapter listAdapter;
@@ -53,7 +54,7 @@ public class ListTimeEntryFragment extends Fragment implements Contract.View, Li
             int totalItemCount = layoutManager.getItemCount();
             int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
 
-            if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount
+            if ((visibleItemCount + firstVisibleItemPosition) >= (totalItemCount - LOAD_THRESHOLD)
                     && firstVisibleItemPosition >= 0) {
                 presenter.onEndOfPage();
             }

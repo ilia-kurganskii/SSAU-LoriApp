@@ -16,7 +16,7 @@ import javax.inject.Inject;
  */
 public class TaskEntryPresenter implements Contract.Presenter {
     private static final String TAG = "TaskEntryPresenter";
-    private static final int OFFSET_STEP = 8;
+    private static final int OFFSET_STEP = 20;
 
     private Contract.View view;
 
