@@ -124,7 +124,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ItemViewHolder
             } else {
                 weekDayIndex = ((Integer) o1);
             }
-            return Integer.compare(weekDayIndex, (Integer) key);
+            return Integer.compare((Integer) key, weekDayIndex);
         });
         if (position < 0) {
             position = -position - 1;

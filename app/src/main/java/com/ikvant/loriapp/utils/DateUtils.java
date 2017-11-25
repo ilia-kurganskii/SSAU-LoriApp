@@ -31,7 +31,7 @@ public class DateUtils {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         int year = calendar.get(Calendar.YEAR);
-        return year * 1000 + calendar.get(Calendar.WEEK_OF_YEAR) * 10;
+        return year * 1000 + calendar.get(Calendar.WEEK_OF_YEAR) * 10 + 9;
     }
 
     public static int getWeekDayIndex(Date date) {
@@ -40,7 +40,7 @@ public class DateUtils {
         int week = calendar.get(Calendar.WEEK_OF_YEAR);
         int year = calendar.get(Calendar.YEAR);
         //0 - FOR week name
-        int day = 8 - calendar.get(Calendar.DAY_OF_WEEK);
+        int day = calendar.get(Calendar.DAY_OF_WEEK);
         return year * 1000 + week * 10 + day;
     }
 }
