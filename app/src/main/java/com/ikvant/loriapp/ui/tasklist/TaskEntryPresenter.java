@@ -51,7 +51,7 @@ public class TaskEntryPresenter implements Contract.Presenter {
     @Override
     public void onResume() {
         isActive = true;
-        reload(isFirstLoad, false);
+        reload(isFirstLoad);
     }
 
     @Override
@@ -71,10 +71,10 @@ public class TaskEntryPresenter implements Contract.Presenter {
 
     @Override
     public void reload() {
-        reload(true, true);
+        reload(true);
     }
 
-    private void reload(boolean force, boolean byUser) {
+    private void reload(boolean force) {
         isFirstLoad = false;
         if (force) {
             loadedOffset = 0;

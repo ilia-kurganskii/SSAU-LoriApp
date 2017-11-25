@@ -33,4 +33,6 @@
     <string name="logout">Logout</string>
     <string name="search">Search</string>
     <string name="to">To</string>
+    <string name="description_or_title">Text</string>
+    <string name="dismiss">Dismiss</string>
 </resources>

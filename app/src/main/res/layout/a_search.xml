@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="12dp"
         android:layout_marginTop="8dp"
         android:text="@string/search_by_date"
         app:layout_constraintBaseline_toBaselineOf="@id/search_switch"
@@ -38,9 +38,10 @@
         app:layout_constraintTop_toBottomOf="@id/search_switch">
 
         <EditText
-            android:hint="@string/Description"
+            android:hint="@string/description_or_title"
             android:id="@+id/search_text"
             android:layout_width="match_parent"
+            android:imeOptions="actionSearch"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp" />
 

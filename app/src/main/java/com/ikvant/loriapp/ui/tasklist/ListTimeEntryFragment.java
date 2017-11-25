@@ -37,6 +37,8 @@ public class ListTimeEntryFragment extends Fragment implements Contract.View, Li
     private ListAdapter listAdapter;
     private SwipeRefreshLayout refreshLayout;
 
+    private Snackbar snackbar;
+
     private LinearLayoutManager layoutManager;
 
     private Contract.Presenter presenter;
@@ -60,7 +62,6 @@ public class ListTimeEntryFragment extends Fragment implements Contract.View, Li
             }
         }
     };
-    private boolean hasShowOfflineError = false;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -189,9 +190,18 @@ public class ListTimeEntryFragment extends Fragment implements Contract.View, Li
 
     @Override
     public void showOfflineMessage() {
-        if (!hasShowOfflineError) {
-            hasShowOfflineError = true;
-            Snackbar.make(root, R.string.error_offline, Snackbar.LENGTH_INDEFINITE).show();
+        if (snackbar == null) {
+            snackbar = Snackbar.make(root, R.string.error_offline, Snackbar.LENGTH_INDEFINITE);
+            snackbar.setAction(R.string.dismiss, v -> hideOfflineMessage());
+            snackbar.show();
+        }
+    }
+
+    @Override
+    public void hideOfflineMessage() {
+        if (snackbar != null) {
+            snackbar.dismiss();
+            snackbar = null;
         }
     }
 

@@ -24,6 +24,8 @@ public interface Contract {
 
         void showOfflineMessage();
 
+        void hideOfflineMessage();
+
         void showErrorMessage(String message);
 
         void showLoadingIndicator(boolean isLoading);
