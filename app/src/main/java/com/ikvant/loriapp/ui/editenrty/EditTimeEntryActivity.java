@@ -1,13 +1,10 @@
 package com.ikvant.loriapp.ui.editenrty;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.ikvant.loriapp.R;
-import com.ikvant.loriapp.state.entry.TaskController;
-import com.ikvant.loriapp.state.entry.TimeEntryController;
 import com.ikvant.loriapp.ui.BaseActivity;
 import com.ikvant.loriapp.utils.ActivityUtils;
 
@@ -22,19 +19,13 @@ public class EditTimeEntryActivity extends BaseActivity {
     public static final int CHANGED = 2;
 
     @Inject
-    protected TimeEntryController timeEntryController;
-
-    @Inject
-    protected TaskController taskController;
-
-    @Inject
     protected EditEntryPresenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        String id = getIntent().getStringExtra(EXTRA_ID);
         setContentView(R.layout.content);
+        enableHomeUp();
 
         EditTimeEntryFragment tasksFragment = (EditTimeEntryFragment) getSupportFragmentManager().findFragmentById(R.id.content);
         if (tasksFragment == null) {
@@ -42,6 +33,7 @@ public class EditTimeEntryActivity extends BaseActivity {
             ActivityUtils.addFragmentToActivity(getSupportFragmentManager(), tasksFragment, R.id.content);
         }
 
+        String id = getIntent().getStringExtra(EXTRA_ID);
         presenter.setView(id, tasksFragment);
     }
 
@@ -49,12 +41,6 @@ public class EditTimeEntryActivity extends BaseActivity {
         Intent intent = new Intent(fragment.getActivity(), EditTimeEntryActivity.class);
         intent.putExtra(EXTRA_ID, id);
         fragment.startActivityForResult(intent, code);
-    }
-
-    public static void startMeForResult(Activity activity, String id) {
-        Intent intent = new Intent(activity, EditTimeEntryActivity.class);
-        intent.putExtra(EXTRA_ID, id);
-        activity.startActivity(intent);
     }
 
     public static void startMeForResult(Fragment fragment, int code) {

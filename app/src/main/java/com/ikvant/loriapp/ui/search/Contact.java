@@ -23,9 +23,11 @@ public interface Contact {
 
         void showEditEntryScreen(String id);
 
-        void showLoadingIndicator(boolean isLoading);
-
         void setPresenter(Presenter presenter);
+
+        void deleteItem(TimeEntry item);
+
+        void changeItem(TimeEntry item);
     }
 
     interface Presenter {
@@ -52,5 +54,9 @@ public interface Contact {
         void searchByDate(Date from, Date to);
 
         void searchByText(String text);
+
+        void onDeleteEntry(String id);
+
+        void onChangeEntry(String id);
     }
 }

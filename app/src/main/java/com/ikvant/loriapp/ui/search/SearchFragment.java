@@ -1,6 +1,8 @@
 package com.ikvant.loriapp.ui.search;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -21,6 +23,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by ikvant.
@@ -29,7 +32,9 @@ import java.util.List;
 public class SearchFragment extends Fragment implements Contact.View, ListAdapter.OnItemClickListener {
 
 
-    private DateFormat dateFormat = new SimpleDateFormat("dd MMM");
+    private static final int EDIT_ACTIVITY_CODE = 0;
+
+    private DateFormat dateFormat = new SimpleDateFormat("dd MMM", Locale.getDefault());
 
     private Contact.Presenter presenter;
 
@@ -88,6 +93,34 @@ public class SearchFragment extends Fragment implements Contact.View, ListAdapte
         return root;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        presenter.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        presenter.onPause();
+        super.onPause();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == EDIT_ACTIVITY_CODE && resultCode == Activity.RESULT_OK) {
+            String id = data.getStringExtra(EditTimeEntryActivity.EXTRA_ID);
+            int code = data.getIntExtra(EditTimeEntryActivity.EXTRA_RESULT, -1);
+            switch (code) {
+                case EditTimeEntryActivity.CHANGED:
+                    presenter.onChangeEntry(id);
+                    break;
+                case EditTimeEntryActivity.DELETED:
+                    presenter.onDeleteEntry(id);
+                    break;
+            }
+        }
+    }
 
     @Override
     public void setDateFrom(Date date) {
@@ -124,13 +157,18 @@ public class SearchFragment extends Fragment implements Contact.View, ListAdapte
     }
 
     @Override
-    public void showEditEntryScreen(String id) {
-        EditTimeEntryActivity.startMeForResult(getActivity(), id);
+    public void deleteItem(TimeEntry item) {
+        adapter.deleteItem(item);
     }
 
     @Override
-    public void showLoadingIndicator(boolean isLoading) {
+    public void changeItem(TimeEntry item) {
+        adapter.changeItem(item);
+    }
 
+    @Override
+    public void showEditEntryScreen(String id) {
+        EditTimeEntryActivity.startMeForResult(this, id, EDIT_ACTIVITY_CODE);
     }
 
     public static SearchFragment newInstance() {

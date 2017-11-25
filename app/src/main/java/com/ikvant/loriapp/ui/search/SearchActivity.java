@@ -8,13 +8,9 @@ import com.ikvant.loriapp.R;
 import com.ikvant.loriapp.ui.BaseActivity;
 import com.ikvant.loriapp.utils.ActivityUtils;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-
 import javax.inject.Inject;
 
 public class SearchActivity extends BaseActivity {
-    private DateFormat dateFormat = new SimpleDateFormat("dd MMM");
 
     @Inject
     protected SearchPresenter presenter;
@@ -23,6 +19,7 @@ public class SearchActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.content);
+        enableHomeUp();
 
         SearchFragment weekPagerFragment = (SearchFragment) getSupportFragmentManager().findFragmentById(R.id.content);
         if (weekPagerFragment == null) {

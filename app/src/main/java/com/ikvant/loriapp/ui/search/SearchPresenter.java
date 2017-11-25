@@ -45,7 +45,6 @@ public class SearchPresenter implements Contact.Presenter {
 
     @Override
     public void onResume() {
-        //todo showEntry
         view.setDateFrom(from);
         view.setDateTo(to);
     }
@@ -152,6 +151,45 @@ public class SearchPresenter implements Contact.Presenter {
             @Override
             public void onFailure(Throwable e) {
 
+            }
+        });
+    }
+
+    @Override
+    public void onDeleteEntry(String id) {
+        controller.loadById(id, new LoadDataCallback<TimeEntry>() {
+            @Override
+            public void onSuccess(TimeEntry data) {
+                view.deleteItem(data);
+            }
+
+            @Override
+            public void networkUnreachable(TimeEntry localData) {
+                view.deleteItem(localData);
+            }
+
+            @Override
+            public void onFailure(Throwable e) {
+
+            }
+        });
+    }
+
+    @Override
+    public void onChangeEntry(String id) {
+        controller.loadById(id, new LoadDataCallback<TimeEntry>() {
+            @Override
+            public void onSuccess(TimeEntry data) {
+                view.changeItem(data);
+            }
+
+            @Override
+            public void networkUnreachable(TimeEntry localData) {
+                view.changeItem(localData);
+            }
+
+            @Override
+            public void onFailure(Throwable e) {
             }
         });
     }

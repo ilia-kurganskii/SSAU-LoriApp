@@ -31,4 +31,6 @@
     <string name="cancel">Cancel</string>
     <string name="ok">ok</string>
     <string name="logout">Logout</string>
+    <string name="search">Search</string>
+    <string name="to">To</string>
 </resources>

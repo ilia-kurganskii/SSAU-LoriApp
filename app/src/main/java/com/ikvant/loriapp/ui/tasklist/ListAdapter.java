@@ -1,7 +1,6 @@
 package com.ikvant.loriapp.ui.tasklist;
 
 import android.annotation.SuppressLint;
-import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -32,7 +31,6 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ItemViewHolder
     private OnItemClickListener listener;
 
     private int lastWeekIndex;
-    private boolean isLoading;
 
     public void setItems(List<TimeEntry> list) {
         items.clear();
@@ -79,9 +77,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ItemViewHolder
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(ItemViewHolder holder, int position) {
-        if (holder instanceof FooterHolder) {
-            ((FooterHolder) holder).bind(isLoading && !items.isEmpty());
-        } else {
+        if (!(holder instanceof FooterHolder)) {
             holder.bindData(items.get(position));
         }
     }
@@ -153,12 +149,6 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ItemViewHolder
         }
     }
 
-
-    public void setLoading(boolean loading) {
-        isLoading = loading;
-        notifyItemChanged(items.size());
-    }
-
     private class TaskHolder extends ItemViewHolder<TimeEntry> implements View.OnClickListener {
         private final DateFormat dateFormat = new SimpleDateFormat("EEEE, MMM d", Locale.getDefault());
 
@@ -207,13 +197,13 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ItemViewHolder
             for (Tag tag : tags) {
                 result.append(tag.getName()).append(" ");
             }
-            return result.toString();
+            return result.toString().trim();
         }
     }
 
     private class HeaderHolder extends ItemViewHolder<Integer> {
         private TextView dayDiapason;
-        private DateFormat dateFormat = new SimpleDateFormat("dd MMM");
+        private DateFormat dateFormat = new SimpleDateFormat("dd MMM", Locale.getDefault());
 
 
         HeaderHolder(ViewGroup parent) {
@@ -231,21 +221,14 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ItemViewHolder
     }
 
     private class FooterHolder extends ItemViewHolder<Boolean> {
-        private ContentLoadingProgressBar progressBar;
-
         FooterHolder(ViewGroup parent) {
             super(LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.i_footer, parent, false));
-            progressBar = itemView.findViewById(R.id.i_progress);
         }
 
         @Override
         public void bind(Boolean isVisible) {
-            if (isVisible) {
-                progressBar.show();
-            } else {
-                progressBar.hide();
-            }
+
         }
     }
 

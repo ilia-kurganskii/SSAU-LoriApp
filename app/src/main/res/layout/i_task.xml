@@ -60,9 +60,9 @@
         android:textColor="#979797"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/i_description"
-
+        android:gravity="right"
         tools:layout_editor_absoluteY="64dp"
-        tools:text="Tag1, Tag2" />
+        tools:text="Tag2" />
 
     <android.support.v7.widget.AppCompatImageView
         android:id="@+id/i_sync"
@@ -80,9 +80,8 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:textAlignment="center"
-        android:textColor="#69D77B"
+        android:textColor="#000000"
         android:textSize="18sp"
-        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/i_task"
         tools:text="2h 04m" />

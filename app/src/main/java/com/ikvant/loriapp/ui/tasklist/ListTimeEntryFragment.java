@@ -30,7 +30,7 @@ import java.util.List;
 
 public class ListTimeEntryFragment extends Fragment implements Contract.View, ListAdapter.OnItemClickListener {
 
-    public static final int EDIT_ACTIVIY_CODE = 1;
+    public static final int EDIT_ACTIVITY_CODE = 1;
     public static final int LOAD_THRESHOLD = 10;
     private View root;
     private RecyclerView recyclerView;
@@ -60,6 +60,7 @@ public class ListTimeEntryFragment extends Fragment implements Contract.View, Li
             }
         }
     };
+    private boolean hasShowOfflineError = false;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -78,6 +79,9 @@ public class ListTimeEntryFragment extends Fragment implements Contract.View, Li
         switch (item.getItemId()) {
             case R.id.menu_logout:
                 presenter.logout();
+                return true;
+            case R.id.menu_search:
+                presenter.searchEntries();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -109,10 +113,6 @@ public class ListTimeEntryFragment extends Fragment implements Contract.View, Li
             presenter.createNewEntry();
         });
 
-        root.findViewById(R.id.search_fab).setOnClickListener(v -> {
-            presenter.searchEntries();
-        });
-
         setHasOptionsMenu(true);
 
         return root;
@@ -121,7 +121,7 @@ public class ListTimeEntryFragment extends Fragment implements Contract.View, Li
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == EDIT_ACTIVIY_CODE && resultCode == Activity.RESULT_OK) {
+        if (requestCode == EDIT_ACTIVITY_CODE && resultCode == Activity.RESULT_OK) {
             String id = data.getStringExtra(EditTimeEntryActivity.EXTRA_ID);
             int code = data.getIntExtra(EditTimeEntryActivity.EXTRA_RESULT, -1);
             switch (code) {
@@ -175,11 +175,11 @@ public class ListTimeEntryFragment extends Fragment implements Contract.View, Li
 
     @Override
     public void showEditEntryScreen(String id) {
-        EditTimeEntryActivity.startMeForResult(this, id, EDIT_ACTIVIY_CODE);
+        EditTimeEntryActivity.startMeForResult(this, id, EDIT_ACTIVITY_CODE);
     }
 
     public void showNewEntryScreen() {
-        EditTimeEntryActivity.startMeForResult(this, EDIT_ACTIVIY_CODE);
+        EditTimeEntryActivity.startMeForResult(this, EDIT_ACTIVITY_CODE);
     }
 
     @Override
@@ -189,7 +189,10 @@ public class ListTimeEntryFragment extends Fragment implements Contract.View, Li
 
     @Override
     public void showOfflineMessage() {
-        Snackbar.make(root, R.string.error_offline, Snackbar.LENGTH_LONG).show();
+        if (!hasShowOfflineError) {
+            hasShowOfflineError = true;
+            Snackbar.make(root, R.string.error_offline, Snackbar.LENGTH_INDEFINITE).show();
+        }
     }
 
     @Override
@@ -199,11 +202,7 @@ public class ListTimeEntryFragment extends Fragment implements Contract.View, Li
 
     @Override
     public void showLoadingIndicator(boolean isLoading) {
-        if (listAdapter.isEmpty() || !isLoading) {
-            refreshLayout.setRefreshing(isLoading);
-        }
-        listAdapter.setLoading(isLoading);
-
+        refreshLayout.setRefreshing(isLoading);
     }
 
     @Override
