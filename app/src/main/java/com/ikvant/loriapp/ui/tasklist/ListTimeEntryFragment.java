@@ -171,7 +171,11 @@ public class ListTimeEntryFragment extends Fragment implements Contract.View, Li
 
     @Override
     public void showLoadingIndicator(boolean isLoading) {
-        refreshLayout.setRefreshing(isLoading);
+        if (listAdapter.isEmpty() || !isLoading) {
+            refreshLayout.setRefreshing(isLoading);
+        }
+        listAdapter.setLoading(isLoading);
+
     }
 
     @Override

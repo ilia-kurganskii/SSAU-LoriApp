@@ -41,6 +41,7 @@ public class TimeEntryController implements Reloadable {
     public void refresh() {
         cacheIsDirty = true;
         cacheSize = 0;
+        cacheWeekEntries.clear();
     }
 
     public void loadTimeEntry(String id, LoadDataCallback<TimeEntry> callback) {

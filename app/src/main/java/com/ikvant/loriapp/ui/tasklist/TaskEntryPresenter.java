@@ -73,11 +73,9 @@ public class TaskEntryPresenter implements Contract.Presenter {
 
     private void reload(boolean force, boolean byUser) {
         isFirstLoad = false;
-        if (byUser) {
-            view.showLoadingIndicator(true);
-        }
         if (force) {
             loadedOffset = 0;
+            view.showLoadingIndicator(true);
             syncController.sync(new Reloadable.Callback() {
                 @Override
                 public void onSuccess() {
@@ -106,6 +104,7 @@ public class TaskEntryPresenter implements Contract.Presenter {
     private void loadTimeEntries(int offset) {
         if (!isLoading) {
             isLoading = true;
+            view.showLoadingIndicator(true);
             timeEntryController.loadTimeEntries(offset, OFFSET_STEP, new LoadDataCallback<List<TimeEntry>>() {
                 @Override
                 public void onSuccess(List<TimeEntry> data) {

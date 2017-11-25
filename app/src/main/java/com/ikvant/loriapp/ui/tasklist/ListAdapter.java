@@ -1,6 +1,7 @@
 package com.ikvant.loriapp.ui.tasklist;
 
 import android.annotation.SuppressLint;
+import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,18 +17,21 @@ import com.ikvant.loriapp.utils.DateUtils;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import static com.ikvant.loriapp.utils.DateUtils.getWeekDayIndex;
+
 public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ItemViewHolder> {
     private static final int ID_TASK = 1;
     private static final int ID_HEADER = 2;
+    private static final int ID_FOOTER = 3;
     private List<Object> items = new ArrayList<>(0);
     private OnItemClickListener listener;
 
     private int lastWeekIndex;
+    private boolean isLoading;
 
     public void setItems(List<TimeEntry> list) {
         items.clear();
@@ -53,6 +57,8 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ItemViewHolder
                 return new TaskHolder(parent);
             case ID_HEADER:
                 return new HeaderHolder(parent);
+            case ID_FOOTER:
+                return new FooterHolder(parent);
         }
         return new TaskHolder(parent);
     }
@@ -72,12 +78,18 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ItemViewHolder
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(ItemViewHolder holder, int position) {
-        holder.bindData(items.get(position));
+        if (holder instanceof FooterHolder) {
+            ((FooterHolder) holder).bind(isLoading && !items.isEmpty());
+        } else {
+            holder.bindData(items.get(position));
+        }
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (items.get(position) instanceof Integer) {
+        if (position == items.size()) {
+            return ID_FOOTER;
+        } else if (items.get(position) instanceof Integer) {
             return ID_HEADER;
         }
         return ID_TASK;
@@ -85,7 +97,11 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ItemViewHolder
 
     @Override
     public int getItemCount() {
-        return items.size();
+        return items.size() + 1;
+    }
+
+    public boolean isEmpty() {
+        return items.isEmpty();
     }
 
     public void setClickItemListener(OnItemClickListener listener) {
@@ -106,7 +122,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ItemViewHolder
             if (o1 instanceof TimeEntry) {
                 weekDayIndex = getWeekDayIndex(((TimeEntry) o1).getDate());
             } else {
-                weekDayIndex = ((Integer) o1) * 10;
+                weekDayIndex = ((Integer) o1);
             }
             return Integer.compare(weekDayIndex, (Integer) key);
         });
@@ -136,13 +152,10 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ItemViewHolder
         }
     }
 
-    private int getWeekDayIndex(Date date) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        int week = calendar.get(Calendar.WEEK_OF_YEAR);
-        //0 - FOR week name
-        int day = 7 - calendar.get(Calendar.DAY_OF_WEEK);
-        return week * 10 + day;
+
+    public void setLoading(boolean loading) {
+        isLoading = loading;
+        notifyItemChanged(items.size());
     }
 
     private class TaskHolder extends ItemViewHolder<TimeEntry> implements View.OnClickListener {
@@ -213,6 +226,25 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ItemViewHolder
             Date start = DateUtils.getStartDate(weekIndex);
             Date end = DateUtils.getEndDate(weekIndex);
             dayDiapason.setText(String.format("%s - %s", dateFormat.format(start), dateFormat.format(end)));
+        }
+    }
+
+    private class FooterHolder extends ItemViewHolder<Boolean> {
+        private ContentLoadingProgressBar progressBar;
+
+        FooterHolder(ViewGroup parent) {
+            super(LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.i_footer, parent, false));
+            progressBar = itemView.findViewById(R.id.i_progress);
+        }
+
+        @Override
+        public void bind(Boolean isVisible) {
+            if (isVisible) {
+                progressBar.show();
+            } else {
+                progressBar.hide();
+            }
         }
     }
 
