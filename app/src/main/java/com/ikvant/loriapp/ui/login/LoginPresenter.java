@@ -1,7 +1,8 @@
 package com.ikvant.loriapp.ui.login;
 
-import com.ikvant.loriapp.state.auth.AuthController;
-import com.ikvant.loriapp.utils.Callback;
+import com.ikvant.loriapp.R;
+import com.ikvant.loriapp.state.auth.LoriAuthController;
+import com.ikvant.loriapp.state.entry.LoadDataCallback;
 
 import javax.inject.Inject;
 
@@ -10,12 +11,12 @@ import javax.inject.Inject;
  */
 
 public class LoginPresenter implements Contract.Presenter {
-    protected AuthController authController;
+    protected LoriAuthController authController;
 
     private Contract.View view;
 
     @Inject
-    protected LoginPresenter(AuthController authController) {
+    protected LoginPresenter(LoriAuthController authController) {
         this.authController = authController;
     }
 
@@ -27,11 +28,17 @@ public class LoginPresenter implements Contract.Presenter {
     @Override
     public void login(String user, String password) {
         view.showProgress();
-        authController.executeLogin(user, password, new Callback<Boolean>() {
+        authController.executeLogin(user, password, new LoadDataCallback<Boolean>() {
             @Override
             public void onSuccess(Boolean data) {
                 view.showNextScreen();
                 view.hideProgress();
+            }
+
+            @Override
+            public void networkUnreachable(Boolean localData) {
+                view.hideProgress();
+                view.showError(R.string.error_offline);
             }
 
             @Override
@@ -44,12 +51,17 @@ public class LoginPresenter implements Contract.Presenter {
 
     @Override
     public void onResume() {
-        authController.isLogin(new Callback<Boolean>() {
+        authController.isLogin(new LoadDataCallback<Boolean>() {
             @Override
             public void onSuccess(Boolean data) {
                 if (data) {
                     view.showNextScreen();
                 }
+            }
+
+            @Override
+            public void networkUnreachable(Boolean localData) {
+
             }
 
             @Override

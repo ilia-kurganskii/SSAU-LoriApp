@@ -2,6 +2,7 @@ package com.ikvant.loriapp.ui.login;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
@@ -72,6 +73,16 @@ public class LoginFragment extends Fragment implements Contract.View {
         new AlertDialog.Builder(getContext())
                 .setTitle(R.string.login_error_title)
                 .setMessage(error)
+                .setPositiveButton(android.R.string.ok, null)
+                .create()
+                .show();
+    }
+
+    @Override
+    public void showError(@StringRes int errorRes) {
+        new AlertDialog.Builder(getContext())
+                .setTitle(R.string.login_error_title)
+                .setMessage(errorRes)
                 .setPositiveButton(android.R.string.ok, null)
                 .create()
                 .show();

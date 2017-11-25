@@ -30,4 +30,5 @@
     <string name="edit_do_you_delete">Do you want delete entry?</string>
     <string name="cancel">Cancel</string>
     <string name="ok">ok</string>
+    <string name="logout">Logout</string>
 </resources>

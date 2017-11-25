@@ -2,6 +2,7 @@ package com.ikvant.loriapp.ui.tasklist;
 
 import com.ikvant.loriapp.database.timeentry.TimeEntry;
 import com.ikvant.loriapp.state.SyncController;
+import com.ikvant.loriapp.state.auth.LoriAuthController;
 import com.ikvant.loriapp.state.entry.LoadDataCallback;
 import com.ikvant.loriapp.state.entry.Reloadable;
 import com.ikvant.loriapp.state.entry.TimeEntryController;
@@ -21,6 +22,7 @@ public class TaskEntryPresenter implements Contract.Presenter {
 
     private TimeEntryController timeEntryController;
     private SyncController syncController;
+    private LoriAuthController authController;
 
     private boolean isFirstLoad = true;
     private boolean isActive;
@@ -30,9 +32,10 @@ public class TaskEntryPresenter implements Contract.Presenter {
     private boolean isLoading = false;
 
     @Inject
-    public TaskEntryPresenter(TimeEntryController timeEntryController, SyncController syncController) {
+    public TaskEntryPresenter(TimeEntryController timeEntryController, SyncController syncController, LoriAuthController authController) {
         this.timeEntryController = timeEntryController;
         this.syncController = syncController;
+        this.authController = authController;
     }
 
     public void setView(Contract.View view) {
@@ -210,4 +213,8 @@ public class TaskEntryPresenter implements Contract.Presenter {
         });
     }
 
+    @Override
+    public void logout() {
+        authController.logout();
+    }
 }

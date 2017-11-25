@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
 
-import com.ikvant.loriapp.state.auth.AuthController;
+import com.ikvant.loriapp.state.auth.LoriAuthController;
 import com.ikvant.loriapp.ui.login.LoginActivity;
 
 import dagger.android.support.DaggerAppCompatActivity;
@@ -27,7 +27,7 @@ public abstract class BaseActivity extends DaggerAppCompatActivity {
     @Override
     protected void onResume() {
         LocalBroadcastManager.getInstance(this).registerReceiver(
-                logoutReceiver, new IntentFilter(AuthController.LOGOUT_ACTION));
+                logoutReceiver, new IntentFilter(LoriAuthController.LOGOUT_ACTION));
         super.onResume();
     }
 

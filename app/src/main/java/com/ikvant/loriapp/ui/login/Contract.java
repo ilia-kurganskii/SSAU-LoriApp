@@ -1,5 +1,7 @@
 package com.ikvant.loriapp.ui.login;
 
+import android.support.annotation.StringRes;
+
 /**
  * Created by ikvant.
  */
@@ -13,6 +15,8 @@ public interface Contract {
         void hideProgress();
 
         void showError(String error);
+
+        void showError(@StringRes int errorRes);
 
         void showNextScreen();
     }

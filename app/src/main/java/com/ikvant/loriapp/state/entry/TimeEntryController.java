@@ -14,10 +14,13 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 /**
  * Created by ikvant.
  */
-
+@Singleton
 public class TimeEntryController implements Reloadable {
     private final static int OFFSET_STEP = 20;
 
@@ -30,6 +33,7 @@ public class TimeEntryController implements Reloadable {
     private int cacheSize;
     private UserController userController;
 
+    @Inject
     public TimeEntryController(TimeEntryDao timeEntryDao, UserController userController, LoriApiService apiService, AppExecutors executors) {
         this.timeEntryDao = timeEntryDao;
         this.apiService = apiService;

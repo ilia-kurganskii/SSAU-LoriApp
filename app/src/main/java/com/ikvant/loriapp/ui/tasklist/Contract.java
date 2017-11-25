@@ -56,5 +56,7 @@ public interface Contract {
         void onCreateEntry(String id);
 
         void onChangeEntry(String id);
+
+        void logout();
     }
 }
