@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import static com.ikvant.loriapp.utils.DateUtils.getWeekDayIndex;
 
@@ -159,9 +160,9 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ItemViewHolder
     }
 
     private class TaskHolder extends ItemViewHolder<TimeEntry> implements View.OnClickListener {
-        private final DateFormat dateFormat = new SimpleDateFormat("E");
+        private final DateFormat dateFormat = new SimpleDateFormat("EEEE, MMM d", Locale.getDefault());
 
-        private TextView desciription;
+        private TextView description;
         private TextView taskName;
         private TextView tags;
         private TextView time;
@@ -174,7 +175,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ItemViewHolder
             super(LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.i_task, parent, false));
             itemView.setOnClickListener(this);
-            desciription = itemView.findViewById(R.id.i_description);
+            description = itemView.findViewById(R.id.i_description);
             taskName = itemView.findViewById(R.id.i_task);
             time = itemView.findViewById(R.id.i_time);
             tags = itemView.findViewById(R.id.i_tags);
@@ -184,10 +185,10 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ItemViewHolder
 
         @SuppressLint("DefaultLocale")
         public void bind(TimeEntry entry) {
-            desciription.setText(entry.getDescription());
+            description.setText(entry.getDescription());
             taskName.setText(entry.getTaskName());
             time.setText(String.format("%2dh %2dm", entry.getTimeInMinutes() / 60, entry.getTimeInMinutes() % 60));
-            syncView.setImageResource(entry.isSync() ? R.drawable.ic_sync : R.drawable.ic_not_sync);
+            syncView.setVisibility(entry.isSync() ? View.INVISIBLE : View.VISIBLE);
             tags.setText(getFormattedTags(entry.getTags()));
             id = entry.getId();
             letter.setText(dateFormat.format(entry.getDate()));

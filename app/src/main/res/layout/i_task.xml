@@ -8,16 +8,31 @@
     tools:showIn="@layout/a_task_list">
 
     <TextView
+        android:id="@+id/i_letter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        android:textAllCaps="true"
+        android:textColor="#A5A5A5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="monday" />
+
+
+    <TextView
         android:id="@+id/i_task"
         style="@style/TextAppearance.AppCompat.Subhead"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
+        android:textColor="#6F6F6F"
+        android:textSize="18sp"
         app:layout_constraintEnd_toStartOf="@+id/i_time"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/i_letter"
         tools:text="Task" />
 
     <TextView
@@ -25,14 +40,15 @@
         style="@style/TextAppearance.AppCompat.Caption"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="24dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="4dp"
-        app:layout_constraintBottom_toBottomOf="@id/i_tags"
-        app:layout_constraintEnd_toStartOf="@id/i_time"
+        android:layout_marginTop="8dp"
+        android:textColor="#9B9B9B"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/i_tags"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/i_task"
+        app:layout_constraintTop_toBottomOf="@id/i_task"
         tools:text="Description" />
 
     <TextView
@@ -40,15 +56,12 @@
         style="@style/TextAppearance.AppCompat.Caption"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="4dp"
-        android:textColor="@color/light_gray"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/i_time"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/i_description"
+        android:layout_marginEnd="16dp"
+        android:textColor="#979797"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/i_description"
+
+        tools:layout_editor_absoluteY="64dp"
         tools:text="Tag1, Tag2" />
 
     <android.support.v7.widget.AppCompatImageView
@@ -56,10 +69,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_sync" />
+        app:layout_constraintTop_toTopOf="@+id/i_letter"
+        app:srcCompat="@drawable/ic_not_sync" />
 
     <TextView
         android:id="@+id/i_time"
@@ -68,20 +80,17 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/i_letter"
-        app:layout_constraintEnd_toStartOf="@id/i_sync"
-        app:layout_constraintTop_toTopOf="parent"
+        android:textColor="#69D77B"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/i_task"
         tools:text="2h 04m" />
 
-
-    <TextView
-        android:id="@+id/i_letter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@id/i_time"
-        app:layout_constraintStart_toStartOf="@id/i_time"
-        app:layout_constraintTop_toBottomOf="@id/i_time"
-        tools:text="M" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#F2F2F2"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </android.support.constraint.ConstraintLayout>
